@@ -180,56 +180,49 @@ const dataGrafik = dataKeuangan.reduce((acc, item) => {
         />
         <input placeholder="Keterangan" value={keterangan} onChange={(e) => setKeterangan(e.target.value)} style={{ margin: '5px' }} />
         <input placeholder="Jumlah" type="number" value={jumlah} onChange={(e) => setJumlah(e.target.value)} style={{ margin: '5px' }} />
-        <button onClick={tambahData}>Tambah</button>
-        <button onClick={downloadExcel} style={{ backgroundColor: 'green', color: 'white', marginInlineStart: `5px`, }}>
+        <button onClick={tambahData}style={{ backgroundColor: 'green', color: 'white', marginInlineStart: `5px`, }}>   Tambah</button>
+        <button onClick={downloadExcel} style={{ backgroundColor: 'blue', color: 'white', marginInlineStart: `5px`, }}>
           Download Excel
         </button>
       </div>
 
 
       {/* TABEL DATA + TOMBOL HAPUS */}
-      <table
-        border="1"
-        style={{
-          width: '100%',
-          textAlign: 'center',
-        }}
-      >
-        <thead>
+    {/* TABEL DATA + TOMBOL HAPUS */}
+<div className="table-container">
+  <table
+    border="1"
+    style={{
+      width: '100%',
+      textAlign: 'center',
+      borderCollapse: 'collapse'
+    }}
+  >
+    <thead>
+      <tr>
+        <th style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: '#2196F3', color: 'white', minWidth: '120px' }}>Tanggal</th>
+        <th style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: '#2196F3', color: 'white', minWidth: '100px' }}>Jenis</th>
+        <th style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: '#2196F3', color: 'white', minWidth: '150px' }}>Keterangan</th>
+        <th style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: '#2196F3', color: 'white', minWidth: '120px' }}>Jumlah</th>
+        <th style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: '#2196F3', color: 'white', minWidth: '80px' }}>Aksi</th>
+      </tr>
+    </thead>
 
-          <tr>
-            <th style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: '#2196F3', color: 'white', minWidth: '50px' }}>Tanggal</th>
-            <th style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: '#2196F3', color: 'white', minWidth: '50px' }}>Jenis</th>
-            <th style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: '#2196F3', color: 'white', minWidth: '50px' }}>Keterangan</th>
-            <th style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: '#2196F3', color: 'white', minWidth: '50px' }}>Jumlah</th>
-            <th style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: '#2196F3', color: 'white', minWidth: '50px' }}>Aksi</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {dataKeuangan.map((item, index) => (
-            <tr key={item.id}>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.tanggal}</td>
-
-              <td style={{
-                padding: '8px',
-                border: '1px solid #ddd',
-                color: item.jenis === 'Pemasukan' ? 'green' : 'red',
-                fontWeight: 'bold',
-                textAlign: 'center'
-              }}>
-                {item.jenis}
-              </td>
-
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.keterangan}</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd', textAlign: 'center' }}>Rp {item.jumlah.toLocaleString()}</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd', textAlign: 'center' }}>
-                <button onClick={() => hapusData(item.id)} style={{ backgroundColor: 'red', color: 'white', border: 'none', padding: '4px 8px' }}>Hapus</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <tbody>
+      {dataKeuangan.map((item, index) => (
+        <tr key={index}>
+          <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.tanggal || '-'}</td>
+          <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.jenis || '-'}</td>
+          <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.keterangan || '-'}</td>
+          <td style={{ padding: '8px', border: '1px solid #ddd' }}>Rp {(Number(item.jumlah) || 0).toLocaleString()}</td>
+          <td style={{ padding: '8px', border: '1px solid #ddd' }}>
+            <button onClick={() => hapusData(index)}>Hapus</button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
 <h2 style={{ marginTop: '30px', textAlign: 'center' }}>Grafik Pengeluaran per Keterangan</h2>
 <div style={{ width: '100%', height: 300, marginTop: '20px', backgroundColor: '#fff', padding: '10px', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}>
   <ResponsiveContainer width="100%" height="100%">
