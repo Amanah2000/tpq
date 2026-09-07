@@ -216,7 +216,7 @@ const dataGrafik = dataKeuangan.reduce((acc, item) => {
           <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.keterangan || '-'}</td>
           <td style={{ padding: '8px', border: '1px solid #ddd' }}>Rp {(Number(item.jumlah) || 0).toLocaleString()}</td>
           <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-            <button onClick={() => hapusData(index)}>Hapus</button>
+            <button onClick={() => hapusData(item.id)}>Hapus</button>
           </td>
         </tr>
       ))}
