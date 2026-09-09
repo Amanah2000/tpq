@@ -1,23 +1,13 @@
 import { useState, useEffect } from 'react';
 import ExcelJS from 'exceljs';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { simpanKeSheet, ambilDataSheet } from './utils/sheetApi' // ini buat santri, biarin
 import { simpanDataKeuangan, ambilDataKeuangan } from './utils/keuanganApi'
 
 
 function App() {
-  // 1. Ambil data dari localStorage
-
- // HAPUS INI
-// const [dataKeuangan, setDataKeuangan] = useState(() => {
-//   const dataTersimpan = localStorage.getItem('dataKeuanganTPQ')
-//   return dataTersimpan ? JSON.parse(dataTersimpan) : [];
-// });
 
 // GANTI JADI INI
 const [dataKeuangan, setDataKeuangan] = useState([]);
-
-
 useEffect(() => {
   const loadData = async () => {
     const dataDariSupabase = await ambilDataKeuangan();
