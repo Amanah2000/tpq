@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = 'https://xxxxx.supabase.co' // GANTI PUNYA SAMPEAN
-const supabaseKey = 'eyJhbGciOi...xxx' // GANTI PUNYA SAMPEAN
+const supabaseUrl = "https://lcthqecjwbmhhnguzluh.supabase.co" // GANTI PUNYA SAMPEAN
+const supabaseKey = "sb_publishable_AblGcTjK1s9K260_jxXQOg_eY4JHVmG "// GANTI PUNYA SAMPEAN
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 export const ambilDataKeuangan = async () => {
