@@ -1,57 +1,63 @@
 import { useState, useEffect } from 'react';
 import ExcelJS from 'exceljs';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { simpanKeSheet, ambilDataSheet } from './utils/sheetApi' // ini buat santri, biarin
+import { simpanDataKeuangan, ambilDataKeuangan } from './utils/keuanganApi'
 function App() {
   // 1. Ambil data dari localStorage
 
-  // 1. Ambil data dari localStorage pas pertama kali buka
-  const [dataKeuangan, setDataKeuangan] = useState(() => {
-    const dataTersimpan = localStorage.getItem('dataKeuanganTPQ');
-    return dataTersimpan ? JSON.parse(dataTersimpan) : [];
-  });
-  // 2. Ini buat ngasih tanggal ke data lama yg kosong
-  useEffect(() => {
-    setDataKeuangan(prevData =>
-      prevData.map(item => ({
-        ...item,
-        tanggal: item.tanggal || new Date().toLocaleString('id-ID', {
-          day: '2-digit', month: '2-digit', year: 'numeric',
-          hour: '2-digit', minute: '2-digit'
-        })
-      }))
-    );
-  }, []); // [] artinya cuma jalan 1x pas pertama buka
-  // 3. Ini buat nyimpen data ke localStorage tiap ada perubahan
-  useEffect(() => {
-    localStorage.setItem('dataKeuanganTPQ', JSON.stringify(dataKeuangan));
-  }, [dataKeuangan]); // <-- jalan tiap dataKeuangan berubah
+ // HAPUS INI
+// const [dataKeuangan, setDataKeuangan] = useState(() => {
+//   const dataTersimpan = localStorage.getItem('dataKeuanganTPQ')
+//   return dataTersimpan ? JSON.parse(dataTersimpan) : [];
+// });
 
-  // 3. Ini buat nyimpen otomatis setiap ada perubahan
-  useEffect(() => {
-    localStorage.setItem('dataKeuanganTPQ', JSON.stringify(dataKeuangan));
-  }, [dataKeuangan]);
+// GANTI JADI INI
+const [dataKeuangan, setDataKeuangan] = useState([]);
+
+
+useEffect(() => {
+  const loadData = async () => {
+    const dataDariSupabase = await ambilDataKeuangan();
+    setDataKeuangan(dataDariSupabase);
+  }
+  loadData();
+}, []);
   const [jenis, setJenis] = useState('Pemasukan');
   const [keterangan, setKeterangan] = useState('');
   const [jumlah, setJumlah] = useState('');
   const [tanggalManual, setTanggalManual] = useState(new Date().toISOString().split('T')[0]);
 
   // 3. Fungsi Tambah Data + Tanggal Otomatis
-  const tambahData = () => {
-    const dataBaru = {
-      id: Date.now(),
-      tanggal: new Date().toLocaleString('id-ID', {
-        day: '2-digit', month: '2-digit', year: 'numeric',
-        hour: '2-digit', minute: '2-digit'
-      }),
-      jenis,
-      keterangan,
-      jumlah: parseInt(jumlah)
-
-    };
-    setDataKeuangan([...dataKeuangan, dataBaru]);
-    setKeterangan('');
-    setJumlah('');
+// 3. Fungsi Tambah Data + Kirim ke Supabase
+const tambahData = async (dat) => {
+  // 1. Siapin data buat dikirim
+  const dataBaru = {
+    tanggal: new Date().toLocaleString('id-ID', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    }),
+    jenis: dat.jenis,
+    keterangan: dat.keterangan,
+    jumlah: dat.jumlah,
   }
+ const tambahData = async (dat) => {
+  // Tentukan masuk atau keluar
+  const dataBaru = {
+    tanggal: new Date().toISOString().split('T')[0], // format 2026-09-09
+    keterangan: dat.keterangan,
+    kategori: dat.jenis, // Pemasukan / Pengeluaran
+    masuk: dat.jenis === 'Pemasukan'? dat.jumlah : 0,
+    keluar: dat.jenis === 'Pengeluaran'? dat.jumlah : 0,
+  }
+
+  await simpanDataKeuangan(dataBaru);
+  const dataDariSupabase = await ambilDataKeuangan();
+  setDataKeuangan(dataDariSupabase);
+
+  alert('Data berhasil disimpan!')
+}
+}
 
   // 4. Fungsi HAPUS DATA - YANG KEMARIN KURANG
   // 4. Fungsi HAPUS DATA - VERSI AMAN VERCEL
