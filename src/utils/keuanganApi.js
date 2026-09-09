@@ -1,17 +1,15 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const supabaseUrl = 'https://xxxxx.supabase.co' // GANTI PUNYA SAMPEAN
+const supabaseKey = 'eyJhbGciOi...xxx' // GANTI PUNYA SAMPEAN
+const supabase = createClient(supabaseUrl, supabaseKey)
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
-
-// AMBIL SEMUA DATA KEUANGAN
-export async function ambilDataKeuangan() {
+export const ambilDataKeuangan = async () => {
   const { data, error } = await supabase
    .from('keuangan')
    .select('*')
-   .order('id', { ascending: false })
-  
+   .order('tanggal', { ascending: false })
+
   if (error) {
     console.error('Error ambil data:', error)
     return []
@@ -19,14 +17,26 @@ export async function ambilDataKeuangan() {
   return data
 }
 
-// SIMPAN DATA KEUANGAN BARU
-export async function simpanDataKeuangan(data) {
-  const { error } = await supabase
+export const simpanDataKeuangan = async (dataBaru) => {
+  const { data, error } = await supabase
    .from('keuangan')
-   .insert([data])
-  
+   .insert([dataBaru])
+
   if (error) {
     console.error('Error simpan data:', error)
+    throw error
+  }
+  return data
+}
+
+export const hapusDataKeuangan = async (id) => {
+  const { error } = await supabase
+   .from('keuangan')
+   .delete()
+   .eq('id', id)
+
+  if (error) {
+    console.error('Error hapus data:', error)
     throw error
   }
 }

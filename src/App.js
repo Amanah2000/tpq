@@ -3,6 +3,8 @@ import ExcelJS from 'exceljs';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { simpanKeSheet, ambilDataSheet } from './utils/sheetApi' // ini buat santri, biarin
 import { simpanDataKeuangan, ambilDataKeuangan } from './utils/keuanganApi'
+
+
 function App() {
   // 1. Ambil data dari localStorage
 
@@ -31,20 +33,9 @@ useEffect(() => {
   // 3. Fungsi Tambah Data + Tanggal Otomatis
 // 3. Fungsi Tambah Data + Kirim ke Supabase
 const tambahData = async (dat) => {
-  // 1. Siapin data buat dikirim
+  // Ubah format biar cocok sama Supabase
   const dataBaru = {
-    tanggal: new Date().toLocaleString('id-ID', {
-      day: '2-digit', month: '2-digit', year: 'numeric',
-      hour: '2-digit', minute: '2-digit'
-    }),
-    jenis: dat.jenis,
-    keterangan: dat.keterangan,
-    jumlah: dat.jumlah,
-  }
- const tambahData = async (dat) => {
-  // Tentukan masuk atau keluar
-  const dataBaru = {
-    tanggal: new Date().toISOString().split('T')[0], // format 2026-09-09
+    tanggal: new Date().toISOString().split('T')[0], // 2026-09-09
     keterangan: dat.keterangan,
     kategori: dat.jenis, // Pemasukan / Pengeluaran
     masuk: dat.jenis === 'Pemasukan'? dat.jumlah : 0,
@@ -55,10 +46,8 @@ const tambahData = async (dat) => {
   const dataDariSupabase = await ambilDataKeuangan();
   setDataKeuangan(dataDariSupabase);
 
-  alert('Data berhasil disimpan!')
+  alert('Data berhasil disimpan ke Supabase!')
 }
-}
-
   // 4. Fungsi HAPUS DATA - YANG KEMARIN KURANG
   // 4. Fungsi HAPUS DATA - VERSI AMAN VERCEL
   const hapusData = (id) => {
@@ -203,40 +192,29 @@ const tambahData = async (dat) => {
           textAlign: 'center',
         }}
       >
-        <thead>
-
-          <tr>
-            <th style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: '#2196F3', color: 'white', minWidth: '50px' }}>Tanggal</th>
-            <th style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: '#2196F3', color: 'white', minWidth: '50px' }}>Jenis</th>
-            <th style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: '#2196F3', color: 'white', minWidth: '50px' }}>Keterangan</th>
-            <th style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: '#2196F3', color: 'white', minWidth: '50px' }}>Jumlah</th>
-            <th style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: '#2196F3', color: 'white', minWidth: '50px' }}>Aksi</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {dataKeuangan.map((item, index) => (
-            <tr key={item.id}>
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.tanggal}</td>
-
-              <td style={{
-                padding: '8px',
-                border: '1px solid #ddd',
-                color: item.jenis === 'Pemasukan' ? 'green' : 'red',
-                fontWeight: 'bold',
-                textAlign: 'center'
-              }}>
-                {item.jenis}
-              </td>
-
-              <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.keterangan}</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd', textAlign: 'center' }}>Rp {item.jumlah.toLocaleString()}</td>
-              <td style={{ padding: '8px', border: '1px solid #ddd', textAlign: 'center' }}>
-                <button onClick={() => hapusData(item.id)} style={{ backgroundColor: 'red', color: 'white', border: 'none', padding: '4px 8px' }}>Hapus</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
+        
+<thead>
+  <tr>
+    <th>Tanggal</th>
+    <th>Keterangan</th>
+    <th>Kategori</th>
+    <th>Masuk</th>
+    <th>Keluar</th>
+    <th>Aksi</th>
+  </tr>
+</thead>
+<tbody>
+  {dataKeuangan.map(item => (
+    <tr key={item.id}>
+      <td>{item.tanggal}</td>
+      <td>{item.keterangan}</td>
+      <td>{item.kategori}</td>
+      <td>Rp {item.masuk.toLocaleString('id-ID')}</td>
+      <td>Rp {item.keluar.toLocaleString('id-ID')}</td>
+      <td><button onClick={() => hapusData(item.id)}>Hapus</button></td>
+    </tr>
+  ))}
+</tbody>
       </table>
       <h2 style={{ marginTop: '30px', textAlign: 'center' }}>Grafik Pengeluaran per Keterangan</h2>
       <div style={{ width: '100%', height: 300, marginTop: '20px', backgroundColor: '#fff', padding: '10px', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}>
