@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { supabase } from './keuanganApi'
+import { useState, useEffect } from 'react'
 import ExcelJS from 'exceljs';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { simpanDataKeuangan, ambilDataKeuangan } from './utils/keuanganApi'
@@ -7,36 +8,43 @@ import { simpanDataKeuangan, ambilDataKeuangan } from './utils/keuanganApi'
 function App() {
 
 // GANTI JADI INI
-const [dataKeuangan, setDataKeuangan] = useState([]);
+const [data, setData] = useState([]);
+const [formData, setFormData] = useState({tanggal: '', keterangan: '', kategori: 'Pemasukan', nominal: ''});
+
+const fetchData = async () => {
+  const { data, error } = await supabase
+  .from('keuangan')
+  .select('*')
+  .order('tanggal', { ascending: false });
+
+  if (error) console.error('Error:', error);
+  else setData(data);
+};
+
 useEffect(() => {
-  const loadData = async () => {
-    const dataDariSupabase = await ambilDataKeuangan();
-    setDataKeuangan(dataDariSupabase);
-  }
-  loadData();
+  fetchData();
 }, []);
-  const [jenis, setJenis] = useState('Pemasukan');
-  const [keterangan, setKeterangan] = useState('');
-  const [jumlah, setJumlah] = useState('');
-  const [tanggalManual, setTanggalManual] = useState(new Date().toISOString().split('T')[0]);
 
-  // 3. Fungsi Tambah Data + Tanggal Otomatis
-// 3. Fungsi Tambah Data + Kirim ke Supabase
-const tambahData = async (dat) => {
-  // Ubah format biar cocok sama Supabase
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  
   const dataBaru = {
-    tanggal: new Date().toISOString().split('T')[0], // 2026-09-09
-    keterangan: dat.keterangan,
-    kategori: dat.jenis, // Pemasukan / Pengeluaran
-    masuk: dat.jenis === 'Pemasukan'? dat.jumlah : 0,
-    keluar: dat.jenis === 'Pengeluaran'? dat.jumlah : 0,
+    tanggal: formData.tanggal,
+    keterangan: formData.keterangan,
+    kategori: formData.kategori,
+    masuk: formData.kategori === 'Pemasukan'? Number(formData.nominal) : 0,
+    keluar: formData.kategori === 'Pengeluaran'? Number(formData.nominal) : 0,
   }
 
-  await simpanDataKeuangan(dataBaru);
-  const dataDariSupabase = await ambilDataKeuangan();
-  setDataKeuangan(dataDariSupabase);
+  const { error } = await supabase.from('keuangan').insert([dataBaru]);
 
-  alert('Data berhasil disimpan ke Supabase!')
+  if (error) {
+    alert('Gagal simpan: ' + error.message);
+  } else {
+    alert('Berhasil simpan!');
+    setFormData({tanggal: '', keterangan: '', kategori: 'Pemasukan', nominal: ''});
+    fetchData(); // reload data dari Supabase
+  }
 }
   // 4. Fungsi HAPUS DATA - YANG KEMARIN KURANG
   // 4. Fungsi HAPUS DATA - VERSI AMAN VERCEL
@@ -157,18 +165,18 @@ const tambahData = async (dat) => {
       {/* FORM INPUT */}
 
       <div style={{ marginBottom: '20px' }}>
-        <select value={jenis} onChange={(e) => setJenis(e.target.value,)}>
-          <option>Pemasukan</option>
-          <option>Pengeluaran</option>
-        </select>
-        <input
-          type="date"
-          value={tanggalManual}
-          onChange={(e) => setTanggalManual(e.target.value)}
-        />
-        <input placeholder="Keterangan" value={keterangan} onChange={(e) => setKeterangan(e.target.value)} style={{ margin: '5px' }} />
-        <input placeholder="Jumlah" type="number" value={jumlah} onChange={(e) => setJumlah(e.target.value)} style={{ margin: '5px' }} />
-        <button onClick={tambahData}>Tambah</button>
+        <select value={formData.kategori} onChange={(e) => setFormData({...formData, kategori: e.target.value})}>
+  <option value="Pemasukan">Pemasukan</option>
+  <option value="Pengeluaran">Pengeluaran</option>
+</select>
+
+<input type="date" value={formData.tanggal} onChange={(e) => setFormData({...formData, tanggal: e.target.value})} />
+
+<input placeholder="Keterangan" value={formData.keterangan} onChange={(e) => setFormData({...formData, keterangan: e.target.value})} />
+
+<input placeholder="Jumlah" type="number" value={formData.nominal} onChange={(e) => setFormData({...formData, nominal: e.target.value})} />
+
+<button onClick={tambahData}>Tambah</button>
         <button onClick={downloadExcel} style={{ backgroundColor: 'green', color: 'white', marginInlineStart: `5px`, }}>
           Download Excel
         </button>
