@@ -1,7 +1,7 @@
 import { supabase } from './utils/keuanganApi'
 import { useState, useEffect } from 'react'
 import ExcelJS from 'exceljs';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 
 
