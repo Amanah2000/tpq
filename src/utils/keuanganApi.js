@@ -1,9 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
+const supabaseUrl = 'https://lcthqecjwbmhnguzluh.supabase.co'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxjdGhxZWNqd2JtaGhuZ3V6bHVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4NTgxMDMsImV4cCI6MjEwNDQzNDEwM30.d982762ElZrLHZfC8Vx6i8Xp1pGEp55yrxgbsJaKODY'
 
-const supabaseUrl = "https://lcthqecjwbmhhnguzluh.supabase.co" // GANTI PUNYA SAMPEAN
-const supabaseKey = "sb_publishable_AblGcTjK1s9K260_jxXQOg_eY4JHVmG "// GANTI PUNYA SAMPEAN
-const supabase = createClient(supabaseUrl, supabaseKey)
-
+export const supabase = createClient(supabaseUrl, supabaseKey)
 export const ambilDataKeuangan = async () => {
   const { data, error } = await supabase
    .from('keuangan')
