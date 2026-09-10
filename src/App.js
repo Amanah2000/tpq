@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { supabase } from './keuanganApi'
-
+import { getKeuangan, addKeuangan, hapusDataKeuangan } from './lib/keuanganApi'
 function App() {
   const [dataKeuangan, setDataKeuangan] = useState([])
   const [form, setForm] = useState({
