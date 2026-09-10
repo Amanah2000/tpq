@@ -1,4 +1,4 @@
-import { supabase } from '../supabaseClient'
+import { supabase } from './supabaseClient'
 
 export async function getKeuangan() {
   const { data, error } = await supabase
