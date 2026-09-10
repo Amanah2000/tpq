@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { supabase } from './lib/supabaseClient'
 
 function App() {
@@ -7,13 +7,12 @@ function App() {
   const [jenis, setJenis] = useState('pemasukan')
   const [pesan, setPesan] = useState('')
 
-  // Fungsi Simpan ke Supabase
   const handleSubmit = async (e) => {
     e.preventDefault()
     setPesan('Menyimpan...')
 
     const { error } = await supabase
-      .from('keuangan') // nama tabel di supabase
+      .from('keuangan')
       .insert([{ keterangan, jumlah: parseInt(jumlah), jenis }])
 
     if (error) {
