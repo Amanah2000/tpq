@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laporan Keuangan TPQ</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  *{box-sizing:border-box}
+  body {font-family: Arial, sans-serif; background:#f5f5f5; margin:0; padding:20px; transition:0.3s;}
+  body.dark {background:#121212; color:#fff;}
+  h1 {text-align:center; color:#22c55e;}
+ .container {max-width:1100px; margin:auto; background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+  body.dark.container {background:#0a9b52;}
+ .top-bar{display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;}
+ .form {display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:10px; margin-bottom:20px;}
+ .form input,.form button {padding:10px; border:1px solid #ccc; border-radius:6px; font-size:14px;}
+ .btn-hijau {background:#22c55e; color:#fff; border:none; cursor:pointer; font-weight:bold;}
+ .btn-hijau:hover{background:#16a34a;}
+ .btn-biru {background:#2563eb; color:#fff; border:none; cursor:pointer; padding:8px 12px; border-radius:6px; margin-right:5px;}
+ .btn-hitam {background:#000; color:#fff; border:none; cursor:pointer; padding:8px 12px; border-radius:6px;}
+  table {width:100%; border-collapse:collapse; margin-top:20px; font-size:14px;}
+  table, th, td {border:1px solid #ddd;}
+  th {background:#eee; padding:10px;}
+  body.dark th {background:#333;}
+  td{padding:8px; text-align:center}
+ .chart-box {background:#fff; padding:20px; border-radius:10px; margin:20px 0; max-width:400px; margin:auto;}
+  body.dark.chart-box {background:#2a2a2a;}
+ .btn-del{background:#ef4444; color:#fff; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;}
+ .toolbar{display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap;}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <h1>Laporan Keuangan TPQ</h1>
+  <button class="btn-hitam" onclick="toggleDark()">🌙 Mode</button>
+</div>
+
+<div class="container">
+  <div class="form">
+    <input type="date" id="tanggal">
+    <input type="time" id="jam">
+    <input type="text" id="keterangan" placeholder="Keterangan">
+    <input type="number" id="pemasukan" placeholder="Pemasukan">
+    <input type="number" id="pengeluaran" placeholder="Pengeluaran">
+    <button class="btn-hijau" onclick="tambahData()">+ Tambah</button>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn-hijau" onclick="exportXLSX()">📊 Export ke XLSX</button>
+    <button class="btn-biru" onclick="downloadBackup()">💾 Download Backup</button>
+    <input type="file" id="importFile" style="display:none" onchange="importBackup(event)">
+    <button class="btn-biru" onclick="document.getElementById('importFile').click()">📂 Import Backup</button>
+  </div>
+
+  <div class="chart-box">
+    <canvas id="grafik"></canvas>
+  </div>
+
+  <table id="tabel">
+    <thead>
+      <tr>
+        <th>Tanggal</th><th>Jam</th><th>Keterangan</th>
+        <th>Pemasukan</th><th>Pengeluaran</th><th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script>
+let data = JSON.parse(localStorage.getItem('keuanganTPQ')) || [];
+let chart;
+
+function simpan() {
+  localStorage.setItem('keuanganTPQ', JSON.stringify(data));
+  tampilkan();
+}
+
+function tambahData() {
+  let tgl = document.getElementById('tanggal').value;
+  let jam = document.getElementById('jam').value;
+  let ket = document.getElementById('keterangan').value;
+  let masuk = parseFloat(document.getElementById('pemasukan').value) || 0;
+  let keluar = parseFloat(document.getElementById('pengeluaran').value) || 0;
+
+  if(!tgl ||!ket) return alert('Tanggal & Keterangan wajib diisi');
+
+  data.push({tgl, jam, ket, masuk, keluar});
+
+  document.getElementById('tanggal').value = '';
+  document.getElementById('jam').value = '';
+  document.getElementById('keterangan').value = '';
+  document.getElementById('pemasukan').value = '';
+  document.getElementById('pengeluaran').value = '';
+
+  simpan();
+}
+
+function hapus(i) {
+  if(confirm('Yakin hapus data ini?')){
+    data.splice(i,1);
+    simpan();
+  }
+}
+
+function tampilkan() {
+  let tbody = document.querySelector('#tabel tbody');
+  tbody.innerHTML = '';
+  let totalMasuk = 0, totalKeluar = 0;
+
+  data.forEach((d,i)=>{
+    totalMasuk += d.masuk;
+    totalKeluar += d.keluar;
+    tbody.innerHTML += `<tr>
+      <td>${d.tgl}</td><td>${d.jam}</td><td>${d.ket}</td>
+      <td>Rp ${d.masuk.toLocaleString('id-ID')}</td>
+      <td>Rp ${d.keluar.toLocaleString('id-ID')}</td>
+      <td><button class="btn-del" onclick="hapus(${i})">Hapus</button></td>
+    </tr>`;
+  });
+
+  const ctx = document.getElementById('grafik');
+  if(chart) chart.destroy();
+  chart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: ['Pemasukan','Pengeluaran'],
+      datasets: [{
+        data:[totalMasuk, totalKeluar],
+        backgroundColor:['#22c55e','#ef4444']
+      }]
+    },
+    options:{responsive:true, plugins:{legend:{position:'bottom'}}}
+  });
+}
+
+function exportXLSX() {
+  if(data.length === 0) return alert('Data masih kosong');
+  let ws = XLSX.utils.json_to_sheet(data);
+  let wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Laporan");
+  XLSX.writeFile(wb, "Laporan_Keuangan_TPQ.xlsx");
+}
+
+// KODE BARU UNTUK DOWNLOAD/IMPORT
+function downloadBackup() {
+  let blob = new Blob([JSON.stringify(data)], {type: "application/json"});
+  let url = URL.createObjectURL(blob);
+  let a = document.createElement("a");
+  a.href = url;
+  a.download = "backup-tpq.json";
+  a.click();
+}
+
+function importBackup(event) {
+  let file = event.target.files[0];
+  let reader = new FileReader();
+  reader.onload = function(e) {
+    data = JSON.parse(e.target.result);
+    simpan();
+    alert("Data berhasil diimport!");
+  }
+  reader.readAsText(file);
+}
+
+function toggleDark() {
+  document.body.classList.toggle('dark');
+}
+
+tampilkan();
+</script>
+</body>
+</html>

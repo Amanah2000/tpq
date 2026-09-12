@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState ,useEffect} from 'react';
 import ExcelJS from 'exceljs';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 function App() {
@@ -159,7 +159,7 @@ function App() {
           <div>Total Pemasukan</div>
           <div style={{ color: 'green', fontSize: '24px', fontWeight: 'bold' }}>Rp {totalPemasukan.toLocaleString('id-ID')}</div>
         </div>
-            <div style={{ border: '2px solid red', padding: '15px', borderRadius: '8px', flex: 1 }}>
+        <div style={{ border: '2px solid red', padding: '15px', borderRadius: '8px', flex: 1 }}>
           <div>Total Pengeluaran</div>
           <div style={{ color: 'red', fontSize: '24px', fontWeight: 'bold' }}>Rp {totalPengeluaran.toLocaleString('id-ID')}</div>
         </div>

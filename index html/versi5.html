@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="id">
+  <iframe name="hidden_iframe" style="display:none;"></iframe>
+<script>
+const URL_SHEET = "https://script.google.com/macros/s/AKfycbxI8Jh_SnnxG4K7GqrePeicwWxH94ZVIhM72zLNXri8l3t671FsUPI7z7HDB2XSZ-Eedg/exec";
+
+function kirimKeSheet(d) {
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = URL_SHEET;
+  form.target = 'hidden_iframe';
+
+  const input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'data';
+  input.value = JSON.stringify(d);
+  form.appendChild(input);
+
+  // bikin iframe biar gak pindah halaman
+  let iframe = document.getElementById('hidden_iframe');
+  if(!iframe){
+    iframe = document.createElement('iframe');
+    iframe.name = 'hidden_iframe';
+    iframe.id = 'hidden_iframe';
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+  }
+
+  document.body.appendChild(form);
+  form.submit();
+  document.body.removeChild(form);
+}
+  function tambahData() {
+    let tgl = document.getElementById('tanggal').value;
+    let jam = document.getElementById('jam').value;
+    let ket = document.getElementById('keterangan').value;
+    let masuk = parseFloat(document.getElementById('pemasukan').value) || 0;
+    let keluar = parseFloat(document.getElementById('pengeluaran').value) || 0;
+
+    if (!tgl || !ket) return alert('Tanggal & Keterangan wajib diisi'); // <-- IF TAROH SINI DULU
+
+    // hitung saldo dulu
+    let saldoSebelumnya = data.length > 0 ? data[data.length - 1].saldo || 0 : 0;
+    let saldo = saldoSebelumnya + masuk - keluar;
+
+    let dataBaru = { tgl, jam, ket, masuk, keluar, saldo }; // <-- INI UDAH GAK ERROR
+    data.push(dataBaru);
+
+    kirimKeSheet(dataBaru); // kirim ke sheet
+
+    // kosongkan form
+    document.getElementById('tanggal').value = '';
+    document.getElementById('jam').value = '';
+    document.getElementById('keterangan').value = '';
+    document.getElementById('pemasukan').value = '';
+    document.getElementById('pengeluaran').value = '';
+
+    simpan();
+  }
+
+</script>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laporan Keuangan TPQ</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+      transition: 0.3s;
+    }
+
+    body.dark {
+      background: #121212;
+      color: #fff;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2563eb;
+      margin: 5px 0;
+    }
+
+    .ringkasan {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin: 15px 0;
+    }
+
+    .card {
+      padding: 20px;
+      border-radius: 12px;
+      color: #fff;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-masuk {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+    }
+
+    .card-keluar {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+
+    .card-saldo {
+      background: linear-gradient(135deg, #2563eb, #1e40af);
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .card h2 {
+      margin: 8px 0 0 0;
+      font-size: 26px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark.container {
+      background: #1f1f1f;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .filter-bar select {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .form input,
+    .form button {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .btn-hijau {
+      background: #22c55e;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn-hijau:hover {
+      background: #16a34a
+    }
+
+    .btn-biru {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-right: 5px;
+    }
+
+    .btn-biru:hover {
+      background: #1e40af
+    }
+
+    .btn-hitam {
+      background: #000;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    table,
+    th,
+    td {
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background: #2563eb;
+      color: #fff;
+      padding: 10px;
+    }
+
+    body.dark th {
+      background: #1e40af;
+    }
+
+    td {
+      padding: 8px;
+      text-align: center
+    }
+
+    .chart-box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+      max-width: 400px;
+      margin: auto;
+    }
+
+    body.dark.chart-box {
+      background: #2a2a2a;
+    }
+
+    .btn-del {
+      background: #ef4444;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .saldo-tabel {
+      color: #2563eb;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="top-bar">
+    <h1>Laporan Keuangan TPQ</h1>
+    <button class="btn-hitam" onclick="toggleDark()">🌙 Mode</button>
+  </div>
+
+  <div class="container">
+    <div class="ringkasan">
+      <div class="card card-masuk">
+        <p>TOTAL PEMASUKAN</p>
+        <h2 id="totalMasuk">Rp 0</h2>
+      </div>
+      <div class="card card-keluar">
+        <p>TOTAL PENGELUARAN</p>
+        <h2 id="totalKeluar">Rp 0</h2>
+      </div>
+      <div class="card card-saldo">
+        <p>SALDO SAAT INI</p>
+        <h2 id="saldoTotal">Rp 0</h2>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <label><b>Filter Bulan:</b></label>
+      <select id="filterBulan" onchange="tampilkan()"></select>
+      <select id="filterTahun" onchange="tampilkan()"></select>
+      <button class="btn-biru" onclick="resetFilter()">Tampilkan Semua</button>
+    </div>
+
+    <div class="form">
+      <input type="date" id="tanggal">
+      <input type="time" id="jam">
+      <input type="text" id="keterangan" placeholder="Keterangan">
+      <input type="number" id="pemasukan" placeholder="Pemasukan">
+      <input type="number" id="pengeluaran" placeholder="Pengeluaran">
+      <button class="btn-hijau" onclick="tambahData()">+ Tambah</button>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn-hijau" onclick="exportXLSX()">📊 Export ke XLSX</button>
+      <button class="btn-biru" onclick="downloadBackup()">💾 Download Backup</button>
+      <input type="file" id="importFile" style="display:none" onchange="importBackup(event)">
+      <button class="btn-biru" onclick="document.getElementById('importFile').click()">📂 Import Backup</button>
+    </div>
+
+    <div class="chart-box"><canvas id="grafik"></canvas></div>
+
+    <table id="tabel">
+      <thead>
+        <tr>
+          <th>Tanggal</th>
+          <th>Jam</th>
+          <th>Keterangan</th>
+          <th>Pemasukan</th>
+          <th>Pengeluaran</th>
+          <th>Saldo</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    let data = JSON.parse(localStorage.getItem('keuanganTPQ')) || [];
+    let chart;
+    let bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+    function simpan() {
+      localStorage.setItem('keuanganTPQ', JSON.stringify(data));
+      isiFilter();
+      tampilkan();
+    }
+
+    function tambahData() {
+      let tgl = document.getElementById('tanggal').value;
+      let jam = document.getElementById('jam').value;
+      let ket = document.getElementById('keterangan').value;
+      let masuk = parseFloat(document.getElementById('pemasukan').value) || 0;
+      let keluar = parseFloat(document.getElementById('pengeluaran').value) || 0;
+      if (!tgl || !ket) return alert('Tanggal & Keterangan wajib diisi');
+      data.push({ tgl, jam, ket, masuk, keluar });
+      document.getElementById('tanggal').value = ''; document.getElementById('jam').value = '';
+      document.getElementById('keterangan').value = ''; document.getElementById('pemasukan').value = '';
+      document.getElementById('pengeluaran').value = '';
+      simpan();
+    }
+
+    function hapus(i) {
+      if (confirm('Yakin hapus data ini?')) { data.splice(i, 1); simpan(); }
+    }
+
+    function isiFilter() {
+      let selBulan = document.getElementById('filterBulan');
+      let selTahun = document.getElementById('filterTahun');
+      let tahunSet = new Set();
+      data.forEach(d => tahunSet.add(new Date(d.tgl).getFullYear()));
+      selBulan.innerHTML = '<option value="">Semua Bulan</option>' + bulan.map((b, i) => `<option value="${i}">${b}</option>`).join('');
+      selTahun.innerHTML = '<option value="">Semua Tahun</option>' + [...tahunSet].map(t => `<option value="${t}">${t}</option>`).join('');
+    }
+
+    function resetFilter() {
+      document.getElementById('filterBulan').value = "";
+      document.getElementById('filterTahun').value = "";
+      tampilkan();
+    }
+
+    function tampilkan() {
+      let fBulan = document.getElementById('filterBulan').value;
+      let fTahun = document.getElementById('filterTahun').value;
+
+      let dataFilter = data.filter(d => {
+        let tgl = new Date(d.tgl);
+        let cocokBulan = fBulan === "" || tgl.getMonth() == fBulan;
+        let cocokTahun = fTahun === "" || tgl.getFullYear() == fTahun;
+        return cocokBulan && cocokTahun;
+      });
+
+      let tbody = document.querySelector('#tabel tbody');
+      tbody.innerHTML = '';
+      let totalMasuk = 0, totalKeluar = 0, saldoKomulatif = 0;
+
+      dataFilter.forEach((d, i) => {
+        totalMasuk += d.masuk; totalKeluar += d.keluar; saldoKomulatif += d.masuk - d.keluar;
+        tbody.innerHTML += `<tr>
+      <td>${d.tgl}</td><td>${d.jam}</td><td>${d.ket}</td>
+      <td>Rp ${d.masuk.toLocaleString('id-ID')}</td>
+      <td>Rp ${d.keluar.toLocaleString('id-ID')}</td>
+      <td class="saldo-tabel">Rp ${saldoKomulatif.toLocaleString('id-ID')}</td>
+      <td><button class="btn-del" onclick="hapus(${data.indexOf(d)})">Hapus</button></td>
+    </tr>`;
+      });
+
+      document.getElementById('totalMasuk').innerText = `Rp ${totalMasuk.toLocaleString('id-ID')}`;
+      document.getElementById('totalKeluar').innerText = `Rp ${totalKeluar.toLocaleString('id-ID')}`;
+      document.getElementById('saldoTotal').innerText = `Rp ${saldoKomulatif.toLocaleString('id-ID')}`;
+
+      const ctx = document.getElementById('grafik');
+      if (chart) chart.destroy();
+      chart = new Chart(ctx, {
+        type: 'pie',
+        data: { labels: ['Pemasukan', 'Pengeluaran'], datasets: [{ data: [totalMasuk, totalKeluar], backgroundColor: ['#22c55e', '#ef4444'] }] },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+      });
+    }
+    function exportXLSX() {
+      if (data.length === 0) return alert('Data masih kosong');
+      let ws = XLSX.utils.json_to_sheet(data);
+      let wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Laporan");
+      XLSX.writeFile(wb, "Laporan_Keuangan_TPQ.xlsx");
+    }
+
+    function downloadBackup() {
+      let blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+      let url = URL.createObjectURL(blob); let a = document.createElement("a");
+      a.href = url; a.download = "backup-tpq.json"; a.click();
+    }
+
+    function importBackup(event) {
+      let file = event.target.files[0]; let reader = new FileReader();
+      reader.onload = function (e) { data = JSON.parse(e.target.result); simpan(); alert("Data berhasil diimport!"); }
+      reader.readAsText(file);
+    }
+
+    function toggleDark() { document.body.classList.toggle('dark'); }
+
+    isiFilter();
+    tampilkan();
+  </script>
+</body>
+
+</html>

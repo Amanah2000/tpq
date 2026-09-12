@@ -11,7 +11,7 @@ function App() {
   const [totalPengeluaran, setTotalPengeluaran] = useState(0);
 
   // GANTI LINK INI
-  const URL_GOOGLE_SHEET = "https://script.google.com/macros/s/AKfycbzYI0n1JEpRsJT3HR_ftd0GV4UywH59GMU4drIfbNsTqQJgJ-lEFnYbv_Ydi6e4vm6jCA/exec";
+  const URL_GOOGLE_SHEET = "https://script.google.com/macros/s/PASTE_URL_BAPAK_DI_SINI/exec";
   const URL_GET_DATA = "https://script.google.com/macros/s/PASTE_URL_BAPAK_DI_SINI/exec"; // sama aja
 
   // Ambil data & hitung saldo saat pertama buka
