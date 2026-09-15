@@ -7,10 +7,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-*{box-sizing:border-box}body{font-family:Arial,sans-serif;background:#f5f5f5;margin:0;padding:20px}
+*{box-sizing:border-box}body{font-family:Arial,sans-serif;background:#f5f5f5;margin:0;padding:20px;transition:0.3s}
 h1{text-align:center;color:#2563eb}.card{padding:20px;border-radius:12px;color:#fff;text-align:center}
 .card-masuk{background:linear-gradient(135deg,#22c55e,#16a34a)}.card-keluar{background:linear-gradient(135deg,#ef4444,#dc2626)}.card-saldo{background:linear-gradient(135deg,#2563eb,#1e40af)}
-.container{max-width:1100px;margin:auto;background:#fff;padding:20px;border-radius:12px}
+.container{max-width:1100px;margin:auto;background:#fff;padding:20px;border-radius:12px;transition:0.3s}
 .form{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:20px}
 .form input,.form button{padding:10px;border:1px solid #ccc;border-radius:6px}
 .btn-hijau{background:#22c55e;color:#fff;border:none;font-weight:bold;cursor:pointer}.btn-biru{background:#2563eb;color:#fff;border:none;padding:8px 12px;border-radius:6px}.btn-hitam{background:#000;color:#fff;border:none;padding:8px 12px;border-radius:6px}
@@ -19,13 +19,20 @@ table{width:100%;border-collapse:collapse;margin-top:20px} table,th,td{border:1p
 .loginBox{background:white;padding:35px;border-radius:20px;width:90%;max-width:380px;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.3)}
 .loginBox input{width:100%;padding:14px;margin:12px 0;border:2px solid #e2e8f0;border-radius:10px;font-size:16px}.loginBox button{width:100%;padding:14px;background:#2563eb;color:white;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:16px}
 #appWrapper{display:none}
+/* DARK MODE AKTIF */
+body.dark{background:#0f172a;color:#e2e8f0}
+body.dark.container{background:#1e293b}
+body.dark h1{color:#60a5fa}
+body.dark table{background:#1e293b;color:#e2e8f0}
+body.dark td{border-color:#334155}
+body.dark.form input{background:#0f172a;color:white;border-color:#334155}
 </style>
 </head>
 <body>
 <div id="loginScreen"><div class="loginBox"><div style="font-size:60px">🕌</div><h2>TPQ Baiturrahman</h2><p>Login Admin</p><input id="passInput" type="password" placeholder="Masukkan Password" onkeydown="if(event.key==='Enter')cekLogin()"><button onclick="cekLogin()">🔓 Masuk</button><p id="pesanError" style="color:red;display:none;margin-top:10px">❌ Password salah!</p></div></div>
 <div id="appWrapper">
 <h1>Laporan Keuangan TPQ</h1>
-<div style="text-align:center;margin-bottom:15px"><button class="btn-hitam" onclick="toggleDark()">🌙 Mode</button><button class="btn-hitam" style="background:#ef4444;margin-left:5px" onclick="logout()">🔒 Logout</button></div>
+<div style="text-align:center;margin-bottom:15px"><button class="btn-hitam" onclick="toggleDark()">🌙 Mode Gelap/Terang</button><button class="btn-hitam" style="background:#ef4444;margin-left:5px" onclick="logout()">🔒 Logout</button></div>
 <div class="container">
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin:15px 0"><div class="card card-masuk"><p>TOTAL PEMASUKAN</p><h2 id="totalMasuk">Rp 0</h2></div><div class="card card-keluar"><p>TOTAL PENGELUARAN</p><h2 id="totalKeluar">Rp 0</h2></div><div class="card card-saldo"><p>SALDO SAAT INI</p><h2 id="saldoTotal">Rp 0</h2></div></div>
 <div class="form"><input type="date" id="tanggal"><input type="time" id="jam"><input type="text" id="keterangan" placeholder="Keterangan"><input type="number" id="pemasukan" placeholder="Pemasukan"><input type="number" id="pengeluaran" placeholder="Pengeluaran"><button class="btn-hijau" onclick="tambahData()">+ Tambah</button></div>
@@ -49,7 +56,8 @@ function tampilkan(){let tbody=document.getElementById('tbody');tbody.innerHTML=
 function exportXLSX(){if(!data.length) return alert('Kosong');let ws=XLSX.utils.json_to_sheet(data);let wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Laporan");XLSX.writeFile(wb,"Laporan_Keuangan_TPQ.xlsx");}
 function downloadBackup(){let blob=new Blob([JSON.stringify(data)],{type:"application/json"});let url=URL.createObjectURL(blob);let a=document.createElement("a");a.href=url;a.download="backup-tpq.json";a.click();}
 function importBackup(e){let file=e.target.files[0];let r=new FileReader();r.onload=function(ev){data=JSON.parse(ev.target.result);simpan();alert("Import berhasil!")};r.readAsText(file);}
-function toggleDark(){document.body.classList.toggle('dark');}
+function toggleDark(){document.body.classList.toggle('dark');localStorage.setItem('darkModeTPQ',document.body.classList.contains('dark'));}
+if(localStorage.getItem('darkModeTPQ')==='true'){document.body.classList.add('dark');}
 tampilkan();
 </script>
 </body>
