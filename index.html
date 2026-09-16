@@ -1,330 +1,577 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Laporan Keuangan TPQ - Anti Hilang</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    ,
     <style>
-        * {
-            box-sizing: border-box
-        }
+      * {
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            margin: 0;
-            padding: 20px;
-            transition: 0.3s
-        }
+      body {
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+        margin: 0;
+        padding: 20px;
+        transition: 0.3s;
+      }
 
-        h1 {
-            text-align: center;
-            color: #2563eb
-        }
+      h1 {
+        text-align: center;
+        color: #2563eb;
+      }
 
-        .card {
-            padding: 20px;
-            border-radius: 12px;
-            color: #fff;
-            text-align: center
-        }
+      .card {
+        padding: 20px;
+        border-radius: 12px;
+        color: #fff;
+        text-align: center;
+      }
 
-        .card-masuk {
-            background: linear-gradient(135deg, #22c55e, #16a34a)
-        }
+      .card-masuk {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+      }
 
-        .card-keluar {
-            background: linear-gradient(135deg, #ef4444, #dc2626)
-        }
+      .card-keluar {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+      }
 
-        .card-saldo {
-            background: linear-gradient(135deg, #2563eb, #1e40af)
-        }
+      .card-saldo {
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+      }
 
-        .container {
-            max-width: 1100px;
-            margin: auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 12px
-        }
+      .container {
+        max-width: 1100px;
+        margin: auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+      }
 
-        .form {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
-            margin-bottom: 20px
-        }
+      .form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+        margin-bottom: 20px;
+      }
 
-        .form input,
-        .form button,
-        .filter select {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px
-        }
+      .form input,
+      .form button,
+      .filter select {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
 
-        .btn-hijau {
-            background: #22c55e;
-            color: #fff;
-            border: none;
-            font-weight: bold;
-            cursor: pointer
-        }
+      .btn-hijau {
+        background: #22c55e;
+        color: #fff;
+        border: none;
+        font-weight: bold;
+        cursor: pointer;
+      }
 
-        .btn-biru {
-            background: #2563eb;
-            color: #fff;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 6px
-        }
+      .btn-biru {
+        background: #2563eb;
+        color: #fff;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 6px;
+      }
 
-        .btn-hitam {
-            background: #000;
-            color: #fff;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 6px
-        }
+      .btn-hitam {
+        background: #000;
+        color: #fff;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 6px;
+      }
 
-        .filter {
-            display: flex;
-            gap: 10px;
-            margin: 15px 0;
-            flex-wrap: wrap;
-            align-items: center;
-            background: #f1f5f9;
-            padding: 12px;
-            border-radius: 10px
-        }
+      .filter {
+        display: flex;
+        gap: 10px;
+        margin: 15px 0;
+        flex-wrap: wrap;
+        align-items: center;
+        background: #f1f5f9;
+        padding: 12px;
+        border-radius: 10px;
+      }
 
-        .filter select {
-            min-width: 140px;
-            font-weight: bold
-        }
+      .filter select {
+        min-width: 140px;
+        font-weight: bold;
+      }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px
-        }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
 
-        table,
-        th,
-        td {
-            border: 1px solid #ddd
-        }
+      table,
+      th,
+      td {
+        border: 1px solid #ddd;
+      }
 
-        th {
-            background: #2563eb;
-            color: #fff;
-            padding: 10px
-        }
+      th {
+        background: #2563eb;
+        color: #fff;
+        padding: 10px;
+      }
 
-        td {
-            padding: 8px;
-            text-align: center
-        }
+      td {
+        padding: 8px;
+        text-align: center;
+        color: #1e293b;
+      }
 
-        #loginScreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0f172a, #1e3a8a);
-            z-index: 99999;
-            display: flex;
-            align-items: center;
-            justify-content: center
-        }
+      #loginScreen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #0f172a, #1e3a8a);
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
-        .loginBox {
-            background: white;
-            padding: 35px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 380px;
-            text-align: center
-        }
+      .loginBox {
+        background: white;
+        padding: 35px;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 380px;
+        text-align: center;
+      }
 
-        .loginBox input {
-            width: 100%;
-            padding: 14px;
-            margin: 12px 0;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px
-        }
+      .loginBox input {
+        width: 100%;
+        padding: 14px;
+        margin: 12px 0;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+      }
 
-        .loginBox button {
-            width: 100%;
-            padding: 14px;
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer
-        }
+      .loginBox button {
+        width: 100%;
+        padding: 14px;
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: bold;
+        cursor: pointer;
+      }
 
-        #appWrapper {
-            display: none
-        }
+      #appWrapper {
+        display: none;
+      }
 
-        body.dark {
-            background: #0f172a;
-            color: #e2e8f0
-        }
+      body.dark {
+        background: #0f172a;
+        color: #e2e8f0;
+      }
 
-        body.dark.container {
-            background: #1e293b
-        }
+      body.dark.container {
+        background: #1e293b;
+        color: #e2e8f0;
+      }
 
-        body.dark h1 {
-            color: #60a5fa
-        }
+      body.dark.filter {
+        background: #0f172a;
+        border: 1px solid #334155;
+      }
 
-        #loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: #f59e0b;
-            color: white;
-            text-align: center;
-            padding: 8px;
-            z-index: 10000;
-            display: none
-        }
+      body.dark.form input,
+      body.dark.filter select {
+        background: #0f172a;
+        color: #e2e8f0;
+        border-color: #334155;
+      }
+
+      body.dark table {
+        background: #1e293b;
+      }
+
+      body.dark th {
+        background: #1e40af;
+      }
+
+      body.dark td {
+        color: #e2e8f0 !important;
+        border-color: #334155;
+        background: #1e293b;
+      }
+
+      body.dark tr:nth-child(even) td {
+        background: #0f172a !important;
+      }
+
+      body.dark h1 {
+        color: #60a5fa;
+      }
+
+      #loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: #f59e0b;
+        color: white;
+        text-align: center;
+        padding: 8px;
+        z-index: 10000;
+        display: none;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="loading">🔄 Sinkronisasi...</div>
     <div id="loginScreen">
-        <div class="loginBox">
-            <div style="font-size:60px">🕌</div>
-            <h2>TPQ Baiturrahman</h2>
-            <p>Login Admin - Anti Hilang</p><input id="passInput" type="password" placeholder="Password"
-                onkeydown="if(event.key==='Enter')cekLogin()"><button onclick="cekLogin()">🔓 Masuk</button>
-            <p id="pesanError" style="color:red;display:none">❌ Salah!</p>
-        </div>
+      <div class="loginBox">
+        <div style="font-size: 60px">🕌</div>
+        <h2>TPQ Baiturrahman</h2>
+        <p>Login Admin - Anti Hilang</p>
+        <input
+          id="passInput"
+          type="password"
+          placeholder="Password"
+          onkeydown="if (event.key === 'Enter') cekLogin();"
+        /><button onclick="cekLogin()">🔓 Masuk</button>
+        <p id="pesanError" style="color: red; display: none">❌ Salah!</p>
+      </div>
     </div>
     <div id="appWrapper">
-        <h1>Laporan Keuangan TPQ</h1>
-        <div style="text-align:center;margin-bottom:15px">
-            <button class="btn-hitam" onclick="toggleDark()">🌙 Gelap/Terang</button>
-            <button class="btn-biru" onclick="loadFromSheet()" style="margin-left:5px">🔄 Sinkron HP</button>
-            <button class="btn-hitam" style="background:#ef4444;margin-left:5px" onclick="logout()">🔒 Logout</button>
+      <h1>Laporan Keuangan TPQ</h1>
+      <div style="text-align: center; margin-bottom: 15px">
+        <button class="btn-hitam" onclick="toggleDark()">🌙 Gelap/Terang</button>
+        <button class="btn-biru" onclick="loadFromSheet()" style="margin-left: 5px">
+          🔄 Sinkron HP
+        </button>
+        <button class="btn-hitam" style="background: #ef4444; margin-left: 5px" onclick="logout()">
+          🔒 Logout
+        </button>
+      </div>
+      <div class="container">
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+          "
+        >
+          <div class="card card-masuk">
+            <p>TOTAL PEMASUKAN</p>
+            <h2 id="totalMasuk">Rp 0</h2>
+          </div>
+          <div class="card card-keluar">
+            <p>TOTAL PENGELUARAN</p>
+            <h2 id="totalKeluar">Rp 0</h2>
+          </div>
+          <div class="card card-saldo">
+            <p>SALDO SAAT INI</p>
+            <h2 id="saldoTotal">Rp 0</h2>
+          </div>
         </div>
-        <div class="container">
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin:15px 0">
-                <div class="card card-masuk">
-                    <p>TOTAL PEMASUKAN</p>
-                    <h2 id="totalMasuk">Rp 0</h2>
-                </div>
-                <div class="card card-keluar">
-                    <p>TOTAL PENGELUARAN</p>
-                    <h2 id="totalKeluar">Rp 0</h2>
-                </div>
-                <div class="card card-saldo">
-                    <p>SALDO SAAT INI</p>
-                    <h2 id="saldoTotal">Rp 0</h2>
-                </div>
-            </div>
-            <div class="filter"><span style="font-weight:bold">🔍 Filter:</span>
-                <select id="filterBulan"
-                    onchange="tampilkan()">
-                    <option value="all">📅 Semua Bulan</option>
-                    <option value="01">Januari</option>
-                    <option value="02">Februari</option>
-                    <option value="03">Maret</option>
-                    <option value="04">April</option>
-                    <option value="05">Mei</option>
-                    <option value="06">Juni</option>
-                    <option value="07">Juli</option>
-                    <option value="08">Agustus</option>
-                    <option value="09">September</option>
-                    <option value="10">Oktober</option>
-                    <option value="11">November</option>
-                    <option value="12">Desember</option>
-                </select>
-                    <select id="filterTahun" onchange="tampilkan()">
-                        <option value="all">📆 Semua Tahun</option>
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
-                        <option value="2026">2026</option>
-                        <option value="2027">2027</option>
-                    </select>
-                    <button class="btn-biru" onclick="resetFilter()">🔄 Reset</button><span id="infoFilter"
-                        style="font-size:12px;color:#64748b;margin-left:auto"></span></div>
-            <div class="form"><input type="date" id="tanggal"><input type="time" id="jam"><input type="text"
-                    id="keterangan" placeholder="Keterangan"><input type="number" id="pemasukan"
-                    placeholder="Pemasukan"><input type="number" id="pengeluaran" placeholder="Pengeluaran"><button
-                    class="btn-hijau" onclick="tambahData()">+ Tambah & Sinkron</button></div>
-            <div style="display:flex;gap:10px;margin-bottom:15px;flex-wrap:wrap"><button class="btn-hijau"
-                    onclick="exportXLSX()">📊 Export XLSX</button><button class="btn-biru" onclick="downloadBackup()">💾
-                    Backup</button></div>
-            <div style="max-width:400px;margin:auto"><canvas id="grafik"></canvas></div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Tgl</th>
-                        <th>Jam</th>
-                        <th>Ket</th>
-                        <th>Masuk</th>
-                        <th>Keluar</th>
-                        <th>Saldo</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody"></tbody>
-            </table>
-            <div style="margin-top:15px;text-align:center;font-size:12px;color:#64748b" id="statusSinkron">✅ Siap - Data
-                aman</div>
+        <div class="filter">
+          <span style="font-weight: bold">🔍 Filter:</span>
+          <select id="filterBulan" onchange="tampilkan()">
+            <option value="all">📅 Semua Bulan</option>
+            <option value="01">Januari</option>
+            <option value="02">Februari</option>
+            <option value="03">Maret</option>
+            <option value="04">April</option>
+            <option value="05">Mei</option>
+            <option value="06">Juni</option>
+            <option value="07">Juli</option>
+            <option value="08">Agustus</option>
+            <option value="09">September</option>
+            <option value="10">Oktober</option>
+            <option value="11">November</option>
+            <option value="12">Desember</option>
+          </select>
+          <select id="filterTahun" onchange="tampilkan()">
+            <option value="all">📆 Semua Tahun</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+            <option value="2027">2027</option>
+          </select>
+          <button class="btn-biru" onclick="resetFilter()">🔄 Reset</button
+          ><span id="infoFilter" style="font-size: 12px; color: #64748b; margin-left: auto"></span>
         </div>
+        <div class="form">
+          <input type="date" id="tanggal" /><input type="time" id="jam" /><input
+            type="text"
+            id="keterangan"
+            placeholder="Keterangan"
+          /><input type="number" id="pemasukan" placeholder="Pemasukan" /><input
+            type="number"
+            id="pengeluaran"
+            placeholder="Pengeluaran"
+          /><button class="btn-hijau" onclick="tambahData()">+ Tambah & Sinkron</button>
+        </div>
+        <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap">
+          <button class="btn-hijau" onclick="exportXLSX()">📊 Export XLSX</button
+          ><button class="btn-biru" onclick="downloadBackup()">💾 Backup</button>
+        </div>
+        <div style="max-width: 400px; margin: auto">
+          <canvas id="grafik"></canvas>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Tgl</th>
+              <th>Jam</th>
+              <th>Ket</th>
+              <th>Masuk</th>
+              <th>Keluar</th>
+              <th>Saldo</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+        <div
+          style="margin-top: 15px; text-align: center; font-size: 12px; color: #64748b"
+          id="statusSinkron"
+        >
+          ✅ Siap - Data aman
+        </div>
+      </div>
     </div>
-    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display: none"></iframe>
     <script>
-        const URL_SHEET = "https://script.google.com/macros/s/AKfycbz4JV5c9pFekI68HV5-CFzgWq3V3E1E6xmv_Vnp1ySUeIW4driZ29gV0BNJsdH8nTxT/exec";
-        const PASSWORD_ADMIN = "TPQbaiturrahman2025";
-        function cekLogin() { if (document.getElementById('passInput').value === PASSWORD_ADMIN) { document.getElementById('loginScreen').style.display = 'none'; document.getElementById('appWrapper').style.display = 'block'; localStorage.setItem('loginTPQ', 'ok'); } else { document.getElementById('pesanError').style.display = 'block'; } }
-        function logout() { localStorage.removeItem('loginTPQ'); location.reload(); }
-        if (localStorage.getItem('loginTPQ') === 'ok') { document.getElementById('loginScreen').style.display = 'none'; document.getElementById('appWrapper').style.display = 'block'; }
-        let data = JSON.parse(localStorage.getItem('keuanganTPQ') || '[]'); let chart;
-        function simpan() { localStorage.setItem('keuanganTPQ', JSON.stringify(data)); tampilkan(); }
-        async function loadFromSheet() {
-            let loading = document.getElementById('loading'); loading.style.display = 'block'; loading.innerText = '🔄 Menggabungkan data HP + Sheet...';
-            try {
-                let res = await fetch(URL_SHEET); let sheetData = await res.json();
-                if (Array.isArray(sheetData) && sheetData.length > 0) {
-                    let bersih = sheetData.map(d => ({ tgl: String(d.tgl || '').split('T')[0].substring(0, 10), jam: String(d.jam || ''), ket: String(d.ket || ''), masuk: Number(d.masuk) || 0, keluar: Number(d.keluar) || 0, saldo: Number(d.saldo) || 0 })).filter(d => d.tgl && d.ket);
-                    let gabung = [...data];
-                    bersih.forEach(s => { let ada = gabung.some(l => l.tgl === s.tgl && l.ket === s.ket && l.masuk === s.masuk && l.keluar === s.keluar); if (!ada) gabung.push(s); });
-                    gabung.sort((a, b) => new Date(a.tgl) - new Date(b.tgl));
-                    data = gabung; localStorage.setItem('keuanganTPQ', JSON.stringify(data));
-                    document.getElementById('statusSinkron').innerText = '✅ Sinkron Sukses: ' + data.length + ' data - TIDAK ADA YANG HILANG (' + new Date().toLocaleTimeString() + ')';
-                } else { document.getElementById('statusSinkron').innerText = 'ℹ️ Sheet kosong, data HP aman: ' + data.length; }
-            } catch (e) { document.getElementById('statusSinkron').innerText = '⚠️ Offline, data HP tetap aman: ' + data.length; }
-            loading.style.display = 'none'; tampilkan();
+      const URL_SHEET =
+        "https://script.google.com/macros/s/AKfycbz4JV5c9pFekI68HV5-CFzgWq3V3E1E6xmv_Vnp1ySUeIW4driZ29gV0BNJsdH8nTxT/exec";
+      const PASSWORD_ADMIN = "TPQbaiturrahman2025";
+      function cekLogin() {
+        if (document.getElementById("passInput").value === PASSWORD_ADMIN) {
+          document.getElementById("loginScreen").style.display = "none";
+          document.getElementById("appWrapper").style.display = "block";
+          localStorage.setItem("loginTPQ", "ok");
+        } else {
+          document.getElementById("pesanError").style.display = "block";
         }
-        function kirimKeSheet(d) { try { let f = document.createElement('form'); f.method = 'POST'; f.action = URL_SHEET; f.target = 'hidden_iframe'; let i = document.createElement('input'); i.type = 'hidden'; i.name = 'data'; i.value = JSON.stringify(d); f.appendChild(i); document.body.appendChild(f); f.submit(); setTimeout(() => { try { document.body.removeChild(f); } catch (e) { } }, 3000); } catch (e) { } document.getElementById('statusSinkron').innerText = '📤 Terkirim: ' + d.ket; }
-        function tambahData() { let tgl = document.getElementById('tanggal').value, jam = document.getElementById('jam').value, ket = document.getElementById('keterangan').value, masuk = parseFloat(document.getElementById('pemasukan').value) || 0, keluar = parseFloat(document.getElementById('pengeluaran').value) || 0; if (!tgl || !ket) return alert('Wajib isi'); let saldoSebelumnya = data.length > 0 ? data[data.length - 1].saldo || 0 : 0; let saldo = saldoSebelumnya + masuk - keluar; let dataBaru = { tgl, jam, ket, masuk, keluar, saldo }; data.push(dataBaru); kirimKeSheet(dataBaru); simpan(); document.getElementById('tanggal').value = ''; document.getElementById('jam').value = ''; document.getElementById('keterangan').value = ''; document.getElementById('pemasukan').value = ''; document.getElementById('pengeluaran').value = ''; }
-        function hapus(i) { if (confirm('Hapus?')) { data.splice(i, 1); simpan(); } }
-        function getFilteredData() { let bulan = document.getElementById('filterBulan').value; let tahun = document.getElementById('filterTahun').value; return data.filter(d => { if (!d.tgl) return false; let p = String(d.tgl).split('-'); if (p.length < 3) return true; let th = p[0]; let bl = p[1].padStart(2, '0'); return (bulan === 'all' || bl === bulan) && (tahun === 'all' || th === tahun); }); }
-        function updateTahunOptions() { let tahunFix = ["2024", "2025", "2026", "2027"]; let tahunSet = new Set(tahunFix); data.forEach(d => { if (d.tgl && String(d.tgl).includes('-')) { let th = String(d.tgl).split('-')[0]; if (th.length === 4) tahunSet.add(th); } }); let select = document.getElementById('filterTahun'); let cur = select.value; select.innerHTML = '<option value="all">📆 Semua Tahun</option>'; Array.from(tahunSet).sort().forEach(th => { let o = document.createElement('option'); o.value = th; o.textContent = th; select.appendChild(o); }); if (tahunSet.has(cur) || cur === "all") select.value = cur; } function resetFilter() { document.getElementById('filterBulan').value = 'all'; document.getElementById('filterTahun').value = '2026'; tampilkan(); }
-        function resetFilter() { document.getElementById('filterBulan').value = 'all'; document.getElementById('filterTahun').value = 'all'; tampilkan(); }
-        function tampilkan() { updateTahunOptions(); let filtered = getFilteredData(); let tbody = document.getElementById('tbody'); tbody.innerHTML = ''; let tm = 0, tk = 0, sk = 0; filtered.forEach(d => { let ri = data.indexOf(d); tm += d.masuk; tk += d.keluar; sk += d.masuk - d.keluar; tbody.innerHTML += `<tr><td>${d.tgl}</td><td>${d.jam || ''}</td><td>${d.ket}</td><td>Rp ${d.masuk.toLocaleString('id-ID')}</td><td>Rp ${d.keluar.toLocaleString('id-ID')}</td><td style="color:#2563eb;font-weight:bold">Rp ${sk.toLocaleString('id-ID')}</td><td><button style="background:#ef4444;color:#fff;border:none;padding:5px 10px;border-radius:4px" onclick="hapus(${ri})">Hapus</button></td></tr>`; }); document.getElementById('totalMasuk').innerText = `Rp ${tm.toLocaleString('id-ID')}`; document.getElementById('totalKeluar').innerText = `Rp ${tk.toLocaleString('id-ID')}`; document.getElementById('saldoTotal').innerText = `Rp ${sk.toLocaleString('id-ID')}`; document.getElementById('infoFilter').innerText = 'Menampilkan ' + filtered.length + ' dari ' + data.length; let ctx = document.getElementById('grafik'); if (chart) chart.destroy(); chart = new Chart(ctx, { type: 'pie', data: { labels: ['Masuk', 'Keluar'], datasets: [{ data: [tm, tk], backgroundColor: ['#22c55e', '#ef4444'] }] } }); }
-        function exportXLSX() { let f = getFilteredData(); if (!f.length) return alert('Kosong'); let ws = XLSX.utils.json_to_sheet(f); let wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Laporan'); XLSX.writeFile(wb, 'Laporan_TPQ.xlsx'); }
-        function downloadBackup() { let blob = new Blob([JSON.stringify(data)], { type: 'application/json' }); let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup.json'; a.click(); }
-        function toggleDark() { document.body.classList.toggle('dark'); localStorage.setItem('darkModeTPQ', document.body.classList.contains('dark')); }
-        if (localStorage.getItem('darkModeTPQ') === 'true') document.body.classList.add('dark');
+      }
+      function logout() {
+        localStorage.removeItem("loginTPQ");
+        location.reload();
+      }
+      if (localStorage.getItem("loginTPQ") === "ok") {
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("appWrapper").style.display = "block";
+      }
+      let data = JSON.parse(localStorage.getItem("keuanganTPQ") || "[]");
+      let chart;
+      function simpan() {
+        localStorage.setItem("keuanganTPQ", JSON.stringify(data));
         tampilkan();
+      }
+      async function loadFromSheet() {
+        let loading = document.getElementById("loading");
+        loading.style.display = "block";
+        loading.innerText = "🔄 Sinkron dari Server...";
+        try {
+          let res = await fetch(URL_SHEET + "?t=" + Date.now(), {
+            cache: "no-store",
+          });
+          let sheetData = await res.json();
+          if (Array.isArray(sheetData) && sheetData.length > 0) {
+            let bersih = sheetData
+              .map((d) => ({
+                tgl: String(d.tgl || "")
+                  .split("T")[0]
+                  .substring(0, 10),
+                jam: String(d.jam || ""),
+                ket: String(d.ket || ""),
+                masuk: Number(d.masuk) || 0,
+                keluar: Number(d.keluar) || 0,
+                saldo: Number(d.saldo) || 0,
+              }))
+              .filter((d) => d.tgl && d.ket);
+            let gabung = [...data];
+            bersih.forEach((s) => {
+              let ada = gabung.some(
+                (l) =>
+                  l.tgl === s.tgl &&
+                  l.ket === s.ket &&
+                  l.masuk === s.masuk &&
+                  l.keluar === s.keluar,
+              );
+              if (!ada) gabung.push(s);
+            });
+            gabung.sort((a, b) => new Date(a.tgl) - new Date(b.tgl));
+            data = gabung;
+            localStorage.setItem("keuanganTPQ", JSON.stringify(data));
+            document.getElementById("statusSinkron").innerText =
+              "✅ Sinkron Masuk: " +
+              data.length +
+              " data (" +
+              new Date().toLocaleTimeString() +
+              ")";
+          }
+        } catch (e) {
+          document.getElementById("statusSinkron").innerText =
+            "⚠️ Gagal sinkron, cek setting Anyone di Apps Script!";
+        }
+        loading.style.display = "none";
+        tampilkan();
+      }
+      function kirimKeSheet(d) {
+        try {
+          let f = document.createElement("form");
+          f.method = "POST";
+          f.action = URL_SHEET;
+          f.target = "hidden_iframe";
+          let i = document.createElement("input");
+          i.type = "hidden";
+          i.name = "data";
+          i.value = JSON.stringify(d);
+          f.appendChild(i);
+          document.body.appendChild(f);
+          f.submit();
+          setTimeout(() => {
+            try {
+              document.body.removeChild(f);
+            } catch (e) {}
+          }, 3000);
+        } catch (e) {}
+        document.getElementById("statusSinkron").innerText = "📤 Terkirim: " + d.ket;
+      }
+      function tambahData() {
+        let tgl = document.getElementById("tanggal").value,
+          jam = document.getElementById("jam").value,
+          ket = document.getElementById("keterangan").value,
+          masuk = parseFloat(document.getElementById("pemasukan").value) || 0,
+          keluar = parseFloat(document.getElementById("pengeluaran").value) || 0;
+        if (!tgl || !ket) return alert("Wajib isi");
+        let saldoSebelumnya = data.length > 0 ? data[data.length - 1].saldo || 0 : 0;
+        let saldo = saldoSebelumnya + masuk - keluar;
+        let dataBaru = { tgl, jam, ket, masuk, keluar, saldo };
+        data.push(dataBaru);
+        kirimKeSheet(dataBaru);
+        simpan();
+        document.getElementById("tanggal").value = "";
+        document.getElementById("jam").value = "";
+        document.getElementById("keterangan").value = "";
+        document.getElementById("pemasukan").value = "";
+        document.getElementById("pengeluaran").value = "";
+      }
+      function hapus(i) {
+        if (confirm("Hapus?")) {
+          data.splice(i, 1);
+          simpan();
+        }
+      }
+      function getFilteredData() {
+        let bulan = document.getElementById("filterBulan").value;
+        let tahun = document.getElementById("filterTahun").value;
+        return data.filter((d) => {
+          if (!d.tgl) return false;
+          let p = String(d.tgl).split("-");
+          if (p.length < 3) return true;
+          let th = p[0];
+          let bl = p[1].padStart(2, "0");
+          return (bulan === "all" || bl === bulan) && (tahun === "all" || th === tahun);
+        });
+      }
+      function updateTahunOptions() {
+        let tahunFix = ["2024", "2025", "2026", "2027"];
+        let tahunSet = new Set(tahunFix);
+        data.forEach((d) => {
+          if (d.tgl && String(d.tgl).includes("-")) {
+            let th = String(d.tgl).split("-")[0];
+            if (th.length === 4) tahunSet.add(th);
+          }
+        });
+        let select = document.getElementById("filterTahun");
+        let cur = select.value;
+        select.innerHTML = '<option value="all">📆 Semua Tahun</option>';
+        Array.from(tahunSet)
+          .sort()
+          .forEach((th) => {
+            let o = document.createElement("option");
+            o.value = th;
+            o.textContent = th;
+            select.appendChild(o);
+          });
+        if (tahunSet.has(cur) || cur === "all") select.value = cur;
+      }
+      function resetFilter() {
+        document.getElementById("filterBulan").value = "all";
+        document.getElementById("filterTahun").value = "2026";
+        tampilkan();
+      }
+      function resetFilter() {
+        document.getElementById("filterBulan").value = "all";
+        document.getElementById("filterTahun").value = "all";
+        tampilkan();
+      }
+      function tampilkan() {
+        updateTahunOptions();
+        let filtered = getFilteredData();
+        let tbody = document.getElementById("tbody");
+        tbody.innerHTML = "";
+        let tm = 0,
+          tk = 0,
+          sk = 0;
+        filtered.forEach((d) => {
+          let ri = data.indexOf(d);
+          tm += d.masuk;
+          tk += d.keluar;
+          sk += d.masuk - d.keluar;
+          tbody.innerHTML += `<tr><td>${d.tgl}</td><td>${d.jam || ""}</td><td>${d.ket}</td><td>Rp ${d.masuk.toLocaleString("id-ID")}</td><td>Rp ${d.keluar.toLocaleString("id-ID")}</td><td style="color:#2563eb;font-weight:bold">Rp ${sk.toLocaleString("id-ID")}</td><td><button style="background:#ef4444;color:#fff;border:none;padding:5px 10px;border-radius:4px" onclick="hapus(${ri})">Hapus</button></td></tr>`;
+        });
+        document.getElementById("totalMasuk").innerText = `Rp ${tm.toLocaleString("id-ID")}`;
+        document.getElementById("totalKeluar").innerText = `Rp ${tk.toLocaleString("id-ID")}`;
+        document.getElementById("saldoTotal").innerText = `Rp ${sk.toLocaleString("id-ID")}`;
+        document.getElementById("infoFilter").innerText =
+          "Menampilkan " + filtered.length + " dari " + data.length;
+        let ctx = document.getElementById("grafik");
+        if (chart) chart.destroy();
+        chart = new Chart(ctx, {
+          type: "pie",
+          data: {
+            labels: ["Masuk", "Keluar"],
+            datasets: [{ data: [tm, tk], backgroundColor: ["#22c55e", "#ef4444"] }],
+          },
+        });
+      }
+      function exportXLSX() {
+        let f = getFilteredData();
+        if (!f.length) return alert("Kosong");
+        let ws = XLSX.utils.json_to_sheet(f);
+        let wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Laporan");
+        XLSX.writeFile(wb, "Laporan_TPQ.xlsx");
+      }
+      function downloadBackup() {
+        let blob = new Blob([JSON.stringify(data)], {
+          type: "application/json",
+        });
+        let a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "backup.json";
+        a.click();
+      }
+      function toggleDark() {
+        document.body.classList.toggle("dark");
+        localStorage.setItem("darkModeTPQ", document.body.classList.contains("dark"));
+      }
+      if (localStorage.getItem("darkModeTPQ") === "true") document.body.classList.add("dark");
+      tampilkan();
     </script>
-</body>
-
+  </body>
 </html>
