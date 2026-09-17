@@ -419,25 +419,41 @@ async function loadFromSheet(){
         } catch (e) {}
         document.getElementById("statusSinkron").innerText = "📤 Terkirim: " + d.ket;
       }
-      function tambahData() {
-        let tgl = document.getElementById("tanggal").value,
-          jam = document.getElementById("jam").value,
-          ket = document.getElementById("keterangan").value,
-          masuk = parseFloat(document.getElementById("pemasukan").value) || 0,
-          keluar = parseFloat(document.getElementById("pengeluaran").value) || 0;
-        if (!tgl || !ket) return alert("Wajib isi");
-        let saldoSebelumnya = data.length > 0 ? data[data.length - 1].saldo || 0 : 0;
-        let saldo = saldoSebelumnya + masuk - keluar;
-        let dataBaru = { tgl, jam, ket, masuk, keluar, saldo };
-        data.push(dataBaru);
-        kirimKeSheet(dataBaru);
-        simpan();
-        document.getElementById("tanggal").value = "";
-        document.getElementById("jam").value = "";
-        document.getElementById("keterangan").value = "";
-        document.getElementById("pemasukan").value = "";
-        document.getElementById("pengeluaran").value = "";
-      }
+      async function tambahData(){
+  let tgl = document.querySelector('input[type="date"]').value;
+  let jam = document.querySelector('input[type="time"]').value;
+  let ket = document.getElementById("ket").value || document.querySelectorAll('input')[2].value;
+  let masuk = document.getElementById("masuk").value || document.querySelectorAll('input')[3].value;
+  let keluar = document.getElementById("keluar").value || document.querySelectorAll('input')[4].value;
+  if(!tgl ||!ket){ alert("Isi tanggal & keterangan dulu Pak!"); return; }
+  let baru = {
+    tgl: tgl,
+    jam: jam || new Date().toLocaleTimeString(),
+    ket: ket,
+    masuk: Number(masuk) || 0,
+    keluar: Number(keluar) || 0
+  };
+  // 1. Simpan dulu di HP biar langsung muncul
+  data.push(baru);
+  localStorage.setItem("keuanganTPQ", JSON.stringify(data));
+  tampilkan();
+  // 2. Kosongkan form
+  document.querySelectorAll('input')[2].value = "";
+  document.querySelectorAll('input')[3].value = "";
+  document.querySelectorAll('input')[4].value = "";
+  // 3. Kirim ke Google Sheet di belakang layar (jangan sinkron dulu!)
+  try{
+    document.getElementById("statusSinkron").innerText = "⏳ Menyimpan ke Sheet...";
+    await fetch(URL_SHEET, {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify(baru)
+    });
+    document.getElementById("statusSinkron").innerText = "✅ Tersimpan di HP & Sheet";
+  }catch(e){
+    document.getElementById("statusSinkron").innerText = "✅ Tersimpan di HP (Sheet nyusul)";
+  }
+}
       function hapus(i) {
         if (confirm("Hapus?")) {
           data.splice(i, 1);
