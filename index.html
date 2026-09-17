@@ -382,37 +382,18 @@ function cekLogin() {
   // kirim ke sheet biar tidak hilang
   kirimSemuaKeSheet();
 }
-  async function loadFromSheet() {
-  try {
-    document.getElementById("statusSinkron").innerText = "🔄 Sinkron...";
-    let res = await fetch(URL_SHEET + "?t=" + Date.now(), { cache: "no-store" });
-    let sheetData = await res.json();
-        // Bersihkan data dari sheet
-    let bersih = sheetData.map(d => ({
-      tgl: d.tgl || d.Tanggal,
-      ket: d.ket || d.Keterangan,
-      masuk: Number(d.masuk) || 0,
-      keluar: Number(d.keluar) || 0,
-      saldo: Number(d.saldo) || 0,
-    })).filter(d => d.tgl && d.ket);
-
-    // Gabung dengan data lokal
-    let gabung = [...data];
-    bersih.forEach((s) => {
-      let ada = gabung.some((l) => l.tgl === s.tgl && l.ket === s.ket);
-      if (!ada) gabung.push(s);
-    });
-    gabung.sort((a, b) => new Date(a.tgl) - new Date(b.tgl));
-    data = gabung;
-        if(data.length > 0){
+async function loadFromSheet(){
+  try{
+    let r = await fetch(URL_SHEET + "?t=" + Date.now());
+    let j = await r.json();
+    if(j.length > 0){
+      data = j.map(x=>{
+        let t = (x.tgl||"").toString().split("T")[0];
+        return { tgl: t, ket: x.ket||"", masuk: Number(x.masuk)||0, keluar: Number(x.keluar)||0 };
+      });
       localStorage.setItem("keuanganTPQ", JSON.stringify(data));
     }
-    document.getElementById("statusSinkron").innerText = "✅ Sinkron: " + data.length + " data";
-  } catch (e) {
-    document.getElementById("statusSinkron").innerText = "⚠️ Gagal sinkron, cek Apps Script Anyone!";
-    console.log(e);
-  }
-  if(typeof loading !== 'undefined') loading.style.display = "none";
+  }catch(e){}
   tampilkan();
 }
       function kirimKeSheet(d) {
