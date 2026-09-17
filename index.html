@@ -382,33 +382,37 @@ function cekLogin() {
   // kirim ke sheet biar tidak hilang
   kirimSemuaKeSheet();
 }
-     async function loadFromSheet() {
+  async function loadFromSheet() {
   try {
     document.getElementById("statusSinkron").innerText = "🔄 Sinkron...";
     let res = await fetch(URL_SHEET + "?t=" + Date.now(), { cache: "no-store" });
     let sheetData = await res.json();
-    
+        // Bersihkan data dari sheet
     let bersih = sheetData.map(d => ({
-      tgl: d.tgl,
-      ket: d.ket,
+      tgl: d.tgl || d.Tanggal,
+      ket: d.ket || d.Keterangan,
       masuk: Number(d.masuk) || 0,
       keluar: Number(d.keluar) || 0,
       saldo: Number(d.saldo) || 0,
     })).filter(d => d.tgl && d.ket);
 
+    // Gabung dengan data lokal
     let gabung = [...data];
     bersih.forEach((s) => {
-      let ada = gabung.some((l) => l.tgl === s.tgl && l.ket === s.ket && l.masuk === s.masuk && l.keluar === s.keluar);
+      let ada = gabung.some((l) => l.tgl === s.tgl && l.ket === s.ket);
       if (!ada) gabung.push(s);
     });
     gabung.sort((a, b) => new Date(a.tgl) - new Date(b.tgl));
     data = gabung;
-    localStorage.setItem("keuanganTPQ", JSON.stringify(data));
-    document.getElementById("statusSinkron").innerText = "✅ Sinkron Masuk: " + data.length + " data (" + new Date().toLocaleTimeString() + ")";
+        if(data.length > 0){
+      localStorage.setItem("keuanganTPQ", JSON.stringify(data));
+    }
+    document.getElementById("statusSinkron").innerText = "✅ Sinkron: " + data.length + " data";
   } catch (e) {
-    document.getElementById("statusSinkron").innerText = "⚠️ Gagal sinkron, cek setting Anyone di Apps Script!";
+    document.getElementById("statusSinkron").innerText = "⚠️ Gagal sinkron, cek Apps Script Anyone!";
+    console.log(e);
   }
-  loading.style.display = "none";
+  if(typeof loading !== 'undefined') loading.style.display = "none";
   tampilkan();
 }
       function kirimKeSheet(d) {
@@ -426,7 +430,7 @@ function cekLogin() {
           f.submit();
        setTimeout(() => {
   try {
-    document.body.removeChild(f);
+    document.body.removeChild(f); loadFromSheet();
     document.getElementById("statusSinkron").innerText = "🔄 Memuat data baru...";
     loadFromSheet(); // <-- INI YANG BIKIN SYNC LAGI PAK!
   } catch (e) {}
