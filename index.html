@@ -353,8 +353,11 @@
     </div>
     <iframe name="hidden_iframe" id="hidden_iframe" style="display: none"></iframe>
     <script>
-      const URL_SHEET =
+   const URL_SHEET =
 "https://script.google.com/macros/s/AKfycbz4JV5c9pFekI68HV5-CFzgWq3V3E1E6xmv_Vnp1ySUeIW4driZ29gV0BNJsdH8nTxT/exec"
+
+ fetch(SCRIPT_URL + "?t=" + Date.now(), { cache: "no-store" })
+
       const PASSWORD_ADMIN = "tpq2026baru";
       function cekLogin() {
         if (document.getElementById("passInput").value === PASSWORD_ADMIN) {
@@ -381,56 +384,35 @@
   // kirim ke sheet biar tidak hilang
   kirimSemuaKeSheet();
 }
-      async function loadFromSheet() {
-        let loading = document.getElementById("loading");
-        loading.style.display = "block";
-        loading.innerText = "🔄 Sinkron dari Server...";
-        try {
-          let res = await fetch(URL_SHEET + "?t=" + Date.now(), {
-            cache: "no-store",
-          });
-          let sheetData = await res.json();
-          if (Array.isArray(sheetData) && sheetData.length > 0) {
-            let bersih = sheetData
-              .map((d) => ({
-                tgl: String(d.tgl || "")
-                  .split("T")[0]
-                  .substring(0, 10),
-                jam: String(d.jam || ""),
-                ket: String(d.ket || ""),
-                masuk: Number(d.masuk) || 0,
-                keluar: Number(d.keluar) || 0,
-                saldo: Number(d.saldo) || 0,
-              }))
-              .filter((d) => d.tgl && d.ket);
-            let gabung = [...data];
-            bersih.forEach((s) => {
-              let ada = gabung.some(
-                (l) =>
-                  l.tgl === s.tgl &&
-                  l.ket === s.ket &&
-                  l.masuk === s.masuk &&
-                  l.keluar === s.keluar,
-              );
-              if (!ada) gabung.push(s);
-            });
-            gabung.sort((a, b) => new Date(a.tgl) - new Date(b.tgl));
-            data = gabung;
-            localStorage.setItem("keuanganTPQ", JSON.stringify(data));
-            document.getElementById("statusSinkron").innerText =
-              "✅ Sinkron Masuk: " +
-              data.length +
-              " data (" +
-              new Date().toLocaleTimeString() +
-              ")";
-          }
-        } catch (e) {
-          document.getElementById("statusSinkron").innerText =
-            "⚠️ Gagal sinkron, cek setting Anyone di Apps Script!";
-        }
-        loading.style.display = "none";
-        tampilkan();
-      }
+     async function loadFromSheet() {
+  try {
+    document.getElementById("statusSinkron").innerText = "🔄 Sinkron...";
+    let res = await fetch(URL_SHEET + "?t=" + Date.now(), { cache: "no-store" });
+    let sheetData = await res.json();
+    
+    let bersih = sheetData.map(d => ({
+      tgl: d.tgl,
+      ket: d.ket,
+      masuk: Number(d.masuk) || 0,
+      keluar: Number(d.keluar) || 0,
+      saldo: Number(d.saldo) || 0,
+    })).filter(d => d.tgl && d.ket);
+
+    let gabung = [...data];
+    bersih.forEach((s) => {
+      let ada = gabung.some((l) => l.tgl === s.tgl && l.ket === s.ket && l.masuk === s.masuk && l.keluar === s.keluar);
+      if (!ada) gabung.push(s);
+    });
+    gabung.sort((a, b) => new Date(a.tgl) - new Date(b.tgl));
+    data = gabung;
+    localStorage.setItem("keuanganTPQ", JSON.stringify(data));
+    document.getElementById("statusSinkron").innerText = "✅ Sinkron Masuk: " + data.length + " data (" + new Date().toLocaleTimeString() + ")";
+  } catch (e) {
+    document.getElementById("statusSinkron").innerText = "⚠️ Gagal sinkron, cek setting Anyone di Apps Script!";
+  }
+  loading.style.display = "none";
+  tampilkan();
+}
       function kirimKeSheet(d) {
         try {
           let f = document.createElement("form");
@@ -444,11 +426,13 @@
           f.appendChild(i);
           document.body.appendChild(f);
           f.submit();
-          setTimeout(() => {
-            try {
-              document.body.removeChild(f);
-            } catch (e) {}
-          }, 3000);
+       setTimeout(() => {
+  try {
+    document.body.removeChild(f);
+    document.getElementById("statusSinkron").innerText = "🔄 Memuat data baru...";
+    loadFromSheet(); // <-- INI YANG BIKIN SYNC LAGI PAK!
+  } catch (e) {}
+}, 3000);
         } catch (e) {}
         document.getElementById("statusSinkron").innerText = "📤 Terkirim: " + d.ket;
       }
