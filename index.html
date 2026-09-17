@@ -353,17 +353,15 @@
     </div>
     <iframe name="hidden_iframe" id="hidden_iframe" style="display: none"></iframe>
     <script>
-   const URL_SHEET =
-"https://script.google.com/macros/s/AKfycbz4JV5c9pFekI68HV5-CFzgWq3V3E1E6xmv_Vnp1ySUeIW4driZ29gV0BNJsdH8nTxT/exec"
-
- fetch(SCRIPT_URL + "?t=" + Date.now(), { cache: "no-store" })
-
-      const PASSWORD_ADMIN = "tpq2026baru";
-      function cekLogin() {
-        if (document.getElementById("passInput").value === PASSWORD_ADMIN) {
-          document.getElementById("loginScreen").style.display = "none";
-          document.getElementById("appWrapper").style.display = "block";
-          localStorage.setItem("loginTPQ", "ok");
+ const URL_SHEET = "https://script.google.com/macros/s/AKfycbz4JV5c9FekI68HV5-CFzgWq3V3E16xmv_Vnp1ySuE/exec";
+const SCRIPT_URL = URL_SHEET;
+fetch(URL_SHEET + "?t=" + Date.now(), { cache: "no-store" })
+const PASSWORD_ADMIN = "tpq2026baru";
+function cekLogin() {
+  if (document.getElementById("passInput").value === PASSWORD_ADMIN) {
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("appWrapper").style.display = "block";
+    localStorage.setItem("loginTPQ", "ok");
         } else {
           document.getElementById("pesanError").style.display = "block";
         }
