@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Keuangan TPQ v6.0</title>
+<title>Keuangan TPQ v6.2 Fix</title>
 <style>
 *{box-sizing:border-box}body{font-family:system-ui,sans-serif;background:#f3f4f6;margin:0;padding:10px}
 .top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center}
@@ -20,24 +20,24 @@ input,select{height:44px;border:1px solid #d1d5db;border-radius:8px;padding:0 10
 .wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid #e5e7eb;border-radius:10px;margin-top:10px}
 table{width:100%;border-collapse:collapse;min-width:750px}th{background:#2563eb;color:#fff;padding:10px;text-align:left}td{padding:8px 10px;border-bottom:1px solid #eee;white-space:nowrap}td:nth-child(3){white-space:normal;min-width:170px;max-width:230px;word-break:break-word}
 .foot{margin-top:8px;font-size:12px;color:#6b7280;font-weight:600}
-@media(max-width:700px){.cards{grid-template-columns:1fr}.r4{grid-template-columns:1fr 1fr}.r4 input:nth-child(3){grid-column:1/-1}.r4.btn{grid-column:1/-1;width:100%}.r2{grid-template-columns:1fr}.rf{grid-template-columns:1fr 1fr}.rf input{grid-column:1/-1}}
 </style>
 </head>
 <body>
-<div class="top"><h3 style="margin:0">Keuangan TPQ <small style="background:#111;color:#fff;padding:2px 6px;border-radius:6px;font-size:11px">v6.0 FINAL</small></h3><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn3" onclick="document.body.style.background=document.body.style.background=='black'?'#f3f4f6':'black'">🌙</button><button class="btn btn2" onclick="sinkronHP()">🔄 Sinkron HP</button><span id="st" style="background:#fff;border:1px solid #ddd;padding:8px 12px;border-radius:8px;font-size:12px">Siap</span></div></div>
+<div class="top"><h3 style="margin:0">Keuangan TPQ <small style="background:#111;color:#fff;padding:2px 6px;border-radius:6px;font-size:11px">v6.2 FIX</small></h3><div style="display:flex;gap:6px"><button class="btn btn2" onclick="sinkronHP()">🔄 Sinkron HP</button><span id="st" style="background:#fff;border:1px solid #ddd;padding:8px 12px;border-radius:8px;font-size:12px">Siap</span></div></div>
 <div class="cards"><div class="card g">TOTAL MASUK<b id="tm">Rp 0</b></div><div class="card r">TOTAL KELUAR<b id="tk">Rp 0</b></div><div class="card b">SALDO AKHIR<b id="ts">Rp 0</b></div></div>
 <div class="panel">
-<div class="r4"><input type="date" id="tgl"><input type="time" id="jam"><input type="text" id="ket" placeholder="Keterangan (Infaq, PLN, Gaji)"><button class="btn" onclick="tambah()">+ Tambah & Sinkron</button></div>
+<div class="r4"><input type="date" id="tgl"><input type="time" id="jam"><input type="text" id="ket" placeholder="Keterangan (Infaq, PLN)"><button class="btn" onclick="tambah()">+ Tambah</button></div>
 <div class="r2"><input type="number" id="masuk" placeholder="Masuk (Rp)"><input type="number" id="keluar" placeholder="Keluar (Rp)"></div>
-<div class="rf"><input type="text" id="cari" placeholder="🔍 Cari keterangan..." oninput="render()"><select id="fb" onchange="render()"><option value="">Semua Bulan</option><option value="01">Jan</option><option value="02">Feb</option><option value="09">Sep</option><option value="10">Okt</option></select><select id="ft" onchange="render()"><option value="">Semua Tahun</option><option value="2025">2025</option><option value="2026">2026</option></select><button class="btn btn3" onclick="resetF()">Reset</button></div>
-<div class="foot" id="info">Menampilkan 0 data - Di HP geser tabel ke kanan -></div>
+<div class="rf"><input type="text" id="cari" placeholder="🔍 Cari..." oninput="render()"><select id="fb" onchange="render()"><option value="">Semua Bulan</option><option value="01">Jan</option><option value="02">Feb</option><option value="09">Sep</option><option value="10">Okt</option></select><select id="ft" onchange="render()"><option value="">Semua Tahun</option><option value="2025">2025</option><option value="2026">2026</option></select><button class="btn btn3" onclick="resetF()">Reset</button></div>
+<div class="foot" id="info">Geser tabel -></div>
 <div class="wrap"><table><thead><tr><th>Tgl</th><th>Jam</th><th>Keterangan</th><th>Masuk</th><th>Keluar</th><th>Saldo</th><th>Aksi</th></tr></thead><tbody id="tb"></tbody></table></div>
-<div class="foot">Versi: v6.0 FINAL SINKRON | Link Sheet: Terhubung</div>
 </div>
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4JV5c9pFekI68HV5-CFzgWq3V3E1E6xmv_Vnp1ySUeIW4driZ29gV0BNJsdH8nTxT/exec";
-let data = JSON.parse(localStorage.getItem('tpq_v6')||'[]');
+let data = JSON.parse(localStorage.getItem('tpq_v62')||'[]');
 function rp(n){return 'Rp '+(n||0).toLocaleString('id-ID')}
+function cleanTgl(s){if(!s)return '';s=String(s);if(s.includes('T'))s=s.split('T')[0];if(s.includes('-')&&s.length>=10){let p=s.split('-');if(p[0].length==4)return p[2].slice(0,2)+'/'+p[1]+'/'+p[0];}return s;}
+function cleanJam(s){if(!s)return '';s=String(s);if(s.includes('T')){let t=s.split('T')[1];return t.slice(0,5);}return s.slice(0,5);}
 function tambah(){
  let t=document.getElementById('tgl').value;
  let j=document.getElementById('jam').value||new Date().toTimeString().slice(0,5);
@@ -47,33 +47,34 @@ function tambah(){
  if(!t||!k){alert('Isi tanggal & keterangan Pak');return}
  if(m==0&&kl==0){alert('Isi Masuk/Keluar Pak');return}
  let obj={t,j,k,m,kl};
- data.push(obj);
- localStorage.setItem('tpq_v6',JSON.stringify(data));
+ data.push(obj);localStorage.setItem('tpq_v62',JSON.stringify(data));
  document.getElementById('st').innerText='Menyimpan...';
- fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(obj)}).then(()=>{document.getElementById('st').innerText='Tersimpan & Sinkron OK';setTimeout(()=>st.innerText='Siap',2000);});
- document.getElementById('ket').value='';document.getElementById('masuk').value='';document.getElementById('keluar').value='';
- render();
+ fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(obj)}).then(()=>{st.innerText='Tersimpan OK';setTimeout(()=>st.innerText='Siap',2000);});
+ ket.value='';masuk.value='';keluar.value='';render();
 }
-function hapus(i){if(confirm('Hapus Pak?')){data.splice(i,1);localStorage.setItem('tpq_v6',JSON.stringify(data));render();}}
-function resetF(){document.getElementById('cari').value='';render();}
+function hapus(i){if(confirm('Hapus Pak?')){data.splice(i,1);localStorage.setItem('tpq_v62',JSON.stringify(data));render();}}
 function sinkronHP(){
- document.getElementById('st').innerText='Sinkron...';
+ st.innerText='Sinkron...';
  fetch(SCRIPT_URL).then(r=>r.json()).then(rows=>{
-   if(rows.length==0){document.getElementById('st').innerText='Sheet masih kosong';return;}
-   data = rows.map(r=>({t:r[0],j:r[1],k:r[2],m:parseInt(r[3]||0),kl:parseInt(r[4]||0)}));
-   localStorage.setItem('tpq_v6',JSON.stringify(data));
-   render();
-   document.getElementById('st').innerText='Sinkron OK '+data.length+' data';
- }).catch(e=>{document.getElementById('st').innerText='Gagal cek akses Anyone';});
+   if(rows.length==0){st.innerText='Sheet kosong';return;}
+   data = rows.map(r=>{
+     let masuk = String(r[3]||'0').replace(/[^0-9]/g,'');
+     let keluar = String(r[4]||'0').replace(/[^0-9]/g,'');
+     return {t:cleanTgl(r[0]), j:cleanJam(r[1]), k:r[2], m:parseInt(masuk||0), kl:parseInt(keluar||0)};
+   });
+   localStorage.setItem('tpq_v62',JSON.stringify(data));
+   render();st.innerText='Sinkron OK '+data.length+' data';
+ }).catch(e=>{st.innerText='Gagal, cek Anyone';});
 }
 function render(){
  let tb=document.getElementById('tb');tb.innerHTML='';
- let q=document.getElementById('cari').value.toLowerCase();
- let tm=0,tk=0;data.forEach(d=>{tm+=d.m;tk+=d.kl});
- let run=0;let filtered=data.filter(d=>!q||d.k.toLowerCase().includes(q));
- filtered.forEach(d=>{run+=d.m-d.kl;let idx=data.indexOf(d);tb.innerHTML+=`<tr><td>${d.t}</td><td>${d.j}</td><td>${d.k}</td><td>${d.m?rp(d.m):''}</td><td>${d.kl?rp(d.kl):''}</td><td><b>${rp(run)}</b></td><td><button onclick="hapus(${idx})" style="background:#ef4444;color:#fff;border:0;border-radius:6px;padding:6px 10px">Hapus</button></td></tr>`;});
- document.getElementById('tm').innerText=rp(tm);document.getElementById('tk').innerText=rp(tk);document.getElementById('ts').innerText=rp(tm-tk);
- document.getElementById('info').innerText=`Menampilkan ${filtered.length} dari ${data.length} | Masuk ${rp(tm)} | Keluar ${rp(tk)} | Geser ->`;
+ let q=cari.value.toLowerCase();
+ let tm=0,tk=0;data.forEach(d=>{tm+=d.m;tk+=d.kl;});
+ let run=0;let f=data.filter(d=>!q||d.k.toLowerCase().includes(q));
+ f.forEach(d=>{run+=d.m-d.kl;let idx=data.indexOf(d);tb.innerHTML+=`<tr><td>${d.t}</td><td>${d.j}</td><td>${d.k}</td><td>${d.m?rp(d.m):''}</td><td>${d.kl?rp(d.kl):''}</td><td><b>${rp(run)}</b></td><td><button onclick="hapus(${idx})" style="background:#ef4444;color:#fff;border:0;border-radius:6px;padding:6px 10px">Hapus</button></td></tr>`;});
+ tmEl=document.getElementById('tm');tkEl=document.getElementById('tk');tsEl=document.getElementById('ts');
+ tmEl.innerText=rp(tm);tkEl.innerText=rp(tk);tsEl.innerText=rp(tm-tk);
+ document.getElementById('info').innerText=`Menampilkan ${f.length} dari ${data.length} | Masuk ${rp(tm)} | Keluar ${rp(tk)}`;
 }
 let now=new Date();document.getElementById('tgl').value=now.toISOString().slice(0,10);document.getElementById('jam').value=now.toTimeString().slice(0,5);render();
 </script>
