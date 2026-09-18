@@ -2,76 +2,80 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Keuangan TPQ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keuangan TPQ v6.0</title>
 <style>
 *{box-sizing:border-box}body{font-family:system-ui,sans-serif;background:#f3f4f6;margin:0;padding:10px}
-.top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
-.card{padding:14px;border-radius:12px;color:#fff;text-align:center;font-weight:700}
-.card b{display:block;font-size:20px;margin-top:4px}.g{background:#16a34a}.r{background:#dc2626}.b{background:#2563eb}
+.top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.card{padding:14px;border-radius:12px;color:#fff;text-align:center}.card b{display:block;font-size:20px;margin-top:4px}
+.g{background:#16a34a}.r{background:#dc2626}.b{background:#2563eb}
 .panel{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:12px}
-.r4{display:grid;grid-template-columns:1fr .7fr 1.6fr auto;gap:8px}
+.r4{display:grid;grid-template-columns:1fr.7fr 1.6fr auto;gap:8px}
 .r2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
 .rf{display:grid;grid-template-columns:1.5fr 1fr 1fr auto;gap:8px;margin-top:8px}
-input,select{height:42px;border:1px solid #d1d5db;border-radius:8px;padding:0 10px;width:100%}
-.btn{height:42px;background:#16a34a;color:#fff;border:0;border-radius:8px;font-weight:700;padding:0 16px;cursor:pointer}
-.btn2{background:#9ca3af}
+input,select{height:44px;border:1px solid #d1d5db;border-radius:8px;padding:0 10px;width:100%}
+.btn{height:44px;background:#16a34a;color:#fff;border:0;border-radius:8px;font-weight:700;padding:0 16px;cursor:pointer}
+.btn2{background:#2563eb}.btn3{background:#9ca3af}
 .wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid #e5e7eb;border-radius:10px;margin-top:10px}
-table{width:100%;border-collapse:collapse;min-width:700px}th{background:#2563eb;color:#fff;padding:10px;text-align:left}td{padding:8px 10px;border-bottom:1px solid #eee;white-space:nowrap}td:nth-child(3){white-space:normal;min-width:160px}
-@media(max-width:700px){.cards{grid-template-columns:1fr}.r4{grid-template-columns:1fr 1fr}.r4 input:nth-child(3){grid-column:1/-1}.r4 .btn{grid-column:1/-1;width:100%}.r2{grid-template-columns:1fr}.rf{grid-template-columns:1fr 1fr}.rf input{grid-column:1/-1}}
+table{width:100%;border-collapse:collapse;min-width:750px}th{background:#2563eb;color:#fff;padding:10px;text-align:left}td{padding:8px 10px;border-bottom:1px solid #eee;white-space:nowrap}td:nth-child(3){white-space:normal;min-width:170px;max-width:230px;word-break:break-word}
+.foot{margin-top:8px;font-size:12px;color:#6b7280;font-weight:600}
+@media(max-width:700px){.cards{grid-template-columns:1fr}.r4{grid-template-columns:1fr 1fr}.r4 input:nth-child(3){grid-column:1/-1}.r4.btn{grid-column:1/-1;width:100%}.r2{grid-template-columns:1fr}.rf{grid-template-columns:1fr 1fr}.rf input{grid-column:1/-1}}
 </style>
 </head>
 <body>
-<div class="top"><h3>Keuangan TPQ</h3><div><button onclick="toggleDark()">🌙 Dark</button> <button onclick="alert('Sinkron OK - Data aman di HP Pak')">🔄 Sinkron HP</button> <span id="st" style="background:#fff;border:1px solid #ddd;padding:6px 10px;border-radius:8px">Siap</span></div></div>
-<div class="cards"><div class="card g">TOTAL MASUK<b id="tm">Rp 0</b></div><div class="card r">TOTAL KELUAR<b id="tk">Rp 0</b></div><div class="card b">SALDO<b id="ts">Rp 0</b></div></div>
+<div class="top"><h3 style="margin:0">Keuangan TPQ <small style="background:#111;color:#fff;padding:2px 6px;border-radius:6px;font-size:11px">v6.0 FINAL</small></h3><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn3" onclick="document.body.style.background=document.body.style.background=='black'?'#f3f4f6':'black'">🌙</button><button class="btn btn2" onclick="sinkronHP()">🔄 Sinkron HP</button><span id="st" style="background:#fff;border:1px solid #ddd;padding:8px 12px;border-radius:8px;font-size:12px">Siap</span></div></div>
+<div class="cards"><div class="card g">TOTAL MASUK<b id="tm">Rp 0</b></div><div class="card r">TOTAL KELUAR<b id="tk">Rp 0</b></div><div class="card b">SALDO AKHIR<b id="ts">Rp 0</b></div></div>
 <div class="panel">
-<div class="r4"><input type="date" id="tgl"><input type="time" id="jam"><input type="text" id="ket" placeholder="Keterangan (PLN, Infaq)"><button class="btn" onclick="tambah()">+ Tambah & Sinkron</button></div>
+<div class="r4"><input type="date" id="tgl"><input type="time" id="jam"><input type="text" id="ket" placeholder="Keterangan (Infaq, PLN, Gaji)"><button class="btn" onclick="tambah()">+ Tambah & Sinkron</button></div>
 <div class="r2"><input type="number" id="masuk" placeholder="Masuk (Rp)"><input type="number" id="keluar" placeholder="Keluar (Rp)"></div>
-<div class="rf"><input type="text" id="cari" placeholder="🔍 Cari..." oninput="render()"><select id="fb"><option value="">Semua Bulan</option><option value="09">September</option></select><select id="ft"><option value="">Semua Tahun</option><option>2026</option></select><button class="btn btn2" onclick="resetF()">Reset</button></div>
-<div style="font-size:12px;margin-top:6px;font-weight:600" id="info"></div>
+<div class="rf"><input type="text" id="cari" placeholder="🔍 Cari keterangan..." oninput="render()"><select id="fb" onchange="render()"><option value="">Semua Bulan</option><option value="01">Jan</option><option value="02">Feb</option><option value="09">Sep</option><option value="10">Okt</option></select><select id="ft" onchange="render()"><option value="">Semua Tahun</option><option value="2025">2025</option><option value="2026">2026</option></select><button class="btn btn3" onclick="resetF()">Reset</button></div>
+<div class="foot" id="info">Menampilkan 0 data - Di HP geser tabel ke kanan -></div>
 <div class="wrap"><table><thead><tr><th>Tgl</th><th>Jam</th><th>Keterangan</th><th>Masuk</th><th>Keluar</th><th>Saldo</th><th>Aksi</th></tr></thead><tbody id="tb"></tbody></table></div>
+<div class="foot">Versi: v6.0 FINAL SINKRON | Link Sheet: Terhubung</div>
 </div>
 <script>
-let data=JSON.parse(localStorage.getItem('tpq_final')||'[]');
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4JV5c9pFekI68HV5-CFzgWq3V3E1E6xmv_Vnp1ySUeIW4driZ29gV0BNJsdH8nTxT/exec";
+let data = JSON.parse(localStorage.getItem('tpq_v6')||'[]');
 function rp(n){return 'Rp '+(n||0).toLocaleString('id-ID')}
-function toggleDark(){document.body.style.background=document.body.style.background=='black'?'#f3f4f6':'black'}
 function tambah(){
  let t=document.getElementById('tgl').value;
- let j=document.getElementById('jam').value;
- let k=document.getElementById('ket').value;
+ let j=document.getElementById('jam').value||new Date().toTimeString().slice(0,5);
+ let k=document.getElementById('ket').value.trim();
  let m=parseInt(document.getElementById('masuk').value||0);
  let kl=parseInt(document.getElementById('keluar').value||0);
- if(!t||!k){alert('Isi tanggal & keterangan dulu Pak');return;}
- if(m==0&&kl==0){alert('Isi Masuk atau Keluar Pak');return;}
- data.push({t,j,k,m,kl});
- localStorage.setItem('tpq_final',JSON.stringify(data));
+ if(!t||!k){alert('Isi tanggal & keterangan Pak');return}
+ if(m==0&&kl==0){alert('Isi Masuk/Keluar Pak');return}
+ let obj={t,j,k,m,kl};
+ data.push(obj);
+ localStorage.setItem('tpq_v6',JSON.stringify(data));
+ document.getElementById('st').innerText='Menyimpan...';
+ fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(obj)}).then(()=>{document.getElementById('st').innerText='Tersimpan & Sinkron OK';setTimeout(()=>st.innerText='Siap',2000);});
  document.getElementById('ket').value='';document.getElementById('masuk').value='';document.getElementById('keluar').value='';
- document.getElementById('st').innerText='Tersimpan OK';setTimeout(()=>st.innerText='Siap',1500);
  render();
 }
-function hapus(i){if(confirm('Hapus data ini Pak?')){data.splice(i,1);localStorage.setItem('tpq_final',JSON.stringify(data));render();}}
+function hapus(i){if(confirm('Hapus Pak?')){data.splice(i,1);localStorage.setItem('tpq_v6',JSON.stringify(data));render();}}
 function resetF(){document.getElementById('cari').value='';render();}
+function sinkronHP(){
+ document.getElementById('st').innerText='Sinkron...';
+ fetch(SCRIPT_URL).then(r=>r.json()).then(rows=>{
+   if(rows.length==0){document.getElementById('st').innerText='Sheet masih kosong';return;}
+   data = rows.map(r=>({t:r[0],j:r[1],k:r[2],m:parseInt(r[3]||0),kl:parseInt(r[4]||0)}));
+   localStorage.setItem('tpq_v6',JSON.stringify(data));
+   render();
+   document.getElementById('st').innerText='Sinkron OK '+data.length+' data';
+ }).catch(e=>{document.getElementById('st').innerText='Gagal cek akses Anyone';});
+}
 function render(){
  let tb=document.getElementById('tb');tb.innerHTML='';
  let q=document.getElementById('cari').value.toLowerCase();
- let tm=0,tk=0,run=0;
- data.forEach(d=>{tm+=d.m;tk+=d.kl});
- let fil=data.filter(d=>!q||d.k.toLowerCase().includes(q));
- fil.forEach(d=>{
-  run+=d.m-d.kl;
-  let idx=data.indexOf(d);
-  tb.innerHTML+=`<tr><td>${d.t}</td><td>${d.j}</td><td>${d.k}</td><td>${d.m?rp(d.m):''}</td><td>${d.kl?rp(d.kl):''}</td><td>${rp(run)}</td><td><button onclick="hapus(${idx})" style="background:#ef4444;color:#fff;border:0;border-radius:6px;padding:5px 10px">Hapus</button></td></tr>`;
- });
- document.getElementById('tm').innerText=rp(tm);
- document.getElementById('tk').innerText=rp(tk);
- document.getElementById('ts').innerText=rp(tm-tk);
- document.getElementById('info').innerText=`Menampilkan ${fil.length} data | Geser tabel ke kanan di HP Pak untuk lihat Keterangan ->`;
+ let tm=0,tk=0;data.forEach(d=>{tm+=d.m;tk+=d.kl});
+ let run=0;let filtered=data.filter(d=>!q||d.k.toLowerCase().includes(q));
+ filtered.forEach(d=>{run+=d.m-d.kl;let idx=data.indexOf(d);tb.innerHTML+=`<tr><td>${d.t}</td><td>${d.j}</td><td>${d.k}</td><td>${d.m?rp(d.m):''}</td><td>${d.kl?rp(d.kl):''}</td><td><b>${rp(run)}</b></td><td><button onclick="hapus(${idx})" style="background:#ef4444;color:#fff;border:0;border-radius:6px;padding:6px 10px">Hapus</button></td></tr>`;});
+ document.getElementById('tm').innerText=rp(tm);document.getElementById('tk').innerText=rp(tk);document.getElementById('ts').innerText=rp(tm-tk);
+ document.getElementById('info').innerText=`Menampilkan ${filtered.length} dari ${data.length} | Masuk ${rp(tm)} | Keluar ${rp(tk)} | Geser ->`;
 }
-let now=new Date();
-document.getElementById('tgl').value=now.toISOString().slice(0,10);
-document.getElementById('jam').value=now.toTimeString().slice(0,5);
-render();
+let now=new Date();document.getElementById('tgl').value=now.toISOString().slice(0,10);document.getElementById('jam').value=now.toTimeString().slice(0,5);render();
 </script>
 </body>
 </html>
