@@ -2,21 +2,36 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TPQ v6.3 FIX 50</title>
-<style>/* sama */*{box-sizing:border-box}body{font-family:system-ui;background:#111;color:#fff;margin:0;padding:10px}
-.top{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
-.card{padding:14px;border-radius:12px;text-align:center}.card b{display:block;font-size:22px}
+<title>TPQ v6.4 Dark Mode</title>
+<style>
+:root{--bg:#f3f4f6;--card:#fff;--text:#111;--border:#e5e7eb}
+body.dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--border:#334155}
+*{box-sizing:border-box}body{font-family:system-ui;background:var(--bg);color:var(--text);margin:0;padding:10px;transition:.2s}
+.top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.card{padding:14px;border-radius:12px;text-align:center;color:#fff}.card b{display:block;font-size:22px}
 .g{background:#16a34a}.r{background:#dc2626}.b{background:#2563eb}
-.panel{background:#fff;color:#111;border-radius:12px;padding:12px}
+.panel{background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:12px}
 .r4{display:grid;grid-template-columns:1fr.7fr 1.6fr auto;gap:8px}.r2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
 .rf{display:grid;grid-template-columns:1.5fr 1fr 1fr auto;gap:8px;margin-top:8px}
-input,select{height:44px;border:1px solid #ccc;border-radius:8px;padding:0 10px;width:100%}.btn{height:44px;background:#16a34a;color:#fff;border:0;border-radius:8px;font-weight:700;padding:0 16px}
-.wrap{overflow:auto;border:1px solid #eee;border-radius:10px;margin-top:10px}table{width:100%;border-collapse:collapse;min-width:700px}th{background:#2563eb;color:#fff;padding:10px}td{padding:8px;border-bottom:1px solid #eee}
+input,select{height:44px;border:1px solid var(--border);border-radius:8px;padding:0 10px;width:100%;background:var(--card);color:var(--text)}
+.btn{height:44px;background:#16a34a;color:#fff;border:0;border-radius:8px;font-weight:700;padding:0 16px;cursor:pointer}
+.btn-dark{background:#111;color:#fff;border:1px solid #444}
+.wrap{overflow:auto;border:1px solid var(--border);border-radius:10px;margin-top:10px}table{width:100%;border-collapse:collapse;min-width:700px}th{background:#2563eb;color:#fff;padding:10px}td{padding:8px;border-bottom:1px solid var(--border)}
 </style>
 </head>
 <body>
-<div class="top"><span style="background:#222;padding:6px 12px;border-radius:20px;font-size:12px">v6.3 FINAL FIX Rp</span><button onclick="sinkronHP()" style="background:#2563eb;color:#fff;border:0;padding:10px 16px;border-radius:8px;font-weight:700">🔄 Sinkron HP</button><span id="st" style="background:#fff;color:#111;padding:8px 12px;border-radius:8px;font-size:12px">Siap</span></div>
+<div class="top">
+<div style="display:flex;gap:8px;align-items:center">
+<span style="background:#222;color:#fff;padding:6px 12px;border-radius:20px;font-size:12px">v6.4 Dark Mode</span>
+<button class="btn" style="background:#2563eb" onclick="sinkronHP()">🔄 Sinkron HP</button>
+<span id="st" style="background:var(--card);border:1px solid var(--border);padding:8px 12px;border-radius:8px;font-size:12px">Siap</span>
+</div>
+<button class="btn btn-dark" id="darkBtn" onclick="toggleDark()">🌙 Dark</button>
+</div>
+
 <div class="cards"><div class="card g">TOTAL MASUK<b id="tm">Rp 0</b></div><div class="card r">TOTAL KELUAR<b id="tk">Rp 0</b></div><div class="card b">SALDO AKHIR<b id="ts">Rp 0</b></div></div>
+
 <div class="panel">
 <div class="r4"><input type="date" id="tgl"><input type="time" id="jam"><input id="ket" placeholder="Keterangan"><button class="btn" onclick="tambah()">+ Tambah</button></div>
 <div class="r2"><input type="number" id="masuk" placeholder="Masuk (Rp)"><input type="number" id="keluar" placeholder="Keluar (Rp)"></div>
@@ -24,19 +39,22 @@ input,select{height:44px;border:1px solid #ccc;border-radius:8px;padding:0 10px;
 <div style="margin-top:8px;font-size:12px" id="info"></div>
 <div class="wrap"><table><thead><tr><th>Tgl</th><th>Jam</th><th>Ket</th><th>Masuk</th><th>Keluar</th><th>Saldo</th><th>Aksi</th></tr></thead><tbody id="tb"></tbody></table></div>
 </div>
+
 <script>
 const SCRIPT_URL="https://script.google.com/macros/s/AKfycbz4JV5c9pFekI68HV5-CFzgWq3V3E1E6xmv_Vnp1ySUeIW4driZ29gV0BNJsdH8nTxT/exec";
 let data=JSON.parse(localStorage.getItem('tpq_v63')||'[]');
-function rp(n){return 'Rp '+(n||0).toLocaleString('id-ID')}
-function cleanNum(s){ // INI KUNCI PAK ANTI Rp 50
-  if(s==null||s=='')return 0;
-  s=String(s).trim();
-  // hapus Rp, spasi, lalu hapus titik pemisah ribuan, ganti koma jadi kosong
-  s=s.replace(/Rp/gi,'').replace(/\s/g,'');
-  s=s.replace(/\./g,'').replace(/,/g,'');
-  s=s.replace(/[^0-9]/g,'');
-  return parseInt(s||0);
+
+// DARK MODE
+if(localStorage.getItem('darkMode')==='1'){document.body.classList.add('dark');document.getElementById('darkBtn').innerText='☀️ Light';}
+function toggleDark(){
+ document.body.classList.toggle('dark');
+ let isDark=document.body.classList.contains('dark');
+ localStorage.setItem('darkMode',isDark?'1':'0');
+ document.getElementById('darkBtn').innerText=isDark?'☀️ Light':'🌙 Dark';
 }
+
+function rp(n){return 'Rp '+(n||0).toLocaleString('id-ID')}
+function cleanNum(s){if(!s)return 0;s=String(s).replace(/Rp/gi,'').replace(/\s/g,'').replace(/\./g,'').replace(/,/g,'').replace(/[^0-9]/g,'');return parseInt(s||0);}
 function cleanTgl(s){if(!s)return '';s=String(s);if(s.includes('T'))s=s.split('T')[0];if(s.includes('-')&&s.length>=10){let p=s.split('-');if(p[0].length==4)return p[2].slice(0,2)+'/'+p[1]+'/'+p[0];}return s;}
 function cleanJam(s){if(!s)return '';s=String(s);if(s.includes('T')){let t=s.split('T')[1];return t.slice(0,5);}return s.slice(0,5);}
 function tambah(){
@@ -50,14 +68,14 @@ function sinkronHP(){
  st.innerText='Sinkron...';
  fetch(SCRIPT_URL).then(r=>r.json()).then(rows=>{
    data = rows.map(r=>{return {t:cleanTgl(r[0]), j:cleanJam(r[1]), k:r[2], m:cleanNum(r[3]), kl:cleanNum(r[4])};});
-   localStorage.setItem('tpq_v63',JSON.stringify(data));render();st.innerText='Sinkron OK '+data.length+' data | Masuk: '+rp(data.reduce((a,b)=>a+b.m,0));
- }).catch(e=>st.innerText='Gagal sinkron: '+e);
+   localStorage.setItem('tpq_v63',JSON.stringify(data));render();st.innerText='Sinkron OK '+data.length+' data';
+ }).catch(e=>st.innerText='Gagal: '+e);
 }
 function render(){
  let tb=document.getElementById('tb');tb.innerHTML='';let q=cari.value.toLowerCase();let tm=0,tk=0;data.forEach(d=>{tm+=d.m;tk+=d.kl;});
  let run=0;data.filter(d=>!q||d.k.toLowerCase().includes(q)).forEach(d=>{run+=d.m-d.kl;tb.innerHTML+=`<tr><td>${d.t}</td><td>${d.j}</td><td>${d.k}</td><td>${d.m?rp(d.m):''}</td><td>${d.kl?rp(d.kl):''}</td><td><b>${rp(run)}</b></td><td><button onclick="data.splice(${data.indexOf(d)},1);localStorage.setItem('tpq_v63',JSON.stringify(data));render()" style="background:#ef4444;color:#fff;border:0;border-radius:6px;padding:6px">Hapus</button></td></tr>`;});
  document.getElementById('tm').innerText=rp(tm);document.getElementById('tk').innerText=rp(tk);document.getElementById('ts').innerText=rp(tm-tk);
- document.getElementById('info').innerText=`Data ${data.length} | Masuk ${rp(tm)} | Keluar ${rp(tk)} | Saldo ${rp(tm-tk)}`;
+ document.getElementById('info').innerText=`Data ${data.length} | Masuk ${rp(tm)} | Keluar ${rp(tk)}`;
 }
 let now=new Date();document.getElementById('tgl').value=now.toISOString().slice(0,10);document.getElementById('jam').value=now.toTimeString().slice(0,5);render();
 function resetF(){cari.value='';render()}
