@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Keuangan TPQ</title>
+<style>body{font-family:Arial;padding:10px}.card{display:inline-block;width:32%;color:#fff;padding:15px;border-radius:10px;text-align:center}.green{background:#16a34a}.red{background:#dc2626}.blue{background:#2563eb} input,select,button{padding:8px;margin:3px;border-radius:6px;border:1px solid #ccc} table{width:100%;border-collapse:collapse;margin-top:15px} th{background:#2563eb;color:#fff;padding:8px} td{border:1px solid #ddd;padding:6px;text-align:center}</style>
+</head>
+<body>
+<div id="login" style="text-align:center;margin-top:100px">
+<h2>Login TPQ Baiturrahman</h2>
+<input id="pass" type="password" placeholder="Password"><br><br>
+<button onclick="login()" style="background:#2563eb;color:#fff">Masuk</button>
+</div>
+
+<div id="app" style="display:none">
+<div style="text-align:right"><button onclick="loadFromSheet()">🔄 Sinkron HP</button> <button onclick="logout()" style="background:red;color:#fff">Logout</button> <span id="status"></span></div>
+
+<div style="margin-top:10px">
+<div class="card green">TOTAL PEMASUKAN<br><h2 id="tMasuk">Rp 0</h2></div>
+<div class="card red">TOTAL PENGELUARAN<br><h2 id="tKeluar">Rp 0</h2></div>
+<div class="card blue">SALDO SAAT INI<br><h2 id="tSaldo">Rp 0</h2></div>
+</div>
+
+<div style="margin-top:15px">
+<input type="date" id="tgl"> <input type="time" id="jam">
+<input id="ket" placeholder="Keterangan (contoh: pln)">
+<input id="masuk" type="number" placeholder="Masuk">
+<input id="keluar" type="number" placeholder="Keluar">
+<button onclick="tambah()" style="background:#16a34a;color:#fff">+ Tambah & Sinkron</button>
+</div>
+
+<table><thead><tr><th>Tgl</th><th>Jam</th><th>Ket</th><th>Masuk</th><th>Keluar</th><th>Saldo</th><th>Aksi</th></tr></thead><tbody id="tbody"></tbody></table>
+</div>
+
+<script>
+const URL_SHEET = "https://script.google.com/macros/s/AKfycbz4JV5c9pFekI68HV5-CFzgWq3V3E1E6xmv_Vnp1ySUeIW4driZ29gV0BNJsdH8nTxT/exec";
+let data = JSON.parse(localStorage.getItem("keuanganTPQ")||"[]");
+
+function login(){
+  if(document.getElementById("pass").value==="tpq2026baru"){
+    localStorage.setItem("loginTPQ","ok");
+    document.getElementById("login").style.display="none";
+    document.getElementById("app").style.display="block";
+    let now=new Date(); document.getElementById("tgl").valueAsDate=now; document.getElementById("jam").value=now.toTimeString().slice(0,5);
+    tampilkan(); loadFromSheet();
+  }else alert("Password salah!");
+}
+function logout(){localStorage.removeItem("loginTPQ"); location.reload();}
+if(localStorage.getItem("loginTPQ")==="ok"){document.getElementById("login").style.display="none"; document.getElementById("app").style.display="block";}
+
+function tampilkan(){
+  let tbody=document.getElementById("tbody"); tbody.innerHTML=""; let saldo=0, m=0, k=0;
+  data.sort((a,b)=> new Date(a.tgl)-new Date(b.tgl));
+  data.forEach((d,i)=>{
+    saldo+= (Number(d.masuk)||0) - (Number(d.keluar)||0); m+=Number(d.masuk)||0; k+=Number(d.keluar)||0;
+    tbody.innerHTML+=`<tr><td>${d.tgl}</td><td>${d.jam||""}</td><td>${d.ket}</td><td>Rp ${Number(d.masuk).toLocaleString()}</td><td>Rp ${Number(d.keluar).toLocaleString()}</td><td><b>Rp ${saldo.toLocaleString()}</b></td><td><button onclick="hapus(${i})" style="background:red;color:#fff">Hapus</button></td></tr>`;
+  });
+  document.getElementById("tMasuk").innerText="Rp "+m.toLocaleString();
+  document.getElementById("tKeluar").innerText="Rp "+k.toLocaleString();
+  document.getElementById("tSaldo").innerText="Rp "+saldo.toLocaleString();
+  localStorage.setItem("keuanganTPQ",JSON.stringify(data));
+}
+
+async function tambah(){
+  let tgl=document.getElementById("tgl").value; let jam=document.getElementById("jam").value;
+  let ket=document.getElementById("ket").value; let masuk=document.getElementById("masuk").value; let keluar=document.getElementById("keluar").value;
+  if(!tgl||!ket){alert("Isi tgl & ket!"); return;}
+  let baru={tgl: tgl, jam: jam, ket: ket, masuk: Number(masuk)||0, keluar: Number(keluar)||0, saldo:0, timestamp: new Date().toISOString()};
+  data.push(baru); tampilkan();
+  document.getElementById("ket").value=""; document.getElementById("masuk").value=""; document.getElementById("keluar").value="";
+  document.getElementById("status").innerText="⏳ Menyimpan...";
+  try{
+    await fetch(URL_SHEET, {method:"POST", mode:"no-cors", body: JSON.stringify(baru)});
+    document.getElementById("status").innerText="✅ Tersimpan";
+  }catch(e){document.getElementById("status").innerText="✅ Tersimpan di HP";}
+}
+
+async function loadFromSheet(){
+  try{
+    document.getElementById("status").innerText="🔄 Sinkron...";
+    let r=await fetch(URL_SHEET+"?t="+Date.now()); let j=await r.json();
+    if(j && j.length>0){
+      data=j.map(x=>({tgl:(x.tgl||"").toString().split("T")[0], jam:x.jam||"", ket:x.ket||"", masuk:Number(x.masuk)||0, keluar:Number(x.keluar)||0}));
+      tampilkan(); document.getElementById("status").innerText="✅ Sinkron "+j.length+" data";
+    }
+  }catch(e){document.getElementById("status").innerText="⚠️ Gagal sinkron, pakai data HP";}
+}
+
+function hapus(i){ if(confirm("Hapus?")){ data.splice(i,1); tampilkan(); } }
+tampilkan();
+</script>
+</body>
+</html>
