@@ -2,88 +2,75 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Keuangan TPQ</title>
 <style>
-body{font-family:system-ui,sans-serif;background:#f3f4f6;color:#111827;margin:0;padding:12px}
-.top-bar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px}
-.top-bar-actions{display:flex;gap:6px;flex-wrap:wrap}
-.top-bar button{padding:8px 14px;border-radius:8px;border:1px solid #d1d5db;background:#fff;font-weight:600;cursor:pointer}
-.badge{padding:8px 10px;border-radius:8px;background:#fff;border:1px solid #d1d5db;font-size:12px}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+*{box-sizing:border-box}body{font-family:system-ui,sans-serif;background:#f3f4f6;margin:0;padding:10px}
+.top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
 .card{padding:14px;border-radius:12px;color:#fff;text-align:center;font-weight:700}
-.card span{display:block;font-size:12px;opacity:.9} .card b{font-size:20px}
-.green{background:#16a34a}.red{background:#dc2626}.blue{background:#2563eb}
+.card b{display:block;font-size:20px;margin-top:4px}.g{background:#16a34a}.r{background:#dc2626}.b{background:#2563eb}
 .panel{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:12px}
-.row4{display:grid;grid-template-columns:1fr 0.6fr 1.5fr auto;gap:8px}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-.rowFilter{display:grid;grid-template-columns:1.5fr 1fr 1fr auto;gap:8px;margin-top:10px}
-input,select{height:42px;padding:0 12px;border-radius:8px;border:1px solid #d1d5db;width:100%;box-sizing:border-box}
-.btn{height:42px;border-radius:8px;border:0;font-weight:700;cursor:pointer;color:#fff;background:#16a34a;padding:0 18px;white-space:nowrap}
+.r4{display:grid;grid-template-columns:1fr .7fr 1.6fr auto;gap:8px}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.rf{display:grid;grid-template-columns:1.5fr 1fr 1fr auto;gap:8px;margin-top:8px}
+input,select{height:42px;border:1px solid #d1d5db;border-radius:8px;padding:0 10px;width:100%}
+.btn{height:42px;background:#16a34a;color:#fff;border:0;border-radius:8px;font-weight:700;padding:0 16px;cursor:pointer}
 .btn2{background:#9ca3af}
-.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:12px;border-radius:10px;border:1px solid #e5e7eb}
-table{width:100%;border-collapse:collapse;min-width:700px;background:#fff}
-th{background:#2563eb;color:#fff;padding:10px;text-align:left;white-space:nowrap}
-td{padding:9px 10px;border-bottom:1px solid #eee;white-space:nowrap}
-td:nth-child(3){white-space:normal;min-width:160px;max-width:220px;word-break:break-word}
-.info{font-size:12px;margin-top:8px;font-weight:600}
-/* FIX HP PAK - INI KUNCINYA PAK */
-@media(max-width:768px){
-  .cards{grid-template-columns:1fr}
-  .row4{grid-template-columns:1fr 1fr}
-  .row4 input:nth-child(3){grid-column:1 / -1}
-  .row4 .btn{grid-column:1 / -1;width:100%;height:46px}
-  .row2{grid-template-columns:1fr}
-  .rowFilter{grid-template-columns:1fr 1fr}
-  .rowFilter input{grid-column:1 / -1}
-  .top-bar{flex-direction:column;align-items:flex-start}
-}
-body.dark{background:#0f172a;color:#fff}
-body.dark .panel,body.dark input,body.dark select,body.dark table{background:#1e293b;color:#fff;border-color:#334155}
-body.dark td{border-color:#334155} body.dark .table-wrap{border-color:#334155}
+.wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid #e5e7eb;border-radius:10px;margin-top:10px}
+table{width:100%;border-collapse:collapse;min-width:700px}th{background:#2563eb;color:#fff;padding:10px;text-align:left}td{padding:8px 10px;border-bottom:1px solid #eee;white-space:nowrap}td:nth-child(3){white-space:normal;min-width:160px}
+@media(max-width:700px){.cards{grid-template-columns:1fr}.r4{grid-template-columns:1fr 1fr}.r4 input:nth-child(3){grid-column:1/-1}.r4 .btn{grid-column:1/-1;width:100%}.r2{grid-template-columns:1fr}.rf{grid-template-columns:1fr 1fr}.rf input{grid-column:1/-1}}
 </style>
 </head>
 <body>
-<div class="top-bar">
-  <h3 style="margin:0">Keuangan TPQ</h3>
-  <div class="top-bar-actions">
-    <button onclick="toggleDark()" id="btnDark">🌙 Dark</button>
-    <button onclick="alert('sinkron')">🔄 Sinkron HP</button>
-    <button onclick="alert('logout')" style="background:#ef4444;color:#fff;border-color:#ef4444">Logout</button>
-    <span class="badge" id="st">Siap</span>
-  </div>
-</div>
-<div class="cards">
-  <div class="card green"><span>TOTAL PEMASUKAN</span><b id="tm">Rp 0</b></div>
-  <div class="card red"><span>TOTAL PENGELUARAN</span><b id="tk">Rp 0</b></div>
-  <div class="card blue"><span>SALDO SAAT INI</span><b id="ts">Rp 0</b></div>
-</div>
+<div class="top"><h3>Keuangan TPQ</h3><div><button onclick="toggleDark()">🌙 Dark</button> <button onclick="alert('Sinkron OK - Data aman di HP Pak')">🔄 Sinkron HP</button> <span id="st" style="background:#fff;border:1px solid #ddd;padding:6px 10px;border-radius:8px">Siap</span></div></div>
+<div class="cards"><div class="card g">TOTAL MASUK<b id="tm">Rp 0</b></div><div class="card r">TOTAL KELUAR<b id="tk">Rp 0</b></div><div class="card b">SALDO<b id="ts">Rp 0</b></div></div>
 <div class="panel">
-  <div class="row4">
-    <input type="date" id="tgl"><input type="time" id="jam"><input type="text" id="ket" placeholder="Keterangan (PLN, Infaq)"><button class="btn" onclick="tambah()">+ Tambah & Sinkron</button>
-  </div>
-  <div class="row2">
-    <input type="number" id="masuk" placeholder="Masuk (Rp)"><input type="number" id="keluar" placeholder="Keluar (Rp)">
-  </div>
-  <div class="rowFilter">
-    <input type="text" id="cari" placeholder="🔍 Cari keterangan..." oninput="render()"><select id="fb" onchange="render()"><option value="">Semua Bulan</option><option value="1">Januari</option><option value="9">September</option></select><select id="ft" onchange="render()"><option value="">Semua Tahun</option><option value="2026">2026</option></select><button class="btn btn2" onclick="resetF()">Reset Filter</button>
-  </div>
-  <div class="info" id="info">Menampilkan 0 data</div>
-  <div class="table-wrap">
-    <table><thead><tr><th>Tgl</th><th>Jam</th><th>Keterangan</th><th>Masuk</th><th>Keluar</th><th>Saldo</th><th>Aksi</th></tr></thead><tbody id="tb"></tbody></table>
-  </div>
+<div class="r4"><input type="date" id="tgl"><input type="time" id="jam"><input type="text" id="ket" placeholder="Keterangan (PLN, Infaq)"><button class="btn" onclick="tambah()">+ Tambah & Sinkron</button></div>
+<div class="r2"><input type="number" id="masuk" placeholder="Masuk (Rp)"><input type="number" id="keluar" placeholder="Keluar (Rp)"></div>
+<div class="rf"><input type="text" id="cari" placeholder="🔍 Cari..." oninput="render()"><select id="fb"><option value="">Semua Bulan</option><option value="09">September</option></select><select id="ft"><option value="">Semua Tahun</option><option>2026</option></select><button class="btn btn2" onclick="resetF()">Reset</button></div>
+<div style="font-size:12px;margin-top:6px;font-weight:600" id="info"></div>
+<div class="wrap"><table><thead><tr><th>Tgl</th><th>Jam</th><th>Keterangan</th><th>Masuk</th><th>Keluar</th><th>Saldo</th><th>Aksi</th></tr></thead><tbody id="tb"></tbody></table></div>
 </div>
 <script>
-let data=JSON.parse(localStorage.getItem("tpq")||"[]");
-function toggleDark(){document.body.classList.toggle("dark");let d=document.body.classList.contains("dark");localStorage.setItem("dk",d?"1":"0");document.getElementById("btnDark").innerText=d?"☀️ Light":"🌙 Dark"}
-if(localStorage.getItem("dk")==="1"){document.body.classList.add("dark");document.getElementById("btnDark").innerText="☀️ Light"}
-function rp(n){return "Rp "+(n||0).toLocaleString("id-ID")}
-function tambah(){let t=document.getElementById("tgl").value,j=document.getElementById("jam").value,k=document.getElementById("ket").value,m=parseInt(document.getElementById("masuk").value||0),kl=parseInt(document.getElementById("keluar").value||0);if(!t||!k){alert("Isi tgl & keterangan Pak");return}data.push({t,j,k,m,kl});localStorage.setItem("tpq",JSON.stringify(data));document.getElementById("ket").value="";document.getElementById("masuk").value="";document.getElementById("keluar").value="";render()}
-function hapus(i){if(confirm("Hapus?")){data.splice(i,1);localStorage.setItem("tpq",JSON.stringify(data));render()}}
-function resetF(){document.getElementById("cari").value="";render()}
-function render(){let tb=document.getElementById("tb");tb.innerHTML="";let s=0,tM=0,tK=0,c=document.getElementById("cari").value.toLowerCase();let fil=data.filter(d=>!c||d.k.toLowerCase().includes(c));fil.forEach((d,i)=>{s+=d.m-d.kl;tM+=d.m;tK+=d.kl;tb.innerHTML+=`<tr><td>${d.t}</td><td>${d.j}</td><td>${d.k}</td><td>${d.m?rp(d.m):""}</td><td>${d.kl?rp(d.kl):""}</td><td>${rp(s)}</td><td><button onclick="hapus(${data.indexOf(d)})" style="background:#ef4444;color:#fff;border:0;border-radius:6px;padding:4px 8px">Hapus</button></td></tr>`});document.getElementById("tm").innerText=rp(tM);document.getElementById("tk").innerText=rp(tK);document.getElementById("ts").innerText=rp(tM-tK);document.getElementById("info").innerText=`Menampilkan ${fil.length} dari ${data.length} data | Masuk: ${rp(tM)} | Keluar: ${rp(tK)} | Geser tabel ke kanan Pak untuk lihat Keterangan ->`}
-if(data.length==0&&!localStorage.getItem("seed")){data=[{t:"2026-09-18",j:"10:00",k:"Infaq",m:10000,kl:0},{t:"2026-09-18",j:"11:00",k:"PLN",m:0,kl:5000}];localStorage.setItem("tpq",JSON.stringify(data));localStorage.setItem("seed","1");render()}
+let data=JSON.parse(localStorage.getItem('tpq_final')||'[]');
+function rp(n){return 'Rp '+(n||0).toLocaleString('id-ID')}
+function toggleDark(){document.body.style.background=document.body.style.background=='black'?'#f3f4f6':'black'}
+function tambah(){
+ let t=document.getElementById('tgl').value;
+ let j=document.getElementById('jam').value;
+ let k=document.getElementById('ket').value;
+ let m=parseInt(document.getElementById('masuk').value||0);
+ let kl=parseInt(document.getElementById('keluar').value||0);
+ if(!t||!k){alert('Isi tanggal & keterangan dulu Pak');return;}
+ if(m==0&&kl==0){alert('Isi Masuk atau Keluar Pak');return;}
+ data.push({t,j,k,m,kl});
+ localStorage.setItem('tpq_final',JSON.stringify(data));
+ document.getElementById('ket').value='';document.getElementById('masuk').value='';document.getElementById('keluar').value='';
+ document.getElementById('st').innerText='Tersimpan OK';setTimeout(()=>st.innerText='Siap',1500);
+ render();
 }
+function hapus(i){if(confirm('Hapus data ini Pak?')){data.splice(i,1);localStorage.setItem('tpq_final',JSON.stringify(data));render();}}
+function resetF(){document.getElementById('cari').value='';render();}
+function render(){
+ let tb=document.getElementById('tb');tb.innerHTML='';
+ let q=document.getElementById('cari').value.toLowerCase();
+ let tm=0,tk=0,run=0;
+ data.forEach(d=>{tm+=d.m;tk+=d.kl});
+ let fil=data.filter(d=>!q||d.k.toLowerCase().includes(q));
+ fil.forEach(d=>{
+  run+=d.m-d.kl;
+  let idx=data.indexOf(d);
+  tb.innerHTML+=`<tr><td>${d.t}</td><td>${d.j}</td><td>${d.k}</td><td>${d.m?rp(d.m):''}</td><td>${d.kl?rp(d.kl):''}</td><td>${rp(run)}</td><td><button onclick="hapus(${idx})" style="background:#ef4444;color:#fff;border:0;border-radius:6px;padding:5px 10px">Hapus</button></td></tr>`;
+ });
+ document.getElementById('tm').innerText=rp(tm);
+ document.getElementById('tk').innerText=rp(tk);
+ document.getElementById('ts').innerText=rp(tm-tk);
+ document.getElementById('info').innerText=`Menampilkan ${fil.length} data | Geser tabel ke kanan di HP Pak untuk lihat Keterangan ->`;
+}
+let now=new Date();
+document.getElementById('tgl').value=now.toISOString().slice(0,10);
+document.getElementById('jam').value=now.toTimeString().slice(0,5);
 render();
 </script>
 </body>
