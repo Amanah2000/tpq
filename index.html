@@ -1,110 +1,97 @@
-<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>TPQ v7.1 Saldo PIN</title>
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>TPQ v7.3 Grafik TTD</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root{--bg:#f3f4f6;--card:#ffffff;--text:#111827;--bd:#e5e7eb;--muted:#6b7280}
 body.dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--bd:#334155;--muted:#94a3b8}
-*{box-sizing:border-box}body{margin:0;padding:10px;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto;overflow-x:hidden}
+*{box-sizing:border-box}body{margin:0;padding:10px;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto}
 .top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
 .badge{background:#111;color:#fff;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:700}
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
-.card{padding:14px;border-radius:12px;color:#fff;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.1)}
-.card b{display:block;font-size:17px;margin-top:4px}.g{background:linear-gradient(135deg,#16a34a,#22c55e)}.r{background:linear-gradient(135deg,#dc2626,#ef4444)}.b{background:linear-gradient(135deg,#2563eb,#3b82f6)}
-.panel{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.card{padding:14px;border-radius:12px;color:#fff;text-align:center}.card b{display:block;font-size:17px;margin-top:4px}.g{background:linear-gradient(135deg,#16a34a,#22c55e)}.r{background:linear-gradient(135deg,#dc2626,#ef4444)}.b{background:linear-gradient(135deg,#2563eb,#3b82f6)}
+.panel{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px;margin-bottom:10px}
 input,select{height:44px;width:100%;border:1px solid var(--bd);border-radius:10px;padding:0 12px;background:var(--card);color:var(--text);font-size:14px}
 .btn{height:44px;border:0;border-radius:10px;padding:0 14px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap}
 .tblWrap{overflow:auto;margin-top:10px;border:1px solid var(--bd);border-radius:10px}
-.tbl{width:100%;border-collapse:collapse;min-width:650px}.tbl th{background:#2563eb;color:#fff;padding:10px 8px;font-size:11px;text-align:left;position:sticky;top:0}.tbl td{padding:8px;border-bottom:1px solid var(--bd);font-size:12px}
+.tbl{width:100%;border-collapse:collapse;min-width:700px}.tbl th{background:#2563eb;color:#fff;padding:10px 8px;font-size:11px;text-align:left;position:sticky;top:0}.tbl td{padding:8px;border-bottom:1px solid var(--bd);font-size:12px}
 .inputRow{display:grid;grid-template-columns:110px 90px 1fr auto;gap:8px}.inputRow2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-.filterRow{display:grid;grid-template-columns:1fr 100px 100px auto;gap:8px;margin-top:10px}
-@media(max-width:700px){.cards{grid-template-columns:1fr}.inputRow{grid-template-columns:1fr 1fr}.filterRow{grid-template-columns:1fr 1fr}}
+.filterRow{display:grid;grid-template-columns:1fr 100px 100px auto auto auto;gap:8px;margin-top:10px}
+.ttdRow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
+@media(max-width:800px){.cards{grid-template-columns:1fr}.inputRow{grid-template-columns:1fr 1fr}.filterRow{grid-template-columns:1fr 1fr}.ttdRow{grid-template-columns:1fr}}
 #loginPage{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
-.loginBox{background:var(--card);border:1px solid var(--bd);padding:24px;border-radius:16px;width:100%;max-width:360px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.loginBox{background:var(--card);border:1px solid var(--bd);padding:24px;border-radius:16px;width:100%;max-width:360px;text-align:center}
 #pinModal{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px}
-.pinBox{background:var(--card);padding:22px;border-radius:14px;width:100%;max-width:320px;text-align:center;border:2px solid #dc2626;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.pinBox{background:var(--card);padding:22px;border-radius:14px;width:100%;max-width:320px;text-align:center;border:2px solid #dc2626}
 </style></head><body>
+<div id="loginPage"><div class="loginBox"><div style="font-size:40px">🕌</div><h2 style="margin:8px 0">TPQ Baiturrahman</h2><p style="font-size:12px;color:var(--muted)">Login dulu Pak</p><input type="password" id="pass" placeholder="Password" style="text-align:center;margin-top:10px"><button class="btn" style="width:100%;margin-top:10px;background:#2563eb;color:#fff" onclick="doLogin()">Masuk</button><div id="loginMsg" style="font-size:12px;color:#dc2626;margin-top:8px"></div><div style="font-size:10px;color:var(--muted);margin-top:10px">v7.3 Grafik + TTD</div></div></div>
+<div id="pinModal"><div class="pinBox"><div style="font-size:30px">🔒</div><h3 style="margin:8px 0;color:#dc2626">PIN Hapus?</h3><p style="font-size:12px">Hapus <b id="hapusKet"></b>?</p><input type="password" id="pinHapusInput" placeholder="PIN Hapus" style="text-align:center;border:2px solid #dc2626;margin-top:8px"><div style="display:flex;gap:8px;margin-top:12px"><button class="btn" style="flex:1;background:#6b7280;color:#fff" onclick="tutupPin()">Batal</button><button class="btn" style="flex:1;background:#dc2626;color:#fff" onclick="konfirmasiHapus()">Hapus</button></div><div id="pinMsg" style="font-size:11px;color:#dc2626;margin-top:8px"></div></div></div>
 
-<div id="loginPage"><div class="loginBox"><div style="font-size:40px">🕌</div><h2 style="margin:8px 0">TPQ Baiturrahman</h2><p style="font-size:12px;color:var(--muted)">Login dulu Pak</p><input type="password" id="pass" placeholder="Password" style="text-align:center;margin-top:10px"><button class="btn" style="width:100%;margin-top:10px;background:#2563eb;color:#fff" onclick="doLogin()">Masuk</button><div id="loginMsg" style="font-size:12px;color:#dc2626;margin-top:8px"></div><div style="font-size:10px;color:var(--muted);margin-top:10px">v7.1 Saldo + Hapus PIN</div></div></div>
-
-<div id="pinModal"><div class="pinBox"><div style="font-size:30px">🔒</div><h3 style="margin:8px 0;color:#dc2626">PIN Hapus?</h3><p style="font-size:12px;color:var(--muted)">Hapus <b id="hapusKet" style="color:var(--text)"></b>?</p><input type="password" id="pinHapusInput" placeholder="PIN Hapus" style="text-align:center;border:2px solid #dc2626;margin-top:8px"><div style="display:flex;gap:8px;margin-top:12px"><button class="btn" style="flex:1;background:#6b7280;color:#fff" onclick="tutupPin()">Batal</button><button class="btn" style="flex:1;background:#dc2626;color:#fff" onclick="konfirmasiHapus()">Hapus</button></div><div id="pinMsg" style="font-size:11px;color:#dc2626;margin-top:8px"></div><div style="font-size:9px;color:var(--muted);margin-top:8px">PIN: 112233</div></div></div>
-
-<div class="top"><span class="badge">v7.1 KOLOM SALDO + PIN HAPUS</span><div style="display:flex;gap:6px"><button class="btn" style="background:var(--card);border:1px solid var(--bd)" onclick="toggleDark()">🌙</button><button class="btn" style="background:#0ea5e9;color:#fff" onclick="sinkronHP()">🔄 Sinkron</button><button class="btn" style="background:#dc2626;color:#fff" onclick="logout()">Keluar</button></div></div>
+<div class="top"><span class="badge">v7.3 GRAFIK + TTD + PDF</span><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn" style="background:var(--card);border:1px solid var(--bd)" onclick="toggleDark()">🌙</button><button class="btn" style="background:#16a34a;color:#fff" onclick="cetakPDF()">📄 Cetak PDF</button><button class="btn" style="background:#0ea5e9;color:#fff" onclick="sinkronHP()">🔄 Sinkron</button><button class="btn" style="background:#dc2626;color:#fff" onclick="logout()">Keluar</button></div></div>
 
 <div class="cards"><div class="card g"><span style="font-size:11px;opacity:.9">TOTAL MASUK</span><b id="tm">Rp 0</b></div><div class="card r"><span style="font-size:11px;opacity:.9">TOTAL KELUAR</span><b id="tk">Rp 0</b></div><div class="card b"><span style="font-size:11px;opacity:.9">SALDO SAAT INI</span><b id="ts">Rp 0</b></div></div>
+
+<div class="panel"><b style="font-size:13px">📊 Grafik Kas Bulanan</b><canvas id="chartKas" height="120" style="margin-top:10px"></canvas></div>
 
 <div class="panel">
 <div class="inputRow"><input type="date" id="tgl"><input type="time" id="jam"><input id="ket" placeholder="Keterangan infaq..."><button class="btn" style="background:#16a34a;color:#fff" onclick="tambah()">+ Tambah</button></div>
 <div class="inputRow2"><input type="number" id="masuk" placeholder="Masuk Rp"><input type="number" id="keluar" placeholder="Keluar Rp"></div>
-<div class="filterRow"><input id="cari" placeholder="🔍 Cari ket..." oninput="render()"><select id="fBulan" onchange="render()"><option value="">Semua Bulan</option><option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option><option value="04">Apr</option><option value="05">Mei</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Agu</option><option value="09">Sep</option><option value="10">Okt</option><option value="11">Nov</option><option value="12">Des</option></select><select id="fTahun" onchange="render()"><option value="">Semua Tahun</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option></select><button class="btn" style="background:#6b7280;color:#fff" onclick="resetFilter()">Reset</button></div>
+<div class="filterRow"><input id="cari" placeholder="🔍 Cari ket..." oninput="render()"><select id="fBulan" onchange="render()"><option value="">Semua Bulan</option><option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option><option value="04">Apr</option><option value="05">Mei</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Agu</option><option value="09">Sep</option><option value="10">Okt</option><option value="11">Nov</option><option value="12">Des</option></select><select id="fTahun" onchange="render()"><option value="">Semua Tahun</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option></select><button class="btn" style="background:#6b7280;color:#fff" onclick="resetFilter()">Reset</button><button class="btn" style="background:#16a34a;color:#fff" onclick="cetakPDF()">PDF</button><button class="btn" style="background:#2563eb;color:#fff" onclick="document.getElementById('panelTTD').style.display=document.getElementById('panelTTD').style.display=='none'?'block':'none'">✍️ TTD</button></div>
+<div id="panelTTD" style="display:none"><div class="ttdRow"><input id="nmKetua" placeholder="Nama Ketua TPQ" onchange="saveTTD()"><input id="nmBendahara" placeholder="Nama Bendahara" onchange="saveTTD()"><input id="nmSekretaris" placeholder="Nama Sekretaris (opsional)" onchange="saveTTD()"></div><div style="font-size:10px;color:var(--muted);margin-top:6px">Nama ini akan muncul di PDF Pak sebagai tanda tangan</div></div>
 <div id="st" style="font-size:11px;color:var(--muted);margin-top:10px">Siap Pak</div>
 <div class="tblWrap"><table class="tbl"><thead><tr><th>Tgl</th><th>Jam</th><th>Ket</th><th>Masuk</th><th>Keluar</th><th>Saldo</th><th>Aksi</th></tr></thead><tbody id="tb"></tbody></table></div>
 </div>
 
 <script>
 const URL_SHEET="https://script.google.com/macros/s/AKfycbz4JV5c9pFekI68HV5-CFzgWq3V3E1E6xmv_Vnp1ySUeIW4driZ29gV0BNJsdH8nTxT/exec";
-const PASS_TPQ="12345";
-const PIN_HAPUS="112233";
-let data=JSON.parse(localStorage.getItem('tpq_v71')||'[]');
-let idxHapus=null;
+const PASS_TPQ="12345"; const PIN_HAPUS="112233";
+let data=JSON.parse(localStorage.getItem('tpq_v71')||'[]'); let idxHapus=null; let chartObj=null;
+let ttd = JSON.parse(localStorage.getItem('tpq_ttd')||'{"ketua":"Ketua TPQ Baiturrahman","bendahara":"Bendahara","sekretaris":""}');
+document.getElementById('nmKetua').value=ttd.ketua; document.getElementById('nmBendahara').value=ttd.bendahara; document.getElementById('nmSekretaris').value=ttd.sekretaris||'';
 if(localStorage.getItem('loginTPQ')==='ok') document.getElementById('loginPage').style.display='none';
+function saveTTD(){ ttd={ketua:document.getElementById('nmKetua').value||'Ketua TPQ', bendahara:document.getElementById('nmBendahara').value||'Bendahara', sekretaris:document.getElementById('nmSekretaris').value}; localStorage.setItem('tpq_ttd',JSON.stringify(ttd)); }
 function doLogin(){ if(document.getElementById('pass').value===PASS_TPQ){localStorage.setItem('loginTPQ','ok'); document.getElementById('loginPage').style.display='none'; sinkronHP();} else document.getElementById('loginMsg').innerText='Password salah!';}
 function logout(){localStorage.removeItem('loginTPQ'); location.reload();}
 function toggleDark(){document.body.classList.toggle('dark')}
 function rp(n){return 'Rp '+Number(n||0).toLocaleString('id-ID')}
-function cleanNum(v){
- if(v==null||v=='') return 0;
- if(typeof v==='number'){ let n=Math.round(v); if(n>=1000000) return Math.round(n/100); return n; }
- let s=String(v).trim();
- if(s.includes(',')) s=s.split(',')[0];
- s=s.replace(/\./g,'').replace(/[^\d-]/g,'');
- let n=parseInt(s||0);
- return isNaN(n)?0:n;
-}
-function tambah(){
- let t=document.getElementById('tgl').value, j=document.getElementById('jam').value||'00:00', k=document.getElementById('ket').value.trim(), m=parseInt(document.getElementById('masuk').value||0), kl=parseInt(document.getElementById('keluar').value||0);
- if(!t||!k){alert('Isi tanggal & keterangan Pak');return}
- if(!m&&!kl){alert('Isi masuk atau keluar Pak');return}
- let obj={t,j,k,m,kl};
- data.push(obj); localStorage.setItem('tpq_v71',JSON.stringify(data));
- document.getElementById('st').innerText='Menyimpan '+k+'...';
- fetch(URL_SHEET,{method:'POST',mode:'no-cors',body:JSON.stringify(obj)}).then(()=>{document.getElementById('st').innerText='Tersimpan: '+k}).catch(()=>{document.getElementById('st').innerText='Tersimpan lokal (offline)'});
- render(); document.getElementById('masuk').value=''; document.getElementById('keluar').value=''; document.getElementById('ket').value='';
-}
-function sinkronHP(){
- document.getElementById('st').innerText='Sinkron ke Sheet...';
- fetch(URL_SHEET).then(r=>r.json()).then(rows=>{
-   if(!rows || rows.length==0){
-     document.getElementById('st').innerText='Sheet masih kosong Pak, data HP aman Pak tidak dihapus';
-     return;
-   }
-   data=rows.map(r=>{ return {t:String(r[0]||'').split('T')[0], j:String(r[1]||'').slice(0,5), k:r[2]||'', m:cleanNum(r[3]), kl:cleanNum(r[4]) } }).filter(d=>d.k);
-   localStorage.setItem('tpq_v71',JSON.stringify(data)); render();
-   document.getElementById('st').innerText='Sinkron OK '+data.length+' data Pak';
- }).catch(e=>{document.getElementById('st').innerText='Gagal sinkron, cek Deploy Anyone Pak';});
-}
+function cleanNum(v){ if(v==null||v=='') return 0; if(typeof v==='number'){ let n=Math.round(v); if(n>=1000000) return Math.round(n/100); return n; } let s=String(v).trim(); if(s.includes(',')) s=s.split(',')[0]; s=s.replace(/\./g,'').replace(/[^\d-]/g,''); let n=parseInt(s||0); return isNaN(n)?0:n; }
+function tambah(){ let t=document.getElementById('tgl').value, j=document.getElementById('jam').value||'00:00', k=document.getElementById('ket').value.trim(), m=parseInt(document.getElementById('masuk').value||0), kl=parseInt(document.getElementById('keluar').value||0); if(!t||!k){alert('Isi tanggal & keterangan Pak');return} if(!m&&!kl){alert('Isi masuk atau keluar Pak');return} let obj={t,j,k,m,kl}; data.push(obj); localStorage.setItem('tpq_v71',JSON.stringify(data)); document.getElementById('st').innerText='Menyimpan '+k+'...'; fetch(URL_SHEET,{method:'POST',mode:'no-cors',body:JSON.stringify(obj)}).then(()=>{document.getElementById('st').innerText='Tersimpan: '+k}).catch(()=>{document.getElementById('st').innerText='Tersimpan lokal'}); render(); document.getElementById('masuk').value=''; document.getElementById('keluar').value=''; document.getElementById('ket').value='';}
+function sinkronHP(){ document.getElementById('st').innerText='Sinkron...'; fetch(URL_SHEET).then(r=>r.json()).then(rows=>{ if(!rows||rows.length==0){ document.getElementById('st').innerText='Sheet kosong, data HP aman'; return; } data=rows.map(r=>{ return {t:String(r[0]||'').split('T')[0], j:String(r[1]||'').slice(0,5), k:r[2]||'', m:cleanNum(r[3]), kl:cleanNum(r[4]) } }).filter(d=>d.k); localStorage.setItem('tpq_v71',JSON.stringify(data)); render(); document.getElementById('st').innerText='Sinkron OK '+data.length+' data Pak'; }).catch(e=>{document.getElementById('st').innerText='Gagal sinkron';});}
 function resetFilter(){document.getElementById('cari').value=''; document.getElementById('fBulan').value=''; document.getElementById('fTahun').value=''; render();}
-function mintaHapus(i){
- idxHapus=i; document.getElementById('hapusKet').innerText=data[i].k+' - '+rp(data[i].m||data[i].kl);
- document.getElementById('pinModal').style.display='flex'; document.getElementById('pinHapusInput').value=''; document.getElementById('pinHapusInput').focus(); document.getElementById('pinMsg').innerText='';
-}
+function mintaHapus(i){ idxHapus=i; document.getElementById('hapusKet').innerText=data[i].k+' - '+rp(data[i].m||data[i].kl); document.getElementById('pinModal').style.display='flex'; document.getElementById('pinHapusInput').value=''; document.getElementById('pinHapusInput').focus(); document.getElementById('pinMsg').innerText='';}
 function tutupPin(){document.getElementById('pinModal').style.display='none'; idxHapus=null;}
-function konfirmasiHapus(){
- let pin=document.getElementById('pinHapusInput').value;
- if(pin!==PIN_HAPUS){document.getElementById('pinMsg').innerText='PIN salah Pak! PIN nya 112233'; return;}
- let d=data[idxHapus];
- data.splice(idxHapus,1); localStorage.setItem('tpq_v71',JSON.stringify(data)); tutupPin();
- document.getElementById('st').innerText='Menghapus '+d.k+'...';
- fetch(URL_SHEET,{method:'POST',mode:'no-cors',body:JSON.stringify({action:'delete', t:d.t, k:d.k, m:d.m, kl:d.kl})}).then(()=>{document.getElementById('st').innerText='Terhapus: '+d.k});
- render();
+function konfirmasiHapus(){ let pin=document.getElementById('pinHapusInput').value; if(pin!==PIN_HAPUS){document.getElementById('pinMsg').innerText='PIN salah Pak! 112233'; return;} let d=data[idxHapus]; data.splice(idxHapus,1); localStorage.setItem('tpq_v71',JSON.stringify(data)); tutupPin(); document.getElementById('st').innerText='Menghapus '+d.k+'...'; fetch(URL_SHEET,{method:'POST',mode:'no-cors',body:JSON.stringify({action:'delete', t:d.t, k:d.k, m:d.m, kl:d.kl})}).then(()=>{document.getElementById('st').innerText='Terhapus: '+d.k}); render();}
+function getFiltered(){ let q=document.getElementById('cari').value.toLowerCase(), fb=document.getElementById('fBulan').value, ft=document.getElementById('fTahun').value; return data.map((d,i)=>({...d,idx:i})).filter(d=>{ if(q&&!d.k.toLowerCase().includes(q))return false; if(fb&&d.t.split('-')[1]!==fb)return false; if(ft&&d.t.split('-')[0]!==ft)return false; return true; });}
+function renderChart(){
+  let bulanMap={}; data.forEach(d=>{ let b=d.t.slice(0,7); if(!bulanMap[b]) bulanMap[b]={m:0,k:0}; bulanMap[b].m+=d.m; bulanMap[b].k+=d.kl; });
+  let labels=Object.keys(bulanMap).sort(); let masuk=labels.map(l=>bulanMap[l].m); let keluar=labels.map(l=>bulanMap[l].k);
+  let ctx=document.getElementById('chartKas').getContext('2d');
+  if(chartObj) chartObj.destroy();
+  chartObj=new Chart(ctx,{type:'bar',data:{labels:labels, datasets:[{label:'Masuk',data:masuk,backgroundColor:'#16a34a'},{label:'Keluar',data:keluar,backgroundColor:'#dc2626'}]},options:{responsive:true,plugins:{legend:{position:'bottom'}},scales:{y:{beginAtZero:true}}}});
 }
-function render(){
- let tm=0,tk=0; data.forEach(d=>{tm+=d.m;tk+=d.kl});
- document.getElementById('tm').innerText=rp(tm); document.getElementById('tk').innerText=rp(tk); document.getElementById('ts').innerText=rp(tm-tk);
- let q=document.getElementById('cari').value.toLowerCase(), fb=document.getElementById('fBulan').value, ft=document.getElementById('fTahun').value;
- let filtered=data.map((d,i)=>({...d,idx:i})).filter(d=>{ if(q&&!d.k.toLowerCase().includes(q))return false; if(fb&&d.t.split('-')[1]!==fb)return false; if(ft&&d.t.split('-')[0]!==ft)return false; return true;});
- let running=0, map={}; data.forEach((d,i)=>{running+=d.m-d.kl; map[i]=running;});
- let html=''; filtered.forEach(d=>{
-   html+=`<tr><td>${d.t}</td><td>${d.j}</td><td>${d.k}</td><td>${d.m?rp(d.m):''}</td><td>${d.kl?rp(d.kl):''}</td><td><b>${rp(map[d.idx])}</b></td><td><button class="btn" style="background:#dc2626;color:#fff;height:30px;padding:0 10px;font-size:11px" onclick="mintaHapus(${d.idx})">🗑️ Hapus</button></td></tr>`;
- });
- document.getElementById('tb').innerHTML=html||`<tr><td colspan=7 style="text-align:center;color:var(--muted)">Belum ada data Pak</td></tr>`;
+function render(){ let tm=0,tk=0; data.forEach(d=>{tm+=d.m;tk+=d.kl}); document.getElementById('tm').innerText=rp(tm); document.getElementById('tk').innerText=rp(tk); document.getElementById('ts').innerText=rp(tm-tk); let filtered=getFiltered(); let running=0, map={}; data.forEach((d,i)=>{running+=d.m-d.kl; map[i]=running;}); let html=''; filtered.forEach(d=>{ html+=`<tr><td>${d.t}</td><td>${d.j}</td><td>${d.k}</td><td>${d.m?rp(d.m):''}</td><td>${d.kl?rp(d.kl):''}</td><td><b>${rp(map[d.idx])}</b></td><td><button class="btn" style="background:#dc2626;color:#fff;height:30px;padding:0 10px;font-size:11px" onclick="mintaHapus(${d.idx})">🗑️ Hapus</button></td></tr>`; }); document.getElementById('tb').innerHTML=html||`<tr><td colspan=7 style="text-align:center;color:var(--muted)">Belum ada data Pak</td></tr>`; renderChart();}
+function cetakPDF(){
+  const { jsPDF } = window.jspdf; const doc = new jsPDF('l','mm','a4');
+  let filtered=getFiltered(); if(filtered.length==0){ alert('Tidak ada data Pak'); return; }
+  doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.text('TPQ BAITURRAHMAN AMANA 2000', 14, 15);
+  doc.setFontSize(11); doc.setFont('helvetica','normal'); doc.text('Laporan Keuangan Kas TPQ', 14, 22);
+  let tglCetak = new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric', hour:'2-digit', minute:'2-digit'});
+  doc.text('Tanggal Cetak: '+tglCetak, 14, 28);
+  let tm=0,tk=0; filtered.forEach(d=>{tm+=d.m; tk+=d.kl;}); let saldo=tm-tk;
+  doc.setFont('helvetica','bold'); doc.text('Total Masuk: '+rp(tm)+' | Keluar: '+rp(tk)+' | Saldo: '+rp(saldo), 14, 35);
+  // chart image
+  try{ let canvas=document.getElementById('chartKas'); let img=canvas.toDataURL('image/png'); doc.addImage(img,'PNG',14,38,80,35); }catch(e){}
+  let startY=78;
+  let body=[]; let run=0; let map={}; data.forEach((d,i)=>{run+=d.m-d.kl; map[i]=run;});
+  filtered.forEach((d,i)=>{ body.push([d.t, d.j, d.k, d.m?rp(d.m):'-', d.kl?rp(d.kl):'-', rp(map[d.idx])]); });
+  doc.autoTable({ startY: startY, head:[['Tgl','Jam','Keterangan','Masuk','Keluar','Saldo']], body: body, theme:'grid', headStyles:{fillColor:[37,99,235]}, styles:{fontSize:9}, columnStyles:{3:{halign:'right'},4:{halign:'right'},5:{halign:'right', fontStyle:'bold'}} });
+  let y = doc.lastAutoTable.finalY + 10;
+  doc.setFontSize(10); doc.setFont('helvetica','normal');
+  doc.text('Malang, '+new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}), 220, y);
+  doc.text('Mengetahui,', 14, y); doc.text('Ketua TPQ,', 14, y+6); doc.text(ttd.ketua||'................', 14, y+30);
+  doc.text('Bendahara,', 115, y+6); doc.text(ttd.bendahara||'................', 115, y+30);
+  if(ttd.sekretaris){ doc.text('Sekretaris,', 220, y+6); doc.text(ttd.sekretaris, 220, y+30); } else { doc.text('Sekretaris,', 220, y+6); doc.text('(................)', 220, y+30); }
+  doc.save('Laporan-TPQ-'+new Date().toISOString().slice(0,10)+'.pdf');
 }
 let now=new Date(); document.getElementById('tgl').value=now.toISOString().slice(0,10); document.getElementById('jam').value=now.toTimeString().slice(0,5); render();
 </script></body></html>
