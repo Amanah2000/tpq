@@ -49,7 +49,16 @@ let ttd = JSON.parse(localStorage.getItem('tpq_ttd')||'{"ketua":"Ketua TPQ","ben
 document.getElementById('nmKetua').value=ttd.ketua; document.getElementById('nmBendahara').value=ttd.bendahara; document.getElementById('nmSekretaris').value=ttd.sekretaris||'';
 if(localStorage.getItem('loginTPQ')==='ok') document.getElementById('loginPage').style.display='none';
 function saveTTD(){ ttd={ketua:document.getElementById('nmKetua').value, bendahara:document.getElementById('nmBendahara').value, sekretaris:document.getElementById('nmSekretaris').value}; localStorage.setItem('tpq_ttd',JSON.stringify(ttd)); }
-function doLogin(){ if(document.getElementById('pass').value===PASS_TPQ){localStorage.setItem('loginTPQ','ok'); document.getElementById('loginPage').style.display='none'; sinkronHP();} else document.getElementById('loginMsg').innerText='Password salah!';}
+function doLogin(){ 
+  let p=document.getElementById('pass').value.trim(); 
+  if(p==="12345" || p==="112233"){ 
+    localStorage.setItem('loginTPQ','ok'); 
+    document.getElementById('loginPage').style.display='none'; 
+    sinkronHP(); 
+  } else {
+    document.getElementById('loginMsg').innerText='Password salah Pak! Pakai 12345';
+  }
+}
 function logout(){localStorage.removeItem('loginTPQ'); location.reload();}
 function toggleDark(){document.body.classList.toggle('dark')}
 function rp(n){return 'Rp '+Number(n||0).toLocaleString('id-ID')}
