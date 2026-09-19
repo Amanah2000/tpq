@@ -71,10 +71,14 @@ function tambah(){
 function sinkronHP(){
  document.getElementById('st').innerText='Sinkron ke Sheet...';
  fetch(URL_SHEET).then(r=>r.json()).then(rows=>{
+   if(!rows || rows.length==0){
+     document.getElementById('st').innerText='Sheet masih kosong Pak, data HP aman Pak tidak dihapus';
+     return;
+   }
    data=rows.map(r=>{ return {t:String(r[0]||'').split('T')[0], j:String(r[1]||'').slice(0,5), k:r[2]||'', m:cleanNum(r[3]), kl:cleanNum(r[4]) } }).filter(d=>d.k);
    localStorage.setItem('tpq_v71',JSON.stringify(data)); render();
-   document.getElementById('st').innerText='Sinkron OK '+data.length+' data dari Sheet';
- }).catch(e=>{document.getElementById('st').innerText='Gagal sinkron, cek internet Pak';});
+   document.getElementById('st').innerText='Sinkron OK '+data.length+' data Pak';
+ }).catch(e=>{document.getElementById('st').innerText='Gagal sinkron, cek Deploy Anyone Pak';});
 }
 function resetFilter(){document.getElementById('cari').value=''; document.getElementById('fBulan').value=''; document.getElementById('fTahun').value=''; render();}
 function mintaHapus(i){
