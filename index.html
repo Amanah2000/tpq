@@ -1,21 +1,79 @@
-<!-- v6.7 FIX 50rb - COPY SEMUA INI PAK -->
-<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TPQ v6.7 Fix</title>
-<style>:root{--bg:#f3f4f6;--card:#fff;--text:#111;--bd:#e5e7eb}body.dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--bd:#334155}*{box-sizing:border-box}body{background:var(--bg);color:var(--text);font-family:system-ui;margin:0;padding:10px}.top{display:flex;justify-content:space-between;gap:8px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.card{padding:14px;border-radius:12px;color:#fff;text-align:center}.card b{display:block;font-size:20px}.g{background:#16a34a}.r{background:#dc2626}.b{background:#2563eb}.panel{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px}input{height:44px;width:100%;border:1px solid var(--bd);border-radius:8px;padding:0 10px;background:var(--card);color:var(--text);margin-top:6px}.btn{height:44px;background:#16a34a;color:#fff;border:0;border-radius:8px;padding:0 14px;font-weight:700}</style></head><body>
-<div class="top"><span style="background:#111;color:#fff;padding:6px 12px;border-radius:20px;font-size:11px">v6.7 FIX 50rb</span><div style="display:flex;gap:6px"><button class="btn" style="background:#2563eb" onclick="sinkronHP()">🔄 Sinkron HP</button><button class="btn" style="background:#111" onclick="toggleDark()">🌙</button></div></div>
-<div class="cards"><div class="card g">MASUK<b id="tm">Rp 0</b></div><div class="card r">KELUAR<b id="tk">Rp 0</b></div><div class="card b">SALDO<b id="ts">Rp 0</b></div></div>
-<div class="panel"><input type="date" id="tgl"><input type="time" id="jam"><input id="ket" placeholder="Keterangan"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input type="number" id="masuk" placeholder="Masuk 50000"><input type="number" id="keluar" placeholder="Keluar"></div><button class="btn" style="width:100%;margin-top:8px" onclick="tambah()">+ Tambah</button><button class="btn" style="width:100%;margin-top:6px;background:#f59e0b;color:#111" onclick="perbaiki5jt()">🔧 Perbaiki 5jt jadi 50rb</button><div id="st" style="font-size:12px;margin-top:8px">Siap</div><div id="raw" style="font-size:10px;color:#888"></div><div id="list" style="margin-top:10px"></div></div>
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TPQ v6.8 Login Fix</title>
+<style>
+:root{--bg:#f3f4f6;--card:#fff;--text:#111;--bd:#e5e7eb}body.dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--bd:#334155}
+*{box-sizing:border-box}body{background:var(--bg);color:var(--text);font-family:system-ui;margin:0;padding:10px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}.card{padding:14px;border-radius:12px;color:#fff;text-align:center}.card b{display:block;font-size:20px;margin-top:4px}.g{background:#16a34a}.r{background:#dc2626}.b{background:#2563eb}
+.panel{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px}
+input,select{height:44px;width:100%;border:1px solid var(--bd);border-radius:8px;padding:0 12px;background:var(--card);color:var(--text)}.btn{height:44px;background:#16a34a;color:#fff;border:0;border-radius:8px;padding:0 14px;font-weight:700;cursor:pointer}
+/* INI OBAT LOGIN BOCOR PAK */
+#loginPage{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
+.loginBox{background:var(--card);border:1px solid var(--bd);padding:24px;border-radius:16px;width:100%;max-width:360px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+</style></head><body>
+
+<!-- LOGIN FULL LAYAR PAK, NUTUPIN SEMUA -->
+<div id="loginPage">
+  <div class="loginBox">
+    <h2 style="margin:0 0 16px">Login TPQ Baiturrahman</h2>
+    <input type="password" id="pass" placeholder="Password" style="text-align:center">
+    <button class="btn" style="width:100%;margin-top:10px;background:#2563eb" onclick="doLogin()">Masuk</button>
+    <div id="loginMsg" style="font-size:12px;color:#dc2626;margin-top:8px"></div>
+    <div style="font-size:10px;color:#888;margin-top:12px">v6.8 Fix Login + Fix 50rb</div>
+  </div>
+</div>
+
+<div class="top"><span style="background:#111;color:#fff;padding:6px 12px;border-radius:20px;font-size:11px">v6.8 FIX LOGIN</span><div style="display:flex;gap:6px"><button class="btn" style="background:#fff;color:#111;border:1px solid var(--bd)" onclick="toggleDark()">🌙 Dark</button><button class="btn" style="background:#2563eb" onclick="sinkronHP()">🔄 Sinkron HP</button><button class="btn" style="background:#dc2626" onclick="logout()">Logout</button></div></div>
+
+<div class="cards"><div class="card g">TOTAL PEMASUKAN<b id="tm">Rp 0</b></div><div class="card r">TOTAL PENGELUARAN<b id="tk">Rp 0</b></div><div class="card b">SALDO SAAT INI<b id="ts">Rp 0</b></div></div>
+
+<div class="panel">
+<div style="display:grid;grid-template-columns:1fr.7fr 1.6fr auto;gap:8px"><input type="date" id="tgl"><input type="time" id="jam"><input id="ket" placeholder="Keterangan"><button class="btn" onclick="tambah()">+ Tambah & Sinkron</button></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px"><input type="number" id="masuk" placeholder="Masuk (Rp)"><input type="number" id="keluar" placeholder="Keluar (Rp)"></div>
+<div id="st" style="font-size:12px;margin-top:8px">Siap</div>
+<div style="overflow:auto;margin-top:10px"><table style="width:100%;border-collapse:collapse"><thead><tr style="background:#2563eb;color:#fff"><th>Tgl</th><th>Ket</th><th>Masuk</th><th>Keluar</th><th>Saldo</th></tr></thead><tbody id="tb"></tbody></table></div>
+</div>
+
 <script>
 const URL_SHEET="https://script.google.com/macros/s/AKfycbz4JV5c9pFekI68HV5-CFzgWq3V3E1E6xmv_Vnp1ySUeIW4driZ29gV0BNJsdH8nTxT/exec";
-let data=JSON.parse(localStorage.getItem('tpq_v67')||'[]');
+const PASS_TPQ="12345"; // Ganti password disini Pak
+let data=JSON.parse(localStorage.getItem('tpq_v68')||'[]');
+
+// CEK LOGIN
+if(localStorage.getItem('loginTPQ')==='ok'){document.getElementById('loginPage').style.display='none';}
+function doLogin(){
+  if(document.getElementById('pass').value===PASS_TPQ){
+    localStorage.setItem('loginTPQ','ok'); document.getElementById('loginPage').style.display='none'; sinkronHP();
+  }else{ document.getElementById('loginMsg').innerText='Password salah!';}
+}
+function logout(){localStorage.removeItem('loginTPQ'); location.reload();}
+function toggleDark(){document.body.classList.toggle('dark')}
+
 function rp(n){return 'Rp '+Number(n||0).toLocaleString('id-ID')}
 function cleanNum(v){
  if(v==null||v=='')return 0;
  if(typeof v==='number'){let num=Math.round(v); if(num>=1000000) return Math.round(num/100); return num;}
  let s=String(v).trim(); if(s.includes(',')) s=s.split(',')[0]; s=s.replace(/\./g,'').replace(/\s/g,'').replace(/[^\d]/g,''); let num=parseInt(s||0); if(num>=1000000) num=Math.round(num/100); return num;
 }
-function tambah(){let t=tgl.value,j=jam.value||'00:00',k=ket.value.trim(),m=parseInt(masuk.value||0),kl=parseInt(keluar.value||0); if(!t||!k){alert('Isi');return} let obj={t,j,k,m,kl}; data.push(obj); localStorage.setItem('tpq_v67',JSON.stringify(data)); fetch(URL_SHEET,{method:'POST',mode:'no-cors',body:JSON.stringify(obj)}); render();}
-function sinkronHP(){fetch(URL_SHEET).then(r=>r.json()).then(rows=>{data=rows.map(r=>{return{t:String(r[0]).split('T')[0],j:String(r[1]||'').slice(0,5),k:r[2],m:cleanNum(r[3]),kl:cleanNum(r[4])}}); localStorage.setItem('tpq_v67',JSON.stringify(data)); render(); document.getElementById('st').innerText='Sinkron OK '+data.length+' data';}).catch(e=>document.getElementById('st').innerText='Gagal');}
-function perbaiki5jt(){data=data.map(d=>{if(d.m>=1000000)d.m=Math.round(d.m/100); if(d.kl>=1000000)d.kl=Math.round(d.kl/100); return d;}); localStorage.setItem('tpq_v67',JSON.stringify(data)); render();}
-function render(){let tm=0,tk=0,s=0,html='<table style="width:100%"><tr style="background:#2563eb;color:#fff"><th>Ket</th><th>Masuk</th><th>Saldo</th></tr>'; data.forEach(d=>{tm+=d.m;tk+=d.kl}); data.forEach(d=>{s+=d.m-d.kl; html+=`<tr style="border-bottom:1px solid #ddd"><td>${d.k}</td><td>${d.m?rp(d.m):''}</td><td>${rp(s)}</td></tr>`}); html+='</table>'; document.getElementById('list').innerHTML=html; document.getElementById('tm').innerText=rp(tm); document.getElementById('tk').innerText=rp(tk); document.getElementById('ts').innerText=rp(tm-tk);}
-function toggleDark(){document.body.classList.toggle('dark')} let now=new Date(); tgl.value=now.toISOString().slice(0,10); jam.value=now.toTimeString().slice(0,5); render();
+function tambah(){
+ let t=tgl.value,j=jam.value||'00:00',k=ket.value.trim(),m=parseInt(masuk.value||0),kl=parseInt(keluar.value||0);
+ if(!t||!k){alert('Isi tgl & ket');return} if(!m&&!kl){alert('Isi masuk/keluar');return}
+ let obj={t,j,k,m,kl}; data.push(obj); localStorage.setItem('tpq_v68',JSON.stringify(data));
+ document.getElementById('st').innerText='Menyimpan...';
+ fetch(URL_SHEET,{method:'POST',mode:'no-cors',body:JSON.stringify(obj)}).then(()=>{document.getElementById('st').innerText='OK tersimpan';});
+ render(); masuk.value='';keluar.value='';ket.value='';
+}
+function sinkronHP(){
+ document.getElementById('st').innerText='Sinkron...';
+ fetch(URL_SHEET).then(r=>r.json()).then(rows=>{
+  data=rows.map(r=>{return{t:String(r[0]).split('T')[0],j:String(r[1]||'').slice(0,5),k:r[2],m:cleanNum(r[3]),kl:cleanNum(r[4])}});
+  localStorage.setItem('tpq_v68',JSON.stringify(data)); render();
+  document.getElementById('st').innerText='Sinkron OK '+data.length+' data';
+ }).catch(e=>document.getElementById('st').innerText='Gagal');
+}
+function render(){
+ let tm=0,tk=0,s=0,html=''; data.forEach(d=>{tm+=d.m;tk+=d.kl});
+ data.forEach(d=>{s+=d.m-d.kl; html+=`<tr style="border-bottom:1px solid #ddd"><td style="padding:8px">${d.t}</td><td>${d.k}</td><td>${d.m?rp(d.m):''}</td><td>${d.kl?rp(d.kl):''}</td><td><b>${rp(s)}</b></td></tr>`});
+ document.getElementById('tb').innerHTML=html;
+ document.getElementById('tm').innerText=rp(tm); document.getElementById('tk').innerText=rp(tk); document.getElementById('ts').innerText=rp(tm-tk);
+}
+let now=new Date(); document.getElementById('tgl').value=now.toISOString().slice(0,10); document.getElementById('jam').value=now.toTimeString().slice(0,5); render();
 </script></body></html>
