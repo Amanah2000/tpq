@@ -3,129 +3,95 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kas TPQ v7.5.6</title>
+<title>Kas TPQ v7.5.7</title>
 <style>
   *{box-sizing:border-box}
   body{font-family:system-ui; background:#f1f5f9; margin:0; padding:10px}
-  .card{background:white; border-radius:16px; padding:14px; max-width:950px; margin:0 auto; box-shadow:0 4px 20px rgba(0,0,0,0.06)}
+ .card{background:white; border-radius:16px; padding:14px; max-width:950px; margin:0 auto; box-shadow:0 4px 20px rgba(0,0,0,0.06)}
   h2{text-align:center; color:#2563eb; margin:4px 0 10px 0}
-  .form{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px}
-  .form input{flex:1; min-width:110px; padding:11px; border:2px solid #cbd5e1; border-radius:10px; background:#fff; color:#000; font-weight:600; font-size:13px}
-  .btn{padding:10px 12px; border:none; border-radius:10px; font-weight:700; cursor:pointer; font-size:12px}
-  .btn-primary{background:#2563eb; color:#fff; flex:1}
-  .toolbar{display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin-bottom:10px}
-  .toolbar .btn{padding:8px 12px}
-  table{width:100%; border-collapse:collapse}
+ .form{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px}
+ .form input{flex:1; min-width:110px; padding:11px; border:2px solid #cbd5e1; border-radius:10px; background:#fff; color:#000; font-weight:600; font-size:13px}
+ .btn{padding:10px 12px; border:none; border-radius:10px; font-weight:700; cursor:pointer; font-size:12px}
+ .btn-primary{background:#2563eb; color:#fff; flex:1}
+ .toolbar{display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin-bottom:10px}
   th{background:#2563eb; color:white; padding:10px 4px; font-size:11px}
-  td{padding:8px 4px; border-bottom:1px solid #e2e8f0; text-align:center; font-size:12px; background:white; word-break:break-word}
-  td:nth-child(3){text-align:left}
+  td{padding:8px 4px; border-bottom:1px solid #e2e8f0; text-align:center; font-size:12px; background:white}
   #pinModal,#editModal{position:fixed; inset:0; background:rgba(15,23,42,0.55); display:none; align-items:center; justify-content:center; z-index:9999; padding:12px}
   #pinModal.show,#editModal.show{display:flex!important}
-  .pinBox{background:white; width:100%; max-width:360px; padding:20px; border-radius:18px; text-align:center; box-shadow:0 20px 40px rgba(0,0,0,0.3)}
-  #pinInput{width:100%; background:#fff!important; color:#000!important; border:2.5px solid #2563eb!important; border-radius:12px; padding:14px; text-align:center; font-size:18px; font-weight:700; outline:none; letter-spacing:4px}
-  @media print {.form,.toolbar,#status{display:none} }
+ .pinBox{background:white; width:100%; max-width:360px; padding:20px; border-radius:18px; text-align:center}
+  #pinInput{width:100%; background:#fff!important; color:#000!important; border:2.5px solid #2563eb!important; border-radius:12px; padding:14px; text-align:center; font-size:18px; font-weight:700; letter-spacing:4px}
 </style>
 </head>
 <body>
 <div class="card">
-  <h2>Kas TPQ v7.5.6</h2>
-  
+  <h2>Kas TPQ v7.5.7</h2>
   <div class="form">
     <input id="tgl" type="date">
-    <input id="ket" type="text" placeholder="Keterangan (Donasi 40rb)">
+    <input id="ket" type="text" placeholder="Keterangan">
     <input id="masuk" type="number" placeholder="Masuk">
     <input id="keluar" type="number" placeholder="Keluar">
     <button class="btn btn-primary" onclick="tambah()">+ Tambah</button>
   </div>
-
   <div class="toolbar">
     <button class="btn" style="background:#0ea5e9; color:white" onclick="exportExcel()">📊 Excel</button>
     <button class="btn" style="background:#8b5cf6; color:white" onclick="window.print()">🖨️ Cetak</button>
     <button class="btn" style="background:#10b981; color:white" onclick="rekap()">📈 Rekap</button>
     <button class="btn" style="background:#f59e0b; color:white" onclick="backup()">💾 Backup</button>
+    <input type="file" id="restoreFile" style="display:none" onchange="restore(event)">
+    <button class="btn" style="background:#14b8a6; color:white" onclick="document.getElementById('restoreFile').click()">📂 Restore</button>
     <button class="btn" style="background:#ef4444; color:white" onclick="hapusSemua()">🗑️ Hapus Semua</button>
   </div>
-
   <div style="overflow-x:auto">
-  <table>
+  <table style="width:100%; border-collapse:collapse">
     <thead><tr><th>Tgl</th><th>Jam</th><th>Ket</th><th>Masuk</th><th>Keluar</th><th>Saldo</th><th>Aksi</th></tr></thead>
     <tbody id="tbody"></tbody>
   </table>
   </div>
-  <div id="status" style="text-align:center; font-size:11px; margin-top:8px; color:#64748b">Online - Aman diupdate berkali-kali Pak, gak dimarahi GitHub Pak</div>
+  <div style="text-align:center; font-size:11px; margin-top:8px; color:#64748b">v7.5.7 - Data Baru di Bawah - Backup Fixed</div>
 </div>
 
-<div id="pinModal">
-  <div class="pinBox">
-    <div style="font-size:30px">✏️🔒</div>
-    <h3 style="color:#2563eb; margin:6px 0">PIN Edit?</h3>
-    <p style="font-size:12px; color:#64748b">Edit <b id="pinKet">-</b>?</p>
-    <input type="password" id="pinInput" placeholder="112233" inputmode="numeric">
-    <div style="display:flex; gap:8px; margin-top:12px">
-      <button class="btn" style="flex:1; background:#6b7280; color:white" onclick="tutupPin()">Batal</button>
-      <button class="btn" style="flex:1; background:#2563eb; color:white" onclick="konfirmasiPin()">Buka</button>
-    </div>
-    <div id="pinMsg" style="font-size:12px; min-height:18px; margin-top:8px; font-weight:700"></div>
-    <button onclick="hapusSatu()" style="margin-top:12px; width:100%; background:#fef2f2; border:1.5px dashed #fecaca; color:#dc2626; padding:10px; border-radius:10px; font-size:12px; font-weight:700">🗑️ Hapus data ini</button>
-  </div>
-</div>
-
-<div id="editModal">
-  <div class="pinBox" style="text-align:left">
-    <h3 style="color:#2563eb; text-align:center; margin-top:0">Edit Data</h3>
-    <label style="font-size:11px">Keterangan</label>
-    <input id="eKet" style="width:100%; padding:11px; border:2px solid #cbd5e1; border-radius:10px; margin:4px 0 10px 0">
-    <label style="font-size:11px">Masuk</label>
-    <input id="eMasuk" type="number" style="width:100%; padding:11px; border:2px solid #cbd5e1; border-radius:10px; margin:4px 0 10px 0">
-    <label style="font-size:11px">Keluar</label>
-    <input id="eKeluar" type="number" style="width:100%; padding:11px; border:2px solid #cbd5e1; border-radius:10px; margin:4px 0 10px 0">
-    <div style="display:flex; gap:8px">
-      <button class="btn" style="flex:1; background:#6b7280; color:white" onclick="tutupEdit()">Batal</button>
-      <button class="btn" style="flex:1; background:#16a34a; color:white" onclick="simpanEdit()">Simpan</button>
-    </div>
-  </div>
-</div>
+<div id="pinModal"><div class="pinBox"><h3>✏️ PIN?</h3><p id="pinKet"></p><input type="password" id="pinInput" placeholder="112233" inputmode="numeric"><div style="display:flex; gap:8px; margin-top:12px"><button class="btn" style="flex:1; background:#6b7280; color:white" onclick="tutupPin()">Batal</button><button class="btn" style="flex:1; background:#2563eb; color:white" onclick="konfirmasiPin()">Buka</button></div><div id="pinMsg" style="font-size:12px; min-height:18px; margin-top:8px; font-weight:700"></div><button onclick="hapusSatu()" style="margin-top:12px; width:100%; background:#fef2f2; border:1.5px dashed #fecaca; color:#dc2626; padding:10px; border-radius:10px; font-size:12px; font-weight:700">🗑️ Hapus data ini</button></div></div>
+<div id="editModal"><div class="pinBox" style="text-align:left"><h3 style="text-align:center; color:#2563eb; margin-top:0">Edit Data</h3><label style="font-size:11px">Keterangan</label><input id="eKet" style="width:100%; padding:11px; border:2px solid #cbd5e1; border-radius:10px; margin:4px 0 10px 0"><label style="font-size:11px">Masuk</label><input id="eMasuk" type="number" style="width:100%; padding:11px; border:2px solid #cbd5e1; border-radius:10px; margin:4px 0 10px 0"><label style="font-size:11px">Keluar</label><input id="eKeluar" type="number" style="width:100%; padding:11px; border:2px solid #cbd5e1; border-radius:10px; margin:4px 0 10px 0"><div style="display:flex; gap:8px"><button class="btn" style="flex:1; background:#6b7280; color:white" onclick="tutupEdit()">Batal</button><button class="btn" style="flex:1; background:#16a34a; color:white" onclick="simpanEdit()">Simpan</button></div></div></div>
 
 <script>
-let data = JSON.parse(localStorage.getItem('tpq_v756') || localStorage.getItem('tpq_v754') || '[]');
-let editIndex = -1;
-document.getElementById('tgl').valueAsDate = new Date();
+let data = JSON.parse(localStorage.getItem('tpq_v757') || localStorage.getItem('tpq_v756') || localStorage.getItem('tpq_v754') || '[]');
+let editIndex=-1;
+document.getElementById('tgl').valueAsDate=new Date();
 function render(){
   let saldo=0; const tb=document.getElementById('tbody'); tb.innerHTML='';
-  if(data.length===0){ tb.innerHTML='<tr><td colspan=7 style="color:#94a3b8; padding:20px">Belum ada data Pak, silahkan + Tambah Pak</td></tr>'; }
+  if(data.length===0) tb.innerHTML='<tr><td colspan=7 style="color:#94a3b8; padding:20px">Belum ada data Pak</td></tr>';
   data.forEach((d,i)=>{
-    saldo+= (Number(d.masuk)||0) - (Number(d.keluar)||0);
-    tb.innerHTML+=`<tr>
-      <td>${d.tgl}</td><td>${d.jam}</td><td>${d.ket}</td>
-      <td style="text-align:right; font-weight:700">Rp ${Number(d.masuk||0).toLocaleString('id-ID')}</td>
-      <td style="text-align:right; font-weight:700; color:#dc2626">Rp ${Number(d.keluar||0).toLocaleString('id-ID')}</td>
-      <td style="text-align:right; font-weight:800; color:#2563eb">Rp ${saldo.toLocaleString('id-ID')}</td>
-      <td><button onclick="bukaPin(${i})" style="padding:6px 10px; border:none; background:#f59e0b; color:white; border-radius:8px; font-weight:700">Edit</button></td>
-    </tr>`;
+    saldo+=(Number(d.masuk)||0)-(Number(d.keluar)||0);
+    tb.innerHTML+=`<tr><td>${d.tgl}</td><td>${d.jam}</td><td style="text-align:left">${d.ket}</td><td style="text-align:right; font-weight:700">Rp ${Number(d.masuk||0).toLocaleString('id-ID')}</td><td style="text-align:right; color:#dc2626">Rp ${Number(d.keluar||0).toLocaleString('id-ID')}</td><td style="text-align:right; font-weight:800; color:#2563eb">Rp ${saldo.toLocaleString('id-ID')}</td><td><button onclick="bukaPin(${i})" style="padding:6px 10px; border:none; background:#f59e0b; color:white; border-radius:8px">Edit</button></td></tr>`;
   });
-  localStorage.setItem('tpq_v756', JSON.stringify(data));
+  localStorage.setItem('tpq_v757', JSON.stringify(data));
 }
 function tambah(){
-  const tgl=document.getElementById('tgl').value; const ket=document.getElementById('ket').value; const masuk=document.getElementById('masuk').value; const keluar=document.getElementById('keluar').value;
+  const tgl=document.getElementById('tgl').value, ket=document.getElementById('ket').value, masuk=document.getElementById('masuk').value, keluar=document.getElementById('keluar').value;
   if(!ket) return alert('Isi keterangan Pak!');
   const jam=new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
-  data.unshift({tgl, jam, ket, masuk:masuk||0, keluar:keluar||0}); render();
-  document.getElementById('ket').value=''; document.getElementById('masuk').value=''; document.getElementById('keluar').value='';
+  data.push({tgl, jam, ket, masuk:masuk||0, keluar:keluar||0}); // FIX: push biar baru di bawah
+  render(); document.getElementById('ket').value=''; document.getElementById('masuk').value=''; document.getElementById('keluar').value='';
 }
-function bukaPin(i){ editIndex=i; document.getElementById('pinKet').innerText=data[i].ket; document.getElementById('pinInput').value=''; document.getElementById('pinMsg').innerText=''; document.getElementById('pinModal').classList.add('show'); setTimeout(()=>document.getElementById('pinInput').focus(),150); }
-function tutupPin(){ document.getElementById('pinModal').classList.remove('show'); }
-function konfirmasiPin(){
-  const pin=document.getElementById('pinInput').value; const msg=document.getElementById('pinMsg');
-  if(pin==='112233'){ msg.style.color='green'; msg.innerText='✅ PIN benar Pak!'; setTimeout(()=>{ tutupPin(); document.getElementById('eKet').value=data[editIndex].ket; document.getElementById('eMasuk').value=data[editIndex].masuk; document.getElementById('eKeluar').value=data[editIndex].keluar; document.getElementById('editModal').classList.add('show'); },400); }
-  else{ msg.style.color='#dc2626'; msg.innerText='❌ PIN salah Pak! 112233'; document.getElementById('pinInput').value=''; }
+function bukaPin(i){editIndex=i; document.getElementById('pinKet').innerText=data[i].ket; document.getElementById('pinInput').value=''; document.getElementById('pinMsg').innerText=''; document.getElementById('pinModal').classList.add('show');}
+function tutupPin(){document.getElementById('pinModal').classList.remove('show');}
+function konfirmasiPin(){const pin=document.getElementById('pinInput').value; const msg=document.getElementById('pinMsg'); if(pin==='112233'){msg.style.color='green'; msg.innerText='✅ Benar Pak'; setTimeout(()=>{tutupPin(); document.getElementById('eKet').value=data[editIndex].ket; document.getElementById('eMasuk').value=data[editIndex].masuk; document.getElementById('eKeluar').value=data[editIndex].keluar; document.getElementById('editModal').classList.add('show');},300);} else{msg.style.color='#dc2626'; msg.innerText='❌ Salah Pak, 112233'; document.getElementById('pinInput').value='';}}
+function tutupEdit(){document.getElementById('editModal').classList.remove('show');}
+function simpanEdit(){data[editIndex].ket=document.getElementById('eKet').value; data[editIndex].masuk=document.getElementById('eMasuk').value; data[editIndex].keluar=document.getElementById('eKeluar').value; tutupEdit(); render();}
+function hapusSatu(){if(confirm('Hapus '+data[editIndex].ket+' Pak?')){data.splice(editIndex,1); tutupPin(); render();}}
+function exportExcel(){let csv="Tgl,Jam,Ket,Masuk,Keluar,Saldo\n"; let s=0; data.forEach(d=>{s+=(Number(d.masuk)||0)-(Number(d.keluar)||0); csv+=`${d.tgl},${d.jam},"${d.ket}",${d.masuk},${d.keluar},${s}\n`;}); const b=new Blob([csv],{type:'text/csv'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='Kas_TPQ_v757.csv'; a.click();}
+function rekap(){let m=0,k=0; data.forEach(d=>{m+=Number(d.masuk)||0; k+=Number(d.keluar)||0}); alert(`Rekap Pak:\nMasuk: Rp ${m.toLocaleString('id-ID')}\nKeluar: Rp ${k.toLocaleString('id-ID')}\nSaldo: Rp ${(m-k).toLocaleString('id-ID')}`);}
+function backup(){
+  // FIX: backup sekarang download file, gak mati di HP
+  const blob=new Blob([JSON.stringify(data)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='backup-kas-tpq-'+new Date().toISOString().slice(0,10)+'.json'; a.click();
+  alert('Backup berhasil didownload Pak! File ada di folder Download HP Pak!');
 }
-function tutupEdit(){ document.getElementById('editModal').classList.remove('show'); }
-function simpanEdit(){ data[editIndex].ket=document.getElementById('eKet').value; data[editIndex].masuk=document.getElementById('eMasuk').value; data[editIndex].keluar=document.getElementById('eKeluar').value; tutupEdit(); render(); }
-function hapusSatu(){ if(confirm('Hapus '+data[editIndex].ket+' Pak?')){ data.splice(editIndex,1); tutupPin(); render(); } }
-function exportExcel(){ let csv="Tgl,Jam,Ket,Masuk,Keluar,Saldo\n"; let saldo=0; data.forEach(d=>{ saldo+= (Number(d.masuk)||0)-(Number(d.keluar)||0); csv+=`${d.tgl},${d.jam},"${d.ket}",${d.masuk},${d.keluar},${saldo}\n`; }); const blob=new Blob([csv],{type:'text/csv'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='Kas_TPQ.csv'; a.click(); }
-function rekap(){ let m=0,k=0; data.forEach(d=>{m+=Number(d.masuk)||0; k+=Number(d.keluar)||0}); alert(`Rekap Pak:\nMasuk: Rp ${m.toLocaleString('id-ID')}\nKeluar: Rp ${k.toLocaleString('id-ID')}\nSaldo: Rp ${(m-k).toLocaleString('id-ID')}`); }
-function backup(){ prompt('Copy backup ini Pak, simpan di WA Pak:', JSON.stringify(data)); }
-function hapusSemua(){ if(prompt('Ketik PIN 112233 Pak buat hapus semua:')==='112233'){ if(confirm('Yakin hapus semua Pak?')){ data=[]; render(); } } }
+function restore(e){
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader(); reader.onload=function(ev){ try{ data=JSON.parse(ev.target.result); render(); alert('Restore berhasil Pak!'); } catch{ alert('File backup salah Pak!'); } }; reader.readAsText(file);
+}
+function hapusSemua(){if(prompt('Ketik PIN 112233 Pak:')==='112233'){if(confirm('Yakin hapus semua Pak?')){data=[]; render();}}}
 render();
 </script>
 </body>
