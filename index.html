@@ -3,105 +3,155 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TPQ Kas v7.5.3</title>
+<title>TPQ Kas v7.5.4</title>
 <style>
-    * { box-sizing: border-box !important; }
-  body { font-family: sans-serif; background: #f8fafc; margin:0; padding:12px; }
-  table { width:100%; border-collapse:collapse; background:white; border-radius:12px; overflow:hidden; margin:0 auto; }
-  th, td { padding:10px 8px; border:1px solid #e2e8f0; text-align:center; font-size:13px; word-break:break-word; }
-  th { background:#2563eb; color:white; }
-  /* FIX MODAL PIN - ANTI PINDAH PINGGIR */
-  #pinModal {
-    position: fixed !important;
-    inset: 0 !important;
-    background: rgba(0,0,0,0.5) !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    z-index: 9999 !important;
-  }
-  .pinBox {
-    background: white !important;
-    width: 90% !important;
-    max-width: 360px !important;
-    padding: 24px !important;
-    border-radius: 18px !important;
-    margin: auto !important;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
-  }
-  #pinInput {
-    width: 100% !important;
-    background: #ffffff !important;
-    color: #000000 !important;
-    border: 2.5px solid #2563eb !important;
-    border-radius: 12px !important;
-    padding: 14px 16px !important;
-    text-align: left !important;
-    font-size: 16px !important;
-    font-weight: 700 !important;
-    outline: none !important;
-  }
-  #pinInput::placeholder { color:#94a3b8 !important; }
-  #pinInput:focus { border-color:#f59e0b !important; box-shadow:0 0 0 3px rgba(245,158,11,0.2) !important; }
-  .btn { cursor:pointer; font-weight:700; }
+  *{box-sizing:border-box}
+  body{font-family:Inter, sans-serif; background:#f1f5f9; margin:0; padding:12px;}
+ .card{background:white; border-radius:16px; padding:16px; box-shadow:0 2px 10px rgba(0,0,0,0.05); max-width:900px; margin:0 auto;}
+  h2{text-align:center; color:#2563eb; margin:0 0 12px 0}
+ .form{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px}
+ .form input{flex:1; min-width:120px; padding:12px; border:2px solid #cbd5e1; border-radius:10px; background:#fff; color:#000; font-weight:600}
+ .btn{padding:12px 16px; border:none; border-radius:10px; font-weight:700; cursor:pointer}
+ .btn-primary{background:#2563eb; color:#fff; flex:1}
+ .btn-gray{background:#6b7280; color:#fff}
+  table{width:100%; border-collapse:collapse; margin-top:12px}
+  th{background:#2563eb; color:white; padding:10px 6px; font-size:12px}
+  td{padding:8px 6px; border-bottom:1px solid #e2e8f0; text-align:center; font-size:13px; background:white}
+  td:nth-child(4), td:nth-child(5), td:nth-child(6){text-align:right; font-weight:700}
+
+  /* MODAL PIN - FIX TENGAH */
+  #pinModal{position:fixed; inset:0; background:rgba(15,23,42,0.5); display:none; align-items:center; justify-content:center; z-index:9999; backdrop-filter:blur(2px)}
+  #pinModal.show{display:flex!important}
+ .pinBox{background:white; width:90%; max-width:360px; padding:24px; border-radius:20px; text-align:center; box-shadow:0 20px 40px rgba(0,0,0,0.3)}
+  #pinInput{width:100%; background:#fff!important; color:#000!important; border:2.5px solid #2563eb!important; border-radius:12px; padding:14px 16px; text-align:left; font-size:16px; font-weight:700; outline:none}
+  #pinInput:focus{border-color:#f59e0b!important; box-shadow:0 0 0 3px rgba(245,158,11,0.25)!important}
+  #editModal{position:fixed; inset:0; background:rgba(15,23,42,0.5); display:none; align-items:center; justify-content:center; z-index:9998}
+  #editModal.show{display:flex!important}
 </style>
 </head>
 <body>
-
-<div id="app">
-  <h2 style="text-align:center; color:#2563eb;">Kas TPQ v7.5.3</h2>
+<div class="card">
+  <h2>Kas TPQ v7.5.4</h2>
+  <div class="form">
+    <input id="tgl" type="date">
+    <input id="ket" type="text" placeholder="Keterangan (Donasi 40rb)">
+    <input id="masuk" type="number" placeholder="Masuk">
+    <input id="keluar" type="number" placeholder="Keluar">
+    <button class="btn btn-primary" onclick="tambah()">+ Tambah</button>
+  </div>
+  <div style="overflow-x:auto">
   <table>
-    <tr><th>Tgl</th><th>Jam</th><th>Ket</th><th>Masuk</th><th>Keluar</th><th>Saldo</th><th>Aksi</th></tr>
+    <thead><tr><th>Tgl</th><th>Jam</th><th>Ket</th><th>Masuk</th><th>Keluar</th><th>Saldo</th><th>Aksi</th></tr></thead>
     <tbody id="tbody"></tbody>
   </table>
+  </div>
+  <div id="status" style="text-align:center; font-size:11px; margin-top:8px; color:#64748b">Online</div>
 </div>
 
-<!-- MODAL PIN EDIT - VERSI FIX TENGAH -->
-<div id="pinModal" style="display:none;">
+<!-- MODAL PIN EDIT -->
+<div id="pinModal">
   <div class="pinBox">
-    <div style="font-size:30px;">✏️🔒</div>
-    <h3 style="margin:8px 0; color:#2563eb;">PIN Edit?</h3>
-    <p style="font-size:12px;">Edit data <b id="pinKet"></b>?</p>
-    <input type="password" id="pinInput" placeholder="Ketik PIN 112233" autocomplete="off" inputmode="numeric">
-    <div style="display:flex; gap:8px; margin-top:12px;">
-      <button class="btn" style="flex:1; background:#6b7280; color:#fff; padding:12px; border:none; border-radius:10px;" onclick="tutupPin()">Batal</button>
-      <button class="btn" style="flex:1; background:#2563eb; color:#fff; padding:12px; border:none; border-radius:10px;" onclick="konfirmasiPin()">Buka</button>
+    <div style="font-size:32px">✏️🔒</div>
+    <h3 style="color:#2563eb; margin:8px 0">PIN Edit?</h3>
+    <p style="font-size:12px; color:#64748b">Edit data <b id="pinKet">-</b>?</p>
+    <input type="password" id="pinInput" placeholder="Ketik PIN 112233" inputmode="numeric" autocomplete="off">
+    <div style="display:flex; gap:8px; margin-top:12px">
+      <button class="btn btn-gray" style="flex:1" onclick="tutupPin()">Batal</button>
+      <button class="btn" style="flex:1; background:#2563eb; color:white" onclick="konfirmasiPin()">Buka</button>
     </div>
-    <div id="pinMsg" style="font-size:11px; color:#dc2626; margin-top:8px; min-height:16px; text-align:center;"></div>
-    <div style="margin-top:10px;">
-      <button class="btn" style="width:100%; background:#fef2f2; color:#dc2626; border:1px dashed #fecaca; padding:10px; border-radius:10px; font-size:12px;" onclick="hapusData()">🗑️ Hapus data ini</button>
+    <div id="pinMsg" style="font-size:12px; min-height:18px; margin-top:8px; color:#dc2626"></div>
+    <button onclick="hapusData()" style="margin-top:10px; width:100%; background:#fef2f2; border:1px dashed #fecaca; color:#dc2626; padding:10px; border-radius:10px; font-size:12px">🗑️ Hapus data ini</button>
+  </div>
+</div>
+
+<!-- MODAL EDIT FORM -->
+<div id="editModal">
+  <div class="pinBox" style="text-align:left">
+    <h3 style="color:#2563eb; text-align:center">Edit Data</h3>
+    <label style="font-size:12px">Keterangan</label>
+    <input id="eKet" style="width:100%; padding:12px; border:2px solid #cbd5e1; border-radius:10px; margin:6px 0 10px 0">
+    <label style="font-size:12px">Masuk</label>
+    <input id="eMasuk" type="number" style="width:100%; padding:12px; border:2px solid #cbd5e1; border-radius:10px; margin:6px 0 10px 0">
+    <label style="font-size:12px">Keluar</label>
+    <input id="eKeluar" type="number" style="width:100%; padding:12px; border:2px solid #cbd5e1; border-radius:10px; margin:6px 0 10px 0">
+    <div style="display:flex; gap:8px">
+      <button class="btn btn-gray" style="flex:1" onclick="tutupEdit()">Batal</button>
+      <button class="btn" style="flex:1; background:#16a34a; color:white" onclick="simpanEdit()">Simpan</button>
     </div>
   </div>
 </div>
 
 <script>
-// LOGIC PIN 112233
-function bukaPin(ket){
-  document.getElementById('pinKet').innerText = ket || 'Rp 40.000';
-  document.getElementById('pinModal').style.display = 'flex';
-  document.getElementById('pinInput').value = '';
-  document.getElementById('pinInput').focus();
+let data = JSON.parse(localStorage.getItem('tpq_v754') || '[]');
+let editIndex = -1;
+document.getElementById('tgl').valueAsDate = new Date();
+
+function render(){
+  let saldo=0; const tb=document.getElementById('tbody'); tb.innerHTML='';
+  data.forEach((d,i)=>{
+    saldo+= (Number(d.masuk)||0) - (Number(d.keluar)||0);
+    tb.innerHTML+=`<tr>
+      <td>${d.tgl}</td><td>${d.jam}</td><td style="text-align:left">${d.ket}</td>
+      <td>Rp ${Number(d.masuk||0).toLocaleString('id-ID')}</td>
+      <td>Rp ${Number(d.keluar||0).toLocaleString('id-ID')}</td>
+      <td>Rp ${saldo.toLocaleString('id-ID')}</td>
+      <td><button onclick="bukaPin(${i})" style="padding:6px 10px; border:none; background:#f59e0b; color:white; border-radius:8px">Edit</button></td>
+    </tr>`;
+  });
+  localStorage.setItem('tpq_v754', JSON.stringify(data));
 }
-function tutupPin(){ document.getElementById('pinModal').style.display = 'none'; }
+function tambah(){
+  const tgl=document.getElementById('tgl').value; const ket=document.getElementById('ket').value; const masuk=document.getElementById('masuk').value; const keluar=document.getElementById('keluar').value;
+  if(!ket) return alert('Isi keterangan Pak!');
+  const jam=new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+  data.unshift({tgl, jam, ket, masuk:masuk||0, keluar:keluar||0}); render();
+  document.getElementById('ket').value=''; document.getElementById('masuk').value=''; document.getElementById('keluar').value='';
+}
+function bukaPin(i){
+  editIndex=i;
+  document.getElementById('pinKet').innerText = data[i].ket;
+  document.getElementById('pinInput').value='';
+  document.getElementById('pinMsg').innerText='';
+  document.getElementById('pinModal').classList.add('show');
+  setTimeout(()=>document.getElementById('pinInput').focus(),100);
+}
+function tutupPin(){ document.getElementById('pinModal').classList.remove('show'); }
+
 function konfirmasiPin(){
-  const pin = document.getElementById('pinInput').value;
-  if(pin === '112233'){
-    document.getElementById('pinMsg').style.color = 'green';
-    document.getElementById('pinMsg').innerText = '✅ PIN benar Pak!';
-    // lanjut edit...
-    setTimeout(tutupPin, 500);
-  } else {
-    document.getElementById('pinMsg').style.color = '#dc2626';
-    document.getElementById('pinMsg').innerText = '❌ PIN salah Pak, harus 112233 Pak!';
+  const pin=document.getElementById('pinInput').value;
+  const msg=document.getElementById('pinMsg');
+  if(pin==='112233'){
+    msg.style.color='green'; msg.innerText='✅ PIN benar Pak! Membuka form...';
+    setTimeout(()=>{
+      tutupPin();
+      // BUKA FORM EDIT - INI YANG KEMARIN KURANG PAK
+      const d=data[editIndex];
+      document.getElementById('eKet').value=d.ket;
+      document.getElementById('eMasuk').value=d.masuk;
+      document.getElementById('eKeluar').value=d.keluar;
+      document.getElementById('editModal').classList.add('show');
+    },500);
+  }else{
+    msg.style.color='#dc2626'; msg.innerText='❌ PIN salah Pak! Harus 112233';
+    document.getElementById('pinInput').value=''; document.getElementById('pinInput').focus();
   }
 }
-// DETEKSI INTERNET
-window.addEventListener('offline', () => {
-  document.getElementById('pinMsg').innerText = '⚠️ Internet putus Pak, data simpan lokal dulu Pak!';
-});
-window.addEventListener('online', () => {
-  document.getElementById('pinMsg').innerText = '✅ Internet nyambung lagi Pak!';
-});
+function tutupEdit(){ document.getElementById('editModal').classList.remove('show'); }
+function simpanEdit(){
+  data[editIndex].ket=document.getElementById('eKet').value;
+  data[editIndex].masuk=document.getElementById('eMasuk').value;
+  data[editIndex].keluar=document.getElementById('eKeluar').value;
+  tutupEdit(); render();
+}
+function hapusData(){
+  if(confirm('Hapus data '+data[editIndex].ket+' Pak?')){
+    data.splice(editIndex,1); tutupPin(); render();
+  }
+}
+// internet
+window.addEventListener('offline',()=>{document.getElementById('status').innerText='⚠️ Offline - data simpan lokal Pak'; document.getElementById('status').style.color='red'});
+window.addEventListener('online',()=>{document.getElementById('status').innerText='✅ Online'; document.getElementById('status').style.color='green'});
+render();
 </script>
 </body>
 </html>
