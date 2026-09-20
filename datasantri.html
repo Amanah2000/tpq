@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Santri TPQ v1.1</title>
+<style>
+*{box-sizing:border-box}body{font-family:system-ui;background:#f1f5f9;margin:0;padding:10px}
+.card{background:white;border-radius:16px;padding:14px;max-width:1200px;margin:0 auto;box-shadow:0 4px 20px rgba(0,0,0,.06)}
+h2{text-align:center;color:#2563eb;margin:4px 0 10px}
+.form{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.form input{flex:1;min-width:120px;padding:11px;border:2px solid #cbd5e1;border-radius:10px;background:#fff;color:#000;font-weight:600;font-size:13px}
+.btn{padding:10px 14px;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-size:12px}
+.btn-primary{background:#2563eb;color:#fff;flex:1;min-width:120px}
+.toolbar{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:10px}
+th{background:#2563eb;color:white;padding:10px 5px;font-size:11px;text-align:center}td{padding:8px 5px;border-bottom:1px solid #e2e8f0;text-align:center;font-size:11px;background:white}
+#pinModal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:9999;padding:12px}
+#pinModal.show{display:flex!important}.pinBox{background:white;width:100%;max-width:360px;padding:20px;border-radius:18px;text-align:center}
+#pinInput{width:100%;background:#fff!important;color:#000!important;border:2.5px solid #2563eb!important;border-radius:12px;padding:14px;text-align:center;font-size:18px;font-weight:700;letter-spacing:4px}
+</style>
+</head>
+<body>
+<div class="card">
+<h2>Data Santri TPQ v1.1</h2>
+<div class="form">
+<input id="nama" placeholder="Nama Santri">
+<input id="usia" type="number" placeholder="Usia">
+<input id="wali" placeholder="Wali Santri">
+<input id="hp" type="tel" placeholder="No HP Wali (WA)">
+<input id="alamat" placeholder="Alamat">
+<input id="tglmasuk" type="date">
+<button class="btn btn-primary" onclick="tambah()">+ Input Data</button>
+</div>
+<div class="toolbar">
+<button class="btn" style="background:#0ea5e9;color:white" onclick="mintaPin('excel')">📊 Excel</button>
+<button class="btn" style="background:#8b5cf6;color:white" onclick="mintaPin('cetak')">🖨️ Cetak PDF</button>
+<button class="btn" style="background:#ef4444;color:white" onclick="mintaPin('hapusAll')">🗑️ Hapus Semua</button>
+</div>
+<div style="overflow-x:auto">
+<table style="width:100%;border-collapse:collapse">
+<thead><tr><th>No</th><th>Nama</th><th>Usia</th><th>Wali Santri</th><th>No HP Wali</th><th>Alamat</th><th>Tgl Masuk</th><th>Aksi</th></tr></thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+<div style="text-align:center;font-size:11px;margin-top:10px;color:#64748b">v1.1 + No HP Wali - PIN 112233</div>
+</div>
+
+<div id="pinModal"><div class="pinBox"><h3 id="pinTitle">🔒 PIN</h3><p id="pinKet" style="font-size:13px;color:#475569"></p><input type="password" id="pinInput" placeholder="112233" inputmode="numeric"><div style="display:flex;gap:8px;margin-top:12px"><button class="btn" style="flex:1;background:#6b7280;color:white" onclick="tutupPin()">Batal</button><button class="btn" style="flex:1;background:#2563eb;color:white" onclick="konfirmasiPin()">Buka</button></div><div id="pinMsg" style="font-size:12px;min-height:18px;margin-top:8px;font-weight:700"></div><div id="hapusSatuWrap" style="display:none;margin-top:12px"><button onclick="hapusSatu()" style="width:100%;background:#fef2f2;border:1.5px dashed #fecaca;color:#dc2626;padding:10px;border-radius:10px;font-size:12px;font-weight:700">🗑️ Hapus santri ini</button></div></div></div>
+
+<script>
+let data=JSON.parse(localStorage.getItem('santri_v11')||localStorage.getItem('santri_v10')||'[]');
+let aksi=""; let editIndex=-1;
+document.getElementById('tglmasuk').valueAsDate=new Date();
+function simpan(){localStorage.setItem('santri_v11',JSON.stringify(data));}
+function render(){
+ const tb=document.getElementById('tbody'); tb.innerHTML='';
+ if(data.length===0) tb.innerHTML='<tr><td colspan=8 style="color:#94a3b8;padding:20px">Belum ada data santri Pak</td></tr>';
+ data.forEach((d,i)=>{
+  tb.innerHTML+=`<tr>
+  <td>${i+1}</td><td style="font-weight:700">${d.nama}</td><td>${d.usia} Th</td><td>${d.wali}</td><td style="color:#2563eb;font-weight:600">${d.hp||'-'}</td><td>${d.alamat}</td><td>${d.tglmasuk}</td>
+  <td><button onclick="mintaPin('edit',${i})" style="padding:6px 10px;border:none;background:#f59e0b;color:white;border-radius:8px;font-size:11px">Edit</button></td></tr>`;
+ }); simpan();
+}
+function tambah(){
+ const nama=document.getElementById('nama').value, usia=document.getElementById('usia').value, wali=document.getElementById('wali').value, hp=document.getElementById('hp').value, alamat=document.getElementById('alamat').value, tglmasuk=document.getElementById('tglmasuk').value;
+ if(!nama) return alert('Isi Nama Santri Pak!');
+ data.push({nama,usia,wali,hp,alamat,tglmasuk});
+ render(); document.getElementById('nama').value=''; document.getElementById('usia').value=''; document.getElementById('wali').value=''; document.getElementById('hp').value=''; document.getElementById('alamat').value='';
+}
+function mintaPin(jenis,i=-1){aksi=jenis; editIndex=i; document.getElementById('pinInput').value=''; document.getElementById('pinMsg').innerText=''; document.getElementById('hapusSatuWrap').style.display=(jenis==='edit'?'block':'none');
+ if(jenis==='edit'){document.getElementById('pinTitle').innerText='✏️ Edit Santri?'; document.getElementById('pinKet').innerText=data[i].nama+' - '+data[i].wali;}
+ else if(jenis==='excel'){document.getElementById('pinTitle').innerText='📊 Download Excel?'; document.getElementById('pinKet').innerText='PIN untuk Excel santri Pak';}
+ else if(jenis==='cetak'){document.getElementById('pinTitle').innerText='🖨️ Cetak PDF?'; document.getElementById('pinKet').innerText='Cetak rapi + No HP Wali Pak';}
+ else if(jenis==='hapusAll'){document.getElementById('pinTitle').innerText='🗑️ Hapus Semua?'; document.getElementById('pinKet').innerText='Bahaya Pak! Hapus semua Pak';}
+ document.getElementById('pinModal').classList.add('show');
+}
+function tutupPin(){document.getElementById('pinModal').classList.remove('show');}
+function konfirmasiPin(){
+ const pin=document.getElementById('pinInput').value; const msg=document.getElementById('pinMsg');
+ if(pin!=='112233'){msg.style.color='#dc2626'; msg.innerText='❌ Salah Pak, PIN 112233'; document.getElementById('pinInput').value=''; return;}
+ tutupPin();
+ if(aksi==='edit'){
+  const nama=prompt('Nama Santri Pak:',data[editIndex].nama); if(nama===null) return;
+  const usia=prompt('Usia Pak:',data[editIndex].usia);
+  const wali=prompt('Wali Santri Pak:',data[editIndex].wali);
+  const hp=prompt('No HP Wali Pak:',data[editIndex].hp);
+  const alamat=prompt('Alamat Pak:',data[editIndex].alamat);
+  const tgl=prompt('Tgl Masuk Pak:',data[editIndex].tglmasuk);
+  if(nama) data[editIndex].nama=nama; if(usia) data[editIndex].usia=usia; if(wali) data[editIndex].wali=wali; if(hp!==null) data[editIndex].hp=hp; if(alamat) data[editIndex].alamat=alamat; if(tgl) data[editIndex].tglmasuk=tgl;
+  render();
+ } else if(aksi==='excel'){
+  let csv="No,Nama,Usia,Wali Santri,No HP Wali,Alamat,Tgl Masuk\n"; data.forEach((d,i)=>{csv+=`${i+1},"${d.nama}",${d.usia},"${d.wali}","${d.hp}","${d.alamat}",${d.tglmasuk}\n`;});
+  const b=new Blob([csv],{type:'text/csv'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='Data_Santri_TPQ.csv'; a.click();
+ } else if(aksi==='cetak'){cetakRapi();}
+ else if(aksi==='hapusAll'){if(confirm('Yakin Pak hapus semua Pak?')){data=[]; render();}}
+}
+function hapusSatu(){if(confirm('Hapus '+data[editIndex].nama+' Pak?')){data.splice(editIndex,1); tutupPin(); render();}}
+function cetakRapi(){
+  let rows=''; data.forEach((d,i)=>{rows+=`<tr><td style="text-align:center">${i+1}</td><td style="text-align:center">${d.nama}</td><td style="text-align:center">${d.usia} Th</td><td style="text-align:center">${d.wali}</td><td style="text-align:center">${d.hp||'-'}</td><td style="text-align:center">${d.alamat}</td><td style="text-align:center">${d.tglmasuk}</td></tr>`});
+  const win=window.open('','_blank');
+  win.document.write(`<html><head><title>Data Santri TPQ</title><style>
+  body{font-family:system-ui;padding:24px}h2{text-align:center}table{width:100%;border-collapse:collapse;margin-top:12px}
+  th,td{border:1px solid #999;padding:7px 5px;font-size:11px;text-align:center}th{background:#eee}
+ .ttd-wrap{display:flex;justify-content:center;gap:140px;margin-top:50px;text-align:center}.ttd-box{width:230px;text-align:center;line-height:1.6}
+  @media print{button{display:none}}</style></head><body>
+  <h2>Data Santri TPQ</h2><div style="text-align:center;font-size:12px">Tanggal Cetak: ${new Date().toLocaleString('id-ID')} | Total Santri: ${data.length} Anak</div>
+  <table><thead><tr><th>No</th><th>Nama</th><th>Usia</th><th>Wali Santri</th><th>No HP Wali</th><th>Alamat</th><th>Tgl Masuk</th></tr></thead><tbody>${rows}</tbody></table>
+  <div class="ttd-wrap"><div class="ttd-box">Mengetahui,<br>Ketua TPQ<br><br><br><br><br>(...................)</div><div class="ttd-box">Gondanglegi, ${new Date().toLocaleDateString('id-ID')}<br>Admin TPQ<br><br><br><br><br>(...................)</div></div>
+  <br><div style="text-align:center"><button onclick="window.print()" style="padding:10px 20px;background:#2563eb;color:white;border:none;border-radius:8px">Cetak / Simpan PDF</button></div>
+  </body></html>`); win.document.close();
+}
+render();
+</script>
+</body>
+</html>
