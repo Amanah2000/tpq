@@ -76,11 +76,20 @@ function cetakRapi(){
   let m=0,k=0; data.forEach(d=>{m+=Number(d.masuk)||0; k+=Number(d.keluar)||0}); let s=0;
   let rows=''; data.forEach(d=>{s+=(Number(d.masuk)||0)-(Number(d.keluar)||0); rows+=`<tr><td>${d.tgl}</td><td>${d.jam}</td><td style="text-align:left">${d.ket}</td><td style="text-align:right">${Number(d.masuk||0).toLocaleString('id-ID')}</td><td style="text-align:right">${Number(d.keluar||0).toLocaleString('id-ID')}</td><td style="text-align:right;font-weight:bold">${s.toLocaleString('id-ID')}</td></tr>`});
   const win=window.open('','_blank');
-  win.document.write(`<html><head><title>Kas TPQ</title><style>body{font-family:system-ui;padding:20px}h2{text-align:center}table{width:100%;border-collapse:collapse;margin-top:10px}th,td{border:1px solid #999;padding:6px 8px;font-size:12px}th{background:#eee}.total{margin-top:12px;font-size:13px;font-weight:700}@media print{button{display:none}}</style></head><body>
+  win.document.write(`<html><head><title>Kas TPQ</title><style>
+  body{font-family:system-ui;padding:24px}h2{text-align:center}table{width:100%;border-collapse:collapse;margin-top:10px}th,td{border:1px solid #999;padding:6px 8px;font-size:12px}th{background:#eee}.total{margin-top:12px;font-size:13px;font-weight:700}
+  .ttd-wrap{display:flex; justify-content:center; gap:120px; margin-top:50px; text-align:center}
+  .ttd-box{width:220px; text-align:center; line-height:1.6}
+  @media print{button{display:none}}</style></head><body>
   <h2>Laporan Kas TPQ</h2><div style="text-align:center;font-size:12px">Tanggal Cetak: ${new Date().toLocaleString('id-ID')}</div>
   <table><thead><tr><th>Tgl</th><th>Jam</th><th>Ket</th><th>Masuk</th><th>Keluar</th><th>Saldo</th></tr></thead><tbody>${rows}</tbody></table>
   <div class="total">Total Masuk: Rp ${m.toLocaleString('id-ID')} | Total Keluar: Rp ${k.toLocaleString('id-ID')} | Sisa Saldo: Rp ${(m-k).toLocaleString('id-ID')}</div>
-  <br><br><div style="display:flex;justify-content:space-between;margin-top:30px;font-size:12px"><div>Bendahara TPQ<br><br><br>(...................)</div><div>Ketua TPQ<br><br><br>(...................)</div></div>
+  
+  <div class="ttd-wrap">
+    <div class="ttd-box">Mengetahui,<br>Ketua TPQ<br><br><br><br><br>(...................)</div>
+    <div class="ttd-box">Gondanglegi, ${new Date().toLocaleDateString('id-ID')}<br>Bendahara TPQ<br><br><br><br><br>(...................)</div>
+  </div>
+
   <br><button onclick="window.print()" style="padding:10px 20px;background:#2563eb;color:white;border:none;border-radius:8px">Cetak / Simpan PDF</button>
   </body></html>`); win.document.close();
 }
