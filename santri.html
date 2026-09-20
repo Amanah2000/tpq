@@ -1,25 +1,44 @@
 <!DOCTYPE html>
-<html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>TPQ BAITURRAHMAN</title>
+<html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TPQ BAITURRAHMAN</title>
 <style>
-body{font-family:Arial,sans-serif;padding:10px;background:#f5f5f5}
-.container{max-width:950px;margin:auto;background:white;padding:20px;border-radius:10px}
-.kop{display:flex;align-items:center;justify-content:center;gap:20px;border-bottom:4px double #0a4d2e;padding-bottom:15px;margin-bottom:15px}
-.kop img{width:120px;height:120px;border-radius:50%;border:2px solid #d4af37}
-.kop-text{text-align:center} .kop-text h2{margin:0;font-size:30px;color:#0a4d2e;font-weight:900;letter-spacing:1px} .kop-text p{margin:3px 0;font-size:13px}
-table{width:100%;border-collapse:collapse;margin-top:10px} th,td{border:1px solid #000;padding:7px;text-align:center;font-size:13px} th{background:#e8f5e9}
-input{padding:9px;width:100%;box-sizing:border-box;margin-bottom:6px} button{padding:11px 16px;margin:5px 0;background:#0d6efd;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:bold} .btn-hapus{background:#dc3545} .btn-cetak{background:#198754}
-@media print{.no-print{display:none} body{background:#fff} .container{padding:0}}
+body{font-family:Arial,sans-serif;background:#f5f5f5;padding:10px}
+.container{max-width:900px;margin:auto;background:#fff;padding:18px;border-radius:8px}
+.kop{display:flex;align-items:center;justify-content:flex-start;gap:12px;border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:8px}
+.kop img{width:58px;height:58px;border-radius:50%;flex-shrink:0}
+.kop-text{text-align:left;line-height:1.2}
+.kop-text h2{margin:0;font-size:18px;color:#000}
+.kop-text p{margin:0;font-size:11px;color:#333}
+.kop-text h3{margin:4px 0 0 0;font-size:14px;text-align:left}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{border:1px solid #000;padding:5px;text-align:center;font-size:12px} th{background:#e8f5e9}
+input{padding:7px;width:100%;box-sizing:border-box;margin-bottom:5px;font-size:12px}
+button{padding:8px 12px;margin:3px 0;background:#0d6efd;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:12px}
+.btn-hapus{background:#dc3545} .btn-cetak{background:#198754}
+@media print{.no-print{display:none} body{background:#fff} .container{padding:0;border:none}}
 </style></head><body>
 <div class="container">
-<div class="kop"><img src="REPLACE_WITH_LOGO"><div class="kop-text"><h2>TPQ BAITURRAHMAN</h2><p>Jl. Gadang 12 A RT.03 RW.05 Gadang - Sukun Malang 65149</p><h3 style="margin:8px 0 0;font-size:20px">Data Santri TPQ</h3><p id="infoCetak" style="font-size:12px;font-weight:bold"></p></div></div>
-<div class="no-print"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><input id="nama" placeholder="Nama Santri"><input id="usia" placeholder="Usia"><input id="wali" placeholder="Nama Wali"><input id="hp" placeholder="No HP Wali"><input id="alamat" placeholder="Alamat"><input id="tgl" type="date"></div><button onclick="tambah()">+ Input Data</button><button class="btn-cetak" onclick="window.print()">Cetak / Simpan PDF</button></div>
+<div class="kop">
+<img src="logo.png">
+<div class="kop-text">
+<h2>TPQ BAITURRAHMAN</h2>
+<p>Jl. Gadang 12 A RT.03 RW.05 Gadang - Sukun Malang 65149</p>
+<h3>Data Santri TPQ</h3>
+<p id="infoCetak"></p>
+</div>
+</div>
+<div class="no-print"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<input id="nama" placeholder="Nama Santri"><input id="usia" placeholder="Usia">
+<input id="wali" placeholder="Nama Wali"><input id="hp" placeholder="No HP Wali">
+<input id="alamat" placeholder="Alamat"><input id="tgl" type="date">
+</div><button onclick="tambah()">+ Input Data</button> <button class="btn-cetak" onclick="window.print()">Cetak / Simpan PDF</button></div>
 <table><thead><tr><th>No</th><th>Nama</th><th>Usia</th><th>Wali</th><th>No HP</th><th>Alamat</th><th>Tgl Masuk</th><th class="no-print">Aksi</th></tr></thead><tbody id="tbody"></tbody></table>
-<div style="display:flex;justify-content:space-between;margin-top:50px;padding:0 30px"><div style="text-align:center"><p>Mengetahui,<br>Ketua TPQ<br><br><br><br>(................)</p></div><div style="text-align:center"><p id="tglTTD"></p></div></div>
+<div style="display:flex;justify-content:space-between;margin-top:35px;font-size:12px;padding:0 10px"><div>Mengetahui,<br>Ketua TPQ<br><br><br>(.............)</div><div style="text-align:right"><p id="tglTTD"></p></div></div>
 </div>
 <script>
 let data=JSON.parse(localStorage.getItem('santri_baiturrahman')||'[]');
-function render(){let tb=document.getElementById('tbody');tb.innerHTML='';data.forEach((d,i)=>{tb.innerHTML+=`<tr><td>${i+1}</td><td>${d.nama}</td><td>${d.usia}</td><td>${d.wali}</td><td>${d.hp}</td><td>${d.alamat}</td><td>${d.tgl}</td><td class="no-print"><button class="btn-hapus" onclick="hapus(${i})">Hapus</button></td></tr>`});let n=new Date();document.getElementById('infoCetak').innerText=`Tanggal: ${n.toLocaleDateString('id-ID')} | Total: ${data.length} Anak`;document.getElementById('tglTTD').innerHTML=`Malang, ${n.toLocaleDateString('id-ID')}<br>Admin TPQ<br><br><br><br>(................)`;}
-function tambah(){let a=document.getElementById('nama').value,b=document.getElementById('usia').value,c=document.getElementById('wali').value,d=document.getElementById('hp').value,e=document.getElementById('alamat').value,f=document.getElementById('tgl').value;if(!a)return alert('Isi Nama!');data.push({nama:a,usia:b,wali:c,hp:d,alamat:e,tgl:f});localStorage.setItem('santri_baiturrahman',JSON.stringify(data));render();}
+function render(){let tb=document.getElementById('tbody');tb.innerHTML='';data.forEach((d,i)=>{tb.innerHTML+=`<tr><td>${i+1}</td><td>${d.nama}</td><td>${d.usia}</td><td>${d.wali}</td><td>${d.hp}</td><td>${d.alamat}</td><td>${d.tgl}</td><td class="no-print"><button class="btn-hapus" onclick="hapus(${i})">Hapus</button></td></tr>`});let n=new Date();document.getElementById('infoCetak').innerText=`Tanggal: ${n.toLocaleDateString('id-ID')} | Total: ${data.length} Anak`;document.getElementById('tglTTD').innerHTML=`Malang, ${n.toLocaleDateString('id-ID')}<br>Admin TPQ<br><br><br>(.............)`;}
+function tambah(){let a=nama.value,b=usia.value,c=wali.value,d=hp.value,e=alamat.value,f=tgl.value;if(!a)return alert('Isi Nama!');data.push({nama:a,usia:b,wali:c,hp:d,alamat:e,tgl:f});localStorage.setItem('santri_baiturrahman',JSON.stringify(data));render();}
 function hapus(i){if(confirm('Hapus?')){data.splice(i,1);localStorage.setItem('santri_baiturrahman',JSON.stringify(data));render();}}
 render();
 </script></body></html>
