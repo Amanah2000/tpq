@@ -105,7 +105,7 @@ function cetakRapi(){
   @media print{button{display:none}}</style></head><body>
   <h2>Data Santri TPQ</h2><div style="text-align:center;font-size:12px">Tanggal Cetak: ${new Date().toLocaleString('id-ID')} | Total Santri: ${data.length} Anak</div>
   <table><thead><tr><th>No</th><th>Nama</th><th>Usia</th><th>Wali Santri</th><th>No HP Wali</th><th>Alamat</th><th>Tgl Masuk</th></tr></thead><tbody>${rows}</tbody></table>
-  <div class="ttd-wrap"><div class="ttd-box">Mengetahui,<br>Ketua TPQ<br><br><br><br><br>(...................)</div><div class="ttd-box">Gondanglegi, ${new Date().toLocaleDateString('id-ID')}<br>Admin TPQ<br><br><br><br><br>(...................)</div></div>
+  <div class="ttd-wrap"><div class="ttd-box">Mengetahui,<br>Ketua TPQ<br><br><br><br><br>(...................)</div><div class="ttd-box">Malang , ${new Date().toLocaleDateString('id-ID')}<br>Admin TPQ<br><br><br><br><br>(...................)</div></div>
   <br><div style="text-align:center"><button onclick="window.print()" style="padding:10px 20px;background:#2563eb;color:white;border:none;border-radius:8px">Cetak / Simpan PDF</button></div>
   </body></html>`); win.document.close();
 }
