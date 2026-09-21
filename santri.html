@@ -14,6 +14,33 @@ button{padding:8px 12px;margin:3px 2px;border:none;border-radius:4px;cursor:poin
 .btn-input{background:#0d6efd}.btn-cetak{background:#198754}.btn-edit{background:#ffc107;color:#000}.btn-hapus{background:#dc3545}.btn-hapusall{background:#6c757d}
 @media print{.no-print{display:none} body{background:#fff}.container{padding:0}}
 </style></head><body>
+ <style>
+:root{ --bg:#f5f5f5; --card:#fff; --text:#000; --border:#000; }
+.dark{ --bg:#1a1a1a; --card:#2d2d2d; --text:#fff; --border:#555; }
+body{background:var(--bg); color:var(--text);}
+.container{background:var(--card);}
+table,th,td{border-color:var(--border)!important; color:var(--text);}
+input,select{background:var(--card); color:var(--text); border:1px solid var(--border);}
+.kop{border-bottom:2px solid var(--border);}
+</style>
+
+<script>
+function toggleDark(){
+ document.body.classList.toggle('dark');
+ localStorage.setItem('dark', document.body.classList.contains('dark'));
+ if(document.body.classList.contains('dark')){ 
+   document.getElementById('btnDark').innerText='☀️ Mode Terang'; 
+ } else { 
+   document.getElementById('btnDark').innerText='🌙 Mode Gelap'; 
+ }
+}
+window.onload = function(){
+ if(localStorage.getItem('dark')=='true'){ 
+   document.body.classList.add('dark');
+   document.getElementById('btnDark').innerText='☀️ Mode Terang';
+ }
+}
+</script> 
 <div class="container">
 <div class="kop">
 <img src="logo.png">
@@ -43,6 +70,7 @@ button{padding:8px 12px;margin:3px 2px;border:none;border-radius:4px;cursor:poin
 <button class="btn-input" id="btnSimpan" onclick="simpan()">+ Input Data</button>
 <button class="btn-cetak" onclick="window.print()">Cetak / Simpan PDF</button>
 <button class="btn-hapusall" onclick="hapusSemua()">Hapus Semua (PIN)</button>
+<button id="btnDark" onclick="toggleDark()" style="position:fixed; top:10px; right:10px; z-index:999; padding:8px 12px; border-radius:20px; border:none; background:#222; color:#fff; cursor:pointer;">🌙 Mode Gelap</button>
 </div>
 </div>
 
