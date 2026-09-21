@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - TPQ BAITURRAHMAN</title>
+<style>
+:root{ --bg:#f5f5f5; --card:#fff; --text:#000; } body.dark{ --bg:#121212; --card:#1e1e1e; --text:#e0e0e0; }
+body{font-family:Arial,sans-serif; background:var(--bg); color:var(--text); margin:0; display:flex; align-items:center; justify-content:center; min-height:100vh;}
+.card{max-width:380px; width:90%; background:var(--card); padding:30px 25px; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.1); text-align:center; border-top:5px solid #2e7d32;}
+.card img{width:80px; height:80px; border-radius:50%;}
+input{width:100%; padding:12px; margin:8px 0; border:1px solid #888; border-radius:8px; box-sizing:border-box;}
+button{width:100%; padding:12px; background:#2e7d32; color:#fff; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-top:10px;}
+.btn-dark{position:fixed; top:10px; right:10px; padding:10px 16px; border-radius:25px; background:#222; color:#fff; border:1px solid #555;}
+</style>
+</head>
+<body>
+<button id="btnDark" class="btn-dark" onclick="toggleDark()">🌙 Mode Gelap</button>
+<div class="card">
+<img src="logo.png"><h2>TPQ BAITURRAHMAN</h2>
+<p>Jl. Gadang 12 A Gadang - Sukun Malang</p>
+<h3>🔒 Login Admin</h3>
+<input id="user" placeholder="Username" value="admin">
+<input id="pass" type="password" placeholder="Password">
+<button onclick="doLogin()">Masuk</button>
+<div id="err" style="color:red; font-size:12px; display:none; margin-top:8px;">Username / Password salah Pak!</div>
+<p style="font-size:11px; background:#f0f8f0; padding:8px; border-radius:6px; text-align:left; margin-top:15px;">
+Default: Username <b>admin</b> Password <b>tpq123</b></p>
+</div>
+<script>
+function toggleDark(){ document.body.classList.toggle('dark'); localStorage.setItem('tpq_dark',''+document.body.classList.contains('dark')); }
+if(localStorage.getItem('tpq_dark')=='true') document.body.classList.add('dark');
+if(localStorage.getItem('tpq_login')=='true') location.href='santri.html';
+function doLogin(){
+ let u=document.getElementById('user').value, p=document.getElementById('pass').value;
+ if(u==='admin' && p==='tpq123'){ localStorage.setItem('tpq_login','true'); location.href='santri.html'; }
+ else document.getElementById('err').style.display='block';
+}
+</script>
+</body>
+</html>
