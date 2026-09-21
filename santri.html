@@ -1,156 +1,74 @@
 <!DOCTYPE html>
-<html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TPQ BAITURRAHMAN</title>
 <style>
-body{font-family:Arial,sans-serif;background:#f5f5f5;padding:10px}
-.container{max-width:1000px;margin:auto;background:#fff;padding:18px;border-radius:8px}
-.kop{display:flex;position:relative;border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:10px;min-height:62px}
-.kop img{position:absolute;left:0;top:0;width:60px;height:60px;border-radius:50%;background:#fff}
-.kop-text{width:100%;text-align:center;line-height:1.25}
-.kop-text h2{margin:0;font-size:19px}.kop-text p{margin:0;font-size:11px}.kop-text h3{margin:2px 0 0 0;font-size:14px}
-table{width:100%;border-collapse:collapse;margin-top:10px} th,td{border:1px solid #000;padding:5px;text-align:center;font-size:11px} th{background:#e8f5e9}
-input,select{padding:7px;width:100%;box-sizing:border-box;margin-bottom:5px;font-size:12px}
-button{padding:8px 12px;margin:3px 2px;border:none;border-radius:4px;cursor:pointer;font-size:12px;color:#fff}
-.btn-input{background:#0d6efd}.btn-cetak{background:#198754}.btn-edit{background:#ffc107;color:#000}.btn-hapus{background:#dc3545}.btn-hapusall{background:#6c757d}
-@media print{.no-print{display:none} body{background:#fff}.container{padding:0}}
-</style></head><body>
- <style>
-:root{ --bg:#f5f5f5; --card:#fff; --text:#000; --border:#000; }
-.dark{ --bg:#1a1a1a; --card:#2d2d2d; --text:#fff; --border:#555; }
-body{background:var(--bg); color:var(--text);}
-.container{background:var(--card);}
-table,th,td{border-color:var(--border)!important; color:var(--text);}
-input,select{background:var(--card); color:var(--text); border:1px solid var(--border);}
-.kop{border-bottom:2px solid var(--border);}
+:root{ --bg:#f5f5f5; --card:#fff; --text:#000; --border:#000; --input:#fff; }
+body.dark{ --bg:#121212; --card:#1e1e1e; --text:#e0e0e0; --border:#555; --input:#2d2d2d; }
+body{font-family:Arial,sans-serif; background:var(--bg); color:var(--text); margin:0; transition:0.3s;}
+.container{max-width:1100px;margin:20px auto;background:var(--card);padding:20px; border-radius:8px;}
+.kop{display:flex; align-items:center; gap:12px; border-bottom:2px solid var(--border); padding-bottom:10px;}
+.kop img{width:70px;height:70px;border-radius:50%;}
+.kop-text h2{margin:0; font-size:20px;}
+.kop-text p{margin:2px 0; font-size:12px;}
+.form-grid{display:grid; grid-template-columns:1fr 150px 100px; gap:8px; margin:10px 0;}
+.form-grid2{display:grid; grid-template-columns:1fr 150px; gap:8px; margin:8px 0;}
+.form-grid3{display:grid; grid-template-columns:1fr 200px; gap:8px; margin:8px 0;}
+input,select{padding:10px; border:1px solid var(--border); border-radius:4px; background:var(--input); color:var(--text); width:100%; box-sizing:border-box;}
+button{padding:8px 12px; border:none; border-radius:4px; cursor:pointer; font-weight:bold;}
+.btn-input{background:#0d6efd; color:#fff;}.btn-pdf{background:#198754; color:#fff;}.btn-hapus-all{background:#6c757d; color:#fff;}
+.btn-dark{position:fixed; top:10px; right:10px; z-index:999; padding:10px 16px; border-radius:25px; background:#222; color:#fff; border:1px solid #555;}
+body.dark.btn-dark{background:#f5f5f5; color:#000;}
+table{width:100%; border-collapse:collapse; margin-top:15px; font-size:13px;}
+th,td{border:1px solid var(--border); padding:8px; text-align:center;}
+th{background:#2e7d32; color:#fff;} body.dark th{background:#1b5e20;}
+.btn-edit{background:#ffc107;}.btn-hapus{background:#dc3545; color:#fff;}
+.footer{display:flex; justify-content:space-between; margin-top:40px; font-size:12px;}
+@media print{.btn-dark,.form-grid,.form-grid2,.form-grid3,.btn-input,.btn-pdf,.btn-hapus-all{display:none;}}
+@media (max-width:700px){
+.container{margin:60px 8px 10px 8px; padding:12px;}
+.kop{flex-direction:column; text-align:center;}
+.form-grid,.form-grid2,.form-grid3{grid-template-columns:1fr;}
+ table{display:block; overflow-x:auto; white-space:nowrap;}
+.btn-dark{top:5px; right:5px; font-size:12px;}
+}
 </style>
-
-<script>
-function toggleDark(){
- document.body.classList.toggle('dark');
- localStorage.setItem('dark', document.body.classList.contains('dark'));
- if(document.body.classList.contains('dark')){ 
-   document.getElementById('btnDark').innerText='☀️ Mode Terang'; 
- } else { 
-   document.getElementById('btnDark').innerText='🌙 Mode Gelap'; 
- }
-}
-window.onload = function(){
- if(localStorage.getItem('dark')=='true'){ 
-   document.body.classList.add('dark');
-   document.getElementById('btnDark').innerText='☀️ Mode Terang';
- }
-}
-</script> 
+</head>
+<body>
+<button id="btnDark" class="btn-dark" onclick="toggleDark()">🌙 Mode Gelap</button>
 <div class="container">
 <div class="kop">
 <img src="logo.png">
 <div class="kop-text">
 <h2>TPQ BAITURRAHMAN</h2>
 <p>Jl. Gadang 12 A RT.03 RW.05 Gadang - Sukun Malang 65149</p>
-<h3>Data Santri TPQ</h3>
-<p id="infoCetak" style="font-size:11px"></p>
+<p><b>Data Santri TPQ</b></p>
+<p id="infoTotal">Tanggal Cetak: -</p>
 </div>
 </div>
-
-<div class="no-print">
-<div style="display:grid;grid-template-columns:1fr 120px 100px;gap:8px">
-<input id="nama" placeholder="Nama Santri">
-<select id="jk"><option value="">L / P</option><option value="L">L - Laki-laki</option><option value="P">P - Perempuan</option></select>
-<input id="usia" placeholder="Usia">
+<div class="form-grid"><input id="nama" placeholder="Nama Santri"><select id="jk"><option value="">L / P</option><option value="L">L - Laki</option><option value="P">P - Perempuan</option></select><input id="usia" placeholder="Usia" type="number"></div>
+<div class="form-grid2"><input id="wali" placeholder="Nama Wali Santri"><input id="hp" placeholder="No.HP"></div>
+<div class="form-grid3"><input id="alamat" placeholder="Alamat"><input id="tgl" type="date"></div>
+<div style="margin:12px 0; display:flex; gap:8px; flex-wrap:wrap;">
+<button class="btn-input" onclick="inputData()">+ Input Data</button>
+<button class="btn-pdf" onclick="window.print()">Cetak / Simpan PDF</button>
+<button class="btn-hapus-all" onclick="hapusSemua()">Hapus Semua (PIN)</button>
 </div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:5px">
-<input id="wali" placeholder="Nama Wali Santri">
-<input id="hp" placeholder="No.HP">
+<table><thead><tr><th>No</th><th>Nama</th><th>L / P</th><th>Usia</th><th>Wali Santri</th><th>No.HP</th><th>Alamat</th><th>Tgl Masuk</th><th>Aksi</th></tr></thead><tbody id="tbody"></tbody></table>
+<div class="footer"><div>Mengetahui,<br>Ketua TPQ<br><br><br>(............)</div><div style="text-align:right;">Malang, <span id="tglFooter"></span><br>Admin TPQ<br><br><br>(............)</div></div>
 </div>
-<div style="display:grid;grid-template-columns:1fr 160px;gap:8px;margin-top:5px">
-<input id="alamat" placeholder="Alamat">
-<input id="tgl" type="date">
-</div>
-<div style="margin-top:6px">
-<button class="btn-input" id="btnSimpan" onclick="simpan()">+ Input Data</button>
-<button class="btn-cetak" onclick="window.print()">Cetak / Simpan PDF</button>
-<button class="btn-hapusall" onclick="hapusSemua()">Hapus Semua (PIN)</button>
-<button id="btnDark" onclick="toggleDark()" style="position:fixed; top:10px; right:10px; z-index:999; padding:8px 12px; border-radius:20px; border:none; background:#222; color:#fff; cursor:pointer;">🌙 Mode Gelap</button>
-</div>
-</div>
-
-<table><thead><tr><th>No</th><th>Nama</th><th>L / P</th><th>Usia</th><th>Wali Santri</th><th>No.HP</th><th>Alamat</th><th>Tgl Masuk</th><th class="no-print">Aksi</th></tr></thead><tbody id="tbody"></tbody></table>
-
-<div style="display:flex;justify-content:space-between;margin-top:35px;font-size:12px;padding:0 10px"><div>Mengetahui,<br>Ketua TPQ<br><br><br>(.............)</div><div style="text-align:right"><p id="tglTTD"></p></div></div>
-</div>
-
 <script>
-const PIN_BENAR = "1234"; // GANTI PIN DISINI PAK
-let data=JSON.parse(localStorage.getItem('santri_baiturrahman')||'[]');
-let editIndex = -1;
-
-function cekPin(){
-  let pin = prompt("Masukkan PIN Keamanan (default 1234):");
-  if(pin===null) return false;
-  if(pin===PIN_BENAR) return true;
-  alert("PIN Salah!");
-  return false;
-}
-
-function render(){
-  let tb=document.getElementById('tbody');tb.innerHTML='';
-  data.forEach((d,i)=>{
-    tb.innerHTML+=`<tr><td>${i+1}</td><td>${d.nama}</td><td><b>${d.jk}</b></td><td>${d.usia}</td><td>${d.wali}</td><td>${d.hp}</td><td>${d.alamat}</td><td>${d.tgl}</td>
-    <td class="no-print"><button class="btn-edit" onclick="editData(${i})">Edit</button> <button class="btn-hapus" onclick="hapusSatu(${i})">Hapus</button></td></tr>`;
-  });
-  let n=new Date();let l=data.filter(x=>x.jk=='L').length;let p=data.filter(x=>x.jk=='P').length;
-  document.getElementById('infoCetak').innerText=`Tanggal Cetak: ${n.toLocaleDateString('id-ID')} | Total: ${data.length} Anak (L:${l} P:${p})`;
-  document.getElementById('tglTTD').innerHTML=`Malang, ${n.toLocaleDateString('id-ID')}<br>Admin TPQ<br><br><br>(.............)`;
-}
-
-function simpan(){
-  let a=nama.value,jk=document.getElementById('jk').value,b=usia.value,c=wali.value,d=hp.value,e=alamat.value,f=tgl.value;
-  if(!a||!jk) return alert('Isi Nama & L/P!');
-  if(editIndex>=0){
-    if(!cekPin()) return;
-    data[editIndex]={nama:a,jk:jk,usia:b,wali:c,hp:d,alamat:e,tgl:f};
-    editIndex=-1;
-    document.getElementById('btnSimpan').innerText='+ Input Data';
-  } else {
-    data.push({nama:a,jk:jk,usia:b,wali:c,hp:d,alamat:e,tgl:f});
-  }
-  localStorage.setItem('santri_baiturrahman',JSON.stringify(data));
-  render(); clearForm();
-}
-
-function clearForm(){
-  nama.value='';jk.value='';usia.value='';wali.value='';hp.value='';alamat.value='';tgl.value='';
-}
-
-function editData(i){
-  let d=data[i];
-  nama.value=d.nama;jk.value=d.jk;usia.value=d.usia;wali.value=d.wali;hp.value=d.hp;alamat.value=d.alamat;tgl.value=d.tgl;
-  editIndex=i;
-  document.getElementById('btnSimpan').innerText='Update Data (PIN)';
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function hapusSatu(i){
-  if(!cekPin()) return;
-  if(confirm('Hapus data '+data[i].nama+'?')){
-    data.splice(i,1);
-    localStorage.setItem('santri_baiturrahman',JSON.stringify(data));
-    render();
-  }
-}
-
-function hapusSemua(){
-  if(!cekPin()) return;
-  if(confirm('HAPUS SEMUA DATA? Tidak bisa dikembalikan!')){
-    if(confirm('Yakin Hapus Semua?')){
-      data=[];
-      localStorage.setItem('santri_baiturrahman',JSON.stringify(data));
-      render();
-    }
-  }
-}
-render();
-</script></body></html>
-
-
-
+let data=JSON.parse(localStorage.getItem('santriTPQ')||'[]'); let editIndex=-1;
+function toggleDark(){ document.body.classList.toggle('dark'); let isDark=document.body.classList.contains('dark'); localStorage.setItem('tpq_dark',''+isDark); document.getElementById('btnDark').innerText=isDark?'☀️ Mode Terang':'🌙 Mode Gelap'; }
+function loadDark(){ if(localStorage.getItem('tpq_dark')=='true'){ document.body.classList.add('dark'); document.getElementById('btnDark').innerText='☀️ Mode Terang'; } }
+function render(){ let tbody=document.getElementById('tbody'); tbody.innerHTML=''; let L=0,P=0; data.forEach((d,i)=>{ if(d.jk=='L') L++; if(d.jk=='P') P++; tbody.innerHTML+=`<tr><td>${i+1}</td><td>${d.nama}</td><td>${d.jk}</td><td>${d.usia} Th</td><td>${d.wali}</td><td>${d.hp}</td><td>${d.alamat}</td><td>${d.tgl}</td><td><button class="btn-edit" onclick="editData(${i})">Edit</button> <button class="btn-hapus" onclick="hapusData(${i})">Hapus</button></td></tr>`; }); let tglStr=new Date().toLocaleDateString('id-ID'); document.getElementById('infoTotal').innerText=`Tanggal Cetak: ${tglStr} | Total: ${data.length} Anak (L ${L} P ${P})`; document.getElementById('tglFooter').innerText=tglStr; localStorage.setItem('santriTPQ',JSON.stringify(data)); }
+function inputData(){ let nama=document.getElementById('nama').value.trim(); let jk=document.getElementById('jk').value; let usia=document.getElementById('usia').value; let wali=document.getElementById('wali').value; let hp=document.getElementById('hp').value; let alamat=document.getElementById('alamat').value; let tgl=document.getElementById('tgl').value||new Date().toISOString().split('T')[0]; if(!nama||!jk){ alert('Nama & L/P wajib isi Pak!'); return; } let obj={nama,jk,usia,wali,hp,alamat,tgl}; if(editIndex>=0){ data[editIndex]=obj; editIndex=-1; } else { data.push(obj); } document.getElementById('nama').value=''; document.getElementById('jk').value=''; document.getElementById('usia').value=''; document.getElementById('wali').value=''; document.getElementById('hp').value=''; document.getElementById('alamat').value=''; render(); }
+function editData(i){ let d=data[i]; document.getElementById('nama').value=d.nama; document.getElementById('jk').value=d.jk; document.getElementById('usia').value=d.usia; document.getElementById('wali').value=d.wali; document.getElementById('hp').value=d.hp; document.getElementById('alamat').value=d.alamat; document.getElementById('tgl').value=d.tgl; editIndex=i; window.scrollTo(0,0); }
+function hapusData(i){ if(confirm('Hapus data '+data[i].nama+' Pak?')){ data.splice(i,1); render(); } }
+function hapusSemua(){ let pin=prompt('Masukkan PIN Ketua Pak (PIN: 1234)'); if(pin=='1234'){ if(confirm('Yakin hapus semua Pak?')){ data=[]; render(); } } else if(pin!=null){ alert('PIN salah Pak!'); } }
+loadDark(); render();
+</script>
+</body>
+</html>
