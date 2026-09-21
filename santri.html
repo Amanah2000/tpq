@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TPQ</title>
+<title>TPQ BAITURRAHMAN</title>
 <style>
 body{font-family:Arial,sans-serif;background:#f5f5f5;padding:10px}
-.container{max-width:900px;margin:auto;background:#fff;padding:18px;border-radius:8px}
+.container{max-width:1000px;margin:auto;background:#fff;padding:18px;border-radius:8px}
 .kop{display:flex;position:relative;border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:10px;min-height:62px;align-items:flex-start}
 .kop img{position:absolute;left:0;top:0px;width:60px;height:60px;border-radius:50%;background:#fff}
 .kop-text{width:100%;text-align:center;line-height:1.25}
 .kop-text h2{margin:0;font-size:19px} .kop-text p{margin:0;font-size:11px} .kop-text h3{margin:2px 0 0 0;font-size:14px}
-table{width:100%;border-collapse:collapse;margin-top:10px} th,td{border:1px solid #000;padding:5px;text-align:center;font-size:12px} th{background:#e8f5e9}
-input{padding:7px;width:100%;box-sizing:border-box;margin-bottom:5px} button{padding:8px 12px;margin:3px 0;background:#0d6efd;color:#fff;border:none;border-radius:4px;cursor:pointer} .btn-hapus{background:#dc3545} .btn-cetak{background:#198754}
+table{width:100%;border-collapse:collapse;margin-top:10px} th,td{border:1px solid #000;padding:5px;text-align:center;font-size:11px} th{background:#e8f5e9}
+input,select{padding:7px;width:100%;box-sizing:border-box;margin-bottom:5px;font-size:12px} button{padding:8px 12px;margin:3px 0;background:#0d6efd;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:12px} .btn-hapus{background:#dc3545} .btn-cetak{background:#198754}
 @media print{.no-print{display:none} body{background:#fff} .container{padding:0}}
 </style></head><body>
 <div class="container">
 <div class="kop">
+<img src="logo.png">
 <div class="kop-text">
 <h2>TPQ BAITURRAHMAN</h2>
 <p>Jl. Gadang 12 A RT.03 RW.05 Gadang - Sukun Malang 65149</p>
@@ -21,14 +22,29 @@ input{padding:7px;width:100%;box-sizing:border-box;margin-bottom:5px} button{pad
 <p id="infoCetak" style="font-size:11px"></p>
 </div>
 </div>
-<div class="no-print"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input id="nama" placeholder="Nama Santri"><input id="usia" placeholder="Usia"><input id="wali" placeholder="Nama Wali"><input id="hp" placeholder="No HP Wali"><input id="alamat" placeholder="Alamat"><input id="tgl" type="date"></div><button onclick="tambah()">+ Input Data</button> <button class="btn-cetak" onclick="window.print()">Cetak / Simpan PDF</button></div>
-<table><thead><tr><th>No</th><th>Nama</th><th>Usia</th><th>Wali</th><th>No HP</th><th>Alamat</th><th>Tgl Masuk</th><th class="no-print">Aksi</th></tr></thead><tbody id="tbody"></tbody></table>
+<div class="no-print">
+<div style="display:grid;grid-template-columns:1fr 120px 100px;gap:8px">
+<input id="nama" placeholder="Nama Santri">
+<select id="jk"><option value="">L / P</option><option value="L">L - Laki-laki</option><option value="P">P - Perempuan</option></select>
+<input id="usia" placeholder="Usia">
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:5px">
+<input id="wali" placeholder="Nama Wali Santri">
+<input id="hp" placeholder="No.HP">
+</div>
+<div style="display:grid;grid-template-columns:1fr 160px;gap:8px;margin-top:5px">
+<input id="alamat" placeholder="Alamat">
+<input id="tgl" type="date">
+</div>
+<button onclick="tambah()">+ Input Data</button> <button class="btn-cetak" onclick="window.print()">Cetak / Simpan PDF</button>
+</div>
+<table><thead><tr><th>No</th><th>Nama</th><th>L / P</th><th>Usia</th><th>Wali Santri</th><th>No.HP</th><th>Alamat</th><th>Tgl Masuk</th><th class="no-print">Aksi</th></tr></thead><tbody id="tbody"></tbody></table>
 <div style="display:flex;justify-content:space-between;margin-top:35px;font-size:12px;padding:0 10px"><div>Mengetahui,<br>Ketua TPQ<br><br><br>(.............)</div><div style="text-align:right"><p id="tglTTD"></p></div></div>
 </div>
 <script>
 let data=JSON.parse(localStorage.getItem('santri_baiturrahman')||'[]');
-function render(){let tb=document.getElementById('tbody');tb.innerHTML='';data.forEach((d,i)=>{tb.innerHTML+=`<tr><td>${i+1}</td><td>${d.nama}</td><td>${d.usia}</td><td>${d.wali}</td><td>${d.hp}</td><td>${d.alamat}</td><td>${d.tgl}</td><td class="no-print"><button class="btn-hapus" onclick="hapus(${i})">Hapus</button></td></tr>`});let n=new Date();document.getElementById('infoCetak').innerText=`Tanggal: ${n.toLocaleDateString('id-ID')} | Total: ${data.length} Anak`;document.getElementById('tglTTD').innerHTML=`Malang, ${n.toLocaleDateString('id-ID')}<br>Admin TPQ<br><br><br>(.............)`;}
-function tambah(){let a=document.getElementById('nama').value,b=document.getElementById('usia').value,c=document.getElementById('wali').value,d=document.getElementById('hp').value,e=document.getElementById('alamat').value,f=document.getElementById('tgl').value;if(!a)return alert('Isi Nama!');data.push({nama:a,usia:b,wali:c,hp:d,alamat:e,tgl:f});localStorage.setItem('santri_baiturrahman',JSON.stringify(data));render();}
+function render(){let tb=document.getElementById('tbody');tb.innerHTML='';data.forEach((d,i)=>{tb.innerHTML+=`<tr><td>${i+1}</td><td>${d.nama}</td><td><b>${d.jk||''}</b></td><td>${d.usia}</td><td>${d.wali}</td><td>${d.hp}</td><td>${d.alamat}</td><td>${d.tgl}</td><td class="no-print"><button class="btn-hapus" onclick="hapus(${i})">Hapus</button></td></tr>`});let n=new Date();let l=data.filter(x=>x.jk=='L').length;let p=data.filter(x=>x.jk=='P').length;document.getElementById('infoCetak').innerText=`Tanggal Cetak: ${n.toLocaleDateString('id-ID')} | Total: ${data.length} Anak (L:${l} P:${p})`;document.getElementById('tglTTD').innerHTML=`Malang, ${n.toLocaleDateString('id-ID')}<br>Admin TPQ<br><br><br>(.............)`;}
+function tambah(){let a=document.getElementById('nama').value,jk=document.getElementById('jk').value,b=document.getElementById('usia').value,c=document.getElementById('wali').value,d=document.getElementById('hp').value,e=document.getElementById('alamat').value,f=document.getElementById('tgl').value;if(!a)return alert('Isi Nama!');if(!jk)return alert('Pilih L / P!');data.push({nama:a,jk:jk,usia:b,wali:c,hp:d,alamat:e,tgl:f});localStorage.setItem('santri_baiturrahman',JSON.stringify(data));render();document.getElementById('nama').value='';}
 function hapus(i){if(confirm('Hapus?')){data.splice(i,1);localStorage.setItem('santri_baiturrahman',JSON.stringify(data));render();}}
 render();
 </script></body></html>
