@@ -54,12 +54,15 @@ th{background:#2e7d32; color:#fff;} body.dark th{background:#1b5e20;}
 <div style="margin:12px 0; display:flex; gap:8px; flex-wrap:wrap;">
 <button class="btn-input" onclick="inputData()">+ Input Data</button>
 <button class="btn-pdf" onclick="window.print()">Cetak / Simpan PDF</button>
+<button style="background:#dc3545; color:#fff; padding:8px 12px; border:none; border-radius:4px; font-weight:bold;" onclick="logout()">Logout</button> 
 <button class="btn-hapus-all" onclick="hapusSemua()">Hapus Semua (PIN)</button>
 </div>
 <table><thead><tr><th>No</th><th>Nama</th><th>L / P</th><th>Usia</th><th>Wali Santri</th><th>No.HP</th><th>Alamat</th><th>Tgl Masuk</th><th>Aksi</th></tr></thead><tbody id="tbody"></tbody></table>
 <div class="footer"><div>Mengetahui,<br>Ketua TPQ<br><br><br>(............)</div><div style="text-align:right;">Malang, <span id="tglFooter"></span><br>Admin TPQ<br><br><br>(............)</div></div>
 </div>
 <script>
+ if(localStorage.getItem('tpq_login')!=='true'){ location.href='login.html'; }
+function logout(){ if(confirm('Logout Pak?')){ localStorage.removeItem('tpq_login'); location.href='login.html'; } }
 let data=JSON.parse(localStorage.getItem('santriTPQ')||'[]'); let editIndex=-1;
 function toggleDark(){ document.body.classList.toggle('dark'); let isDark=document.body.classList.contains('dark'); localStorage.setItem('tpq_dark',''+isDark); document.getElementById('btnDark').innerText=isDark?'☀️ Mode Terang':'🌙 Mode Gelap'; }
 function loadDark(){ if(localStorage.getItem('tpq_dark')=='true'){ document.body.classList.add('dark'); document.getElementById('btnDark').innerText='☀️ Mode Terang'; } }
