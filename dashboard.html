@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TPQ v9.1 TTL</title>
+<title>TPQ v9.2 ALAMAT</title>
 <style>
 :root{--bg:#0f172a;--card:#1e293b;--text:#e2e8f0;--border:#334155}
 .light{--bg:#f1f5f9;--card:#fff;--text:#0f172a;--border:#cbd5e1}
 body{font-family:system-ui;margin:0;background:var(--bg);color:var(--text);overflow-x:hidden}
 header{padding:10px 14px;background:var(--card);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;border-bottom:1px solid var(--border)}
 .card{background:var(--card);margin:12px;padding:12px;border-radius:12px;border:1px solid var(--border);overflow-x:auto}
-input,select,button{padding:7px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);margin:2px}
+input,select,button{padding:6px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);margin:2px}
 .btn{padding:6px 10px;font-weight:bold;cursor:pointer;font-size:11px;white-space:nowrap}
 .green{background:#16a34a;color:#fff}.orange{background:#ea580c;color:#fff}.blue{background:#2563eb;color:#fff}.red{background:#dc2626;color:#fff}.gray{background:#475569;color:#fff}.yellow{background:#ca8a04;color:#fff}
-table{width:100%;border-collapse:collapse;margin-top:8px;min-width:900px}th,td{border:1px solid var(--border);padding:6px;font-size:11px;text-align:center}
+table{width:100%;border-collapse:collapse;margin-top:8px;min-width:1100px}th,td{border:1px solid var(--border);padding:6px;font-size:11px;text-align:center}
 .badge{padding:4px 8px;border-radius:8px;background:var(--bg);border:1px solid var(--border);font-size:11px;white-space:nowrap}
 .kop{display:block}.ttd{display:none;margin-top:30px}.kop-surat{display:flex;align-items:center;gap:12px;border-bottom:3px double #000;padding-bottom:8px;margin-bottom:10px}
-.kop-logo{width:58px;height:58px;border-radius:50%;object-fit:cover}
+.kop-logo{width:56px;height:56px;border-radius:50%;object-fit:cover}
 .judul-laporan{text-align:center;width:100%;margin:10px 0 4px}
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.78);z-index:999;align-items:center;justify-content:center}
-.modal-box{background:var(--card);padding:16px;border-radius:12px;border:1px solid var(--border);max-width:400px;width:93%;text-align:center;max-height:90vh;overflow-y:auto}
-.modal-box label{display:block;text-align:left;font-size:11px;margin:5px 0 2px}.modal-box input,.modal-box select{width:95%}
+.modal-box{background:var(--card);padding:16px;border-radius:12px;border:1px solid var(--border);max-width:420px;width:93%;text-align:center;max-height:92vh;overflow-y:auto}
+.modal-box label{display:block;text-align:left;font-size:11px;margin:5px 0 2px}.modal-box input,.modal-box select,.modal-box textarea{width:95%;padding:7px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text)}
 .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#16a34a;color:#fff;padding:9px 16px;border-radius:18px;font-size:12px;z-index:1000;display:none}
-@media print{body{background:#fff;color:#000} header,.no-print{display:none!important}.card{background:#fff;border:none;margin:0;padding:0} table{min-width:100%}.ttd{display:flex;justify-content:space-between} th,td{border:1px solid #000;color:#000;font-size:10px}}
+@media print{body{background:#fff;color:#000} header,.no-print{display:none!important}.card{background:#fff;border:none;margin:0;padding:0} table{min-width:100%}.ttd{display:flex;justify-content:space-between} th,td{border:1px solid #000;color:#000;font-size:9px}}
 </style></head>
 <body>
 <header>
-<div><b>TPQ v9.1 TTL</b><br><small id="kodeTop">582c05ea9dadf831af03</small></div>
+<div><b>TPQ v9.2 ALAMAT</b><br><small id="kodeTop">582c05ea9dadf831af03</small></div>
 <div class="no-print" style="display:flex;gap:5px;align-items:center;flex-shrink:0">
 <span id="jamLive" class="badge">--:--:--</span><span id="statusKoneksi" class="badge">🟢</span>
 <button class="btn gray" onclick="toggleDark()">🌙</button>
@@ -31,34 +31,35 @@ table{width:100%;border-collapse:collapse;margin-top:8px;min-width:900px}th,td{b
 </div>
 </header>
 
-<div class="card no-print"><b>🔑 PIN: amanah2000</b> <input id="npointId" style="width:45%" value="582c05ea9dadf831af03"><button class="btn green" onclick="simpanNPoint()">💾 Simpan</button><button class="btn orange" onclick="ambilNPoint()">☁️ Ambil</button></div>
+<div class="card no-print"><b>🔑 PIN: amanah2000</b> <input id="npointId" style="width:43%" value="582c05ea9dadf831af03"><button class="btn green" onclick="simpanNPoint()">💾 Simpan</button><button class="btn orange" onclick="ambilNPoint()">☁️ Ambil</button></div>
 
 <div class="card">
 <div class="kop">
 <div class="kop-surat">
-<img src="logo.png" class="kop-logo" onerror="this.outerHTML='<div style=width:58px;height:58px;background:#16a34a;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff>🕌</div>'">
+<img src="logo.png" class="kop-logo" onerror="this.outerHTML='<div style=width:56px;height:56px;background:#16a34a;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff>🕌</div>'">
 <div style="flex:1"><h2 style="margin:0;font-size:16px;color:#16a34a">TPQ BAITURRAHMAN</h2><p style="margin:1px 0;font-size:10px">Jl. Tirto Joyo No.21 Dau Malang | Amanah 2000</p></div>
 <div style="text-align:right;font-size:10px"><div id="kopJam"></div><div id="kopTgl"></div></div>
 </div>
-<div class="judul-laporan"><h3 id="judulCetak" style="margin:0">LAPORAN KAS TPQ BAITURRAHMAN</h3><p id="periodeCetak" style="font-size:10px;margin:3px 0"></p></div>
+<div class="judul-laporan"><h3 id="judulCetak" style="margin:0">LAPORAN SANTRI TPQ BAITURRAHMAN + TTL</h3><p id="periodeCetak" style="font-size:10px;margin:3px 0"></p></div>
 </div>
 
-<div class="no-print" style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn green" onclick="showTab('kas')">💰 Kas</button><button class="btn blue" onclick="showTab('santri')">🧒 Santri (TTL)</button><span class="badge" id="ringkas"></span><span class="badge" id="badgeJam"></span></div>
+<div class="no-print" style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn green" onclick="showTab('kas')">💰 Kas</button><button class="btn blue" onclick="showTab('santri')">🧒 Santri + Alamat</button><span class="badge" id="ringkas"></span><span class="badge" id="badgeJam"></span></div>
 
 <div id="tab-kas"><div class="no-print" style="margin-top:8px;display:flex;flex-wrap:wrap"><input id="tgl" type="date" style="width:125px"><input id="jam" type="time" style="width:90px"><input id="ket" placeholder="Keterangan" style="flex:1;min-width:100px"><input id="masuk" type="number" placeholder="Masuk" style="width:95px"><input id="keluar" type="number" placeholder="Keluar" style="width:95px"><button class="btn green" onclick="tambahKas()">+ Input</button><button class="btn blue" onclick="cetakKas()">🖨️ Cetak</button></div><div style="overflow-x:auto"><table id="tblKas"><thead><tr><th>Tgl</th><th>Jam</th><th>Ket</th><th>Masuk</th><th>Keluar</th><th>Saldo</th><th class="no-print" style="min-width:200px">Aksi</th></tr></thead><tbody></tbody></table></div></div>
 
 <div id="tab-santri" style="display:none">
 <div class="no-print" style="margin-top:8px;display:flex;flex-wrap:wrap;align-items:center">
-<input id="s_nama" placeholder="Nama Santri" style="width:120px">
-<select id="s_lp" style="width:55px"><option>L</option><option>P</option></select>
-<input id="s_tempat" placeholder="Tempat Lahir" style="width:110px">
-<input id="s_tgllahir" type="date" style="width:125px">
-<input id="s_wali" placeholder="Wali" style="width:100px">
-<input id="s_hp" placeholder="HP" style="width:100px">
+<input id="s_nama" placeholder="Nama" style="width:100px">
+<select id="s_lp" style="width:50px"><option>L</option><option>P</option></select>
+<input id="s_tempat" placeholder="Tempat Lahir" style="width:100px">
+<input id="s_tgllahir" type="date" style="width:115px">
+<input id="s_alamat" placeholder="Alamat Lengkap" style="width:140px">
+<input id="s_wali" placeholder="Wali" style="width:90px">
+<input id="s_hp" placeholder="HP" style="width:95px">
 <button class="btn green" onclick="tambahSantri()">+ Input</button>
 <button class="btn blue" onclick="cetakSantri()">🖨️ Cetak</button>
 </div>
-<div style="overflow-x:auto"><table id="tblSantri"><thead><tr><th>Nama</th><th>L/P</th><th>Tempat Lahir</th><th>Tgl Lahir</th><th>Wali</th><th>HP</th><th class="no-print" style="min-width:210px">Aksi</th></tr></thead><tbody></tbody></table></div>
+<div style="overflow-x:auto"><table id="tblSantri"><thead><tr><th>Nama</th><th>L/P</th><th>Tempat Lahir</th><th>Tgl Lahir</th><th>Alamat</th><th>Wali</th><th>HP</th><th class="no-print" style="min-width:210px">Aksi</th></tr></thead><tbody></tbody></table></div>
 </div>
 
 <div class="ttd" id="ttdArea"><div style="text-align:center"><p>Ketua TPQ</p><br><br><br><p>________________</p></div><div style="text-align:center"><p>Dau, <span id="tglTTD"></span> Jam <span id="jamTTD"></span><br>Bendahara</p><br><br><br><p>________________</p></div></div>
@@ -66,11 +67,9 @@ table{width:100%;border-collapse:collapse;margin-top:8px;min-width:900px}th,td{b
 
 <div class="toast" id="toast"></div>
 
-<!-- MODAL EDIT KAS -->
 <div class="modal" id="modalEditKas"><div class="modal-box"><h3>🖊️ EDIT KAS</h3><label>Tgl</label><input id="e_tgl" type="date"><label>Jam</label><input id="e_jam" type="time"><label>Ket</label><input id="e_ket"><label>Masuk</label><input id="e_masuk" type="number"><label>Keluar</label><input id="e_keluar" type="number"><label>PIN</label><input id="e_pin" type="password" placeholder="amanah2000"><div style="margin-top:8px"><button class="btn gray" onclick="tutupEditKas()">Batal</button><button class="btn yellow" onclick="simpanEditKas()">💾 Simpan</button></div></div></div>
 
-<!-- MODAL EDIT SANTRI FULL + TTL -->
-<div class="modal" id="modalEditSantri"><div class="modal-box"><h3>🖊️ EDIT SANTRI + TTL</h3><label>Nama</label><input id="es_nama"><label>L/P</label><select id="es_lp"><option>L</option><option>P</option></select><label>Tempat Lahir</label><input id="es_tempat" placeholder="Malang"><label>Tanggal Lahir</label><input id="es_tgllahir" type="date"><label>Wali</label><input id="es_wali"><label>HP</label><input id="es_hp"><label>PIN amanah2000</label><input id="es_pin" type="password" placeholder="amanah2000"><div style="margin-top:8px"><button class="btn gray" onclick="tutupEditSantri()">Batal</button><button class="btn yellow" onclick="simpanEditSantri()">💾 Simpan Edit Santri</button></div></div></div>
+<div class="modal" id="modalEditSantri"><div class="modal-box"><h3>🖊️ EDIT SANTRI + ALAMAT</h3><label>Nama</label><input id="es_nama"><label>L/P</label><select id="es_lp"><option>L</option><option>P</option></select><label>Tempat Lahir</label><input id="es_tempat"><label>Tgl Lahir</label><input id="es_tgllahir" type="date"><label>Alamat Lengkap</label><textarea id="es_alamat" rows="2" placeholder="Jl. Tirto Joyo No.21 Dau Malang"></textarea><label>Wali</label><input id="es_wali"><label>HP</label><input id="es_hp"><label>PIN amanah2000</label><input id="es_pin" type="password" placeholder="amanah2000"><div style="margin-top:8px"><button class="btn gray" onclick="tutupEditSantri()">Batal</button><button class="btn yellow" onclick="simpanEditSantri()">💾 Simpan Edit</button></div></div></div>
 
 <div class="modal" id="modalPin"><div class="modal-box"><h3 style="color:#dc2626;margin:0">🔴 HAPUS PERMANEN?</h3><p id="modalText" style="font-size:12px"></p><input id="inputPin" type="password" placeholder="PIN: amanah2000" style="text-align:center;width:80%"><div style="margin-top:10px"><button class="btn gray" onclick="tutupModal()">Batal</button><button class="btn red" onclick="konfirmasiHapusPermanen()">🔴 Ya Hapus</button></div></div></div>
 
@@ -78,33 +77,33 @@ table{width:100%;border-collapse:collapse;margin-top:8px;min-width:900px}th,td{b
 const KODE_KEY='npoint_satu_kode_v83';const PIN_HAPUS='amanah2000';
 let kasData=JSON.parse(localStorage.getItem('kasData')||'[]');let santriData=JSON.parse(localStorage.getItem('santriData')||'[]');
 let pendingHapus={tipe:'',index:-1};let pendingEditKas=-1;let pendingEditSantri=-1;
-function showToast(m){let t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',2500);}
+function showToast(m){let t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',2600);}
 function updateJam(){let now=new Date();let jam=now.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});document.getElementById('jamLive').innerText=jam;document.getElementById('badgeJam').innerText=jam;document.getElementById('kopJam').innerText=jam;document.getElementById('kopTgl').innerText=now.toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});}setInterval(updateJam,1000);updateJam();
-function showTab(t){document.getElementById('tab-kas').style.display=t==='kas'?'block':'none';document.getElementById('tab-santri').style.display=t==='santri'?'block':'none';document.getElementById('judulCetak').innerText=t==='kas'?'LAPORAN KAS TPQ BAITURRAHMAN':'LAPORAN SANTRI TPQ BAITURRAHMAN + TTL';}
+function showTab(t){document.getElementById('tab-kas').style.display=t==='kas'?'block':'none';document.getElementById('tab-santri').style.display=t==='santri'?'block':'none';document.getElementById('judulCetak').innerText=t==='kas'?'LAPORAN KAS TPQ BAITURRAHMAN':'LAPORAN SANTRI TPQ BAITURRAHMAN';}
 function fmt(n){return 'Rp '+Number(n||0).toLocaleString('id-ID')}
 function tampilKas(){let tb=document.querySelector('#tblKas tbody');tb.innerHTML='';let s=0;kasData.forEach((r,i)=>{if(!r.jam)r.jam='12:00';s+=Number(r.masuk||0)-Number(r.keluar||0);tb.innerHTML+=`<tr><td>${r.tgl||''}</td><td>${r.jam||''}</td><td>${r.ket||''}</td><td>${r.masuk?fmt(r.masuk):''}</td><td>${r.keluar?fmt(r.keluar):''}</td><td>${fmt(s)}</td><td class=no-print><button class="btn yellow" onclick="editKas(${i})">🖊️ Edit</button><button class="btn gray" onclick="hapusLokalKas(${i})">🗑️ Lokal</button><button class="btn red" onclick="hapusPermanenKas(${i})">🔴 Permanen</button></td></tr>`;});document.getElementById('ringkas').innerText=`Kas: ${fmt(s)} | Santri: ${santriData.length}`;localStorage.setItem('kasData',JSON.stringify(kasData));}
-function tampilSantri(){let tb=document.querySelector('#tblSantri tbody');tb.innerHTML='';santriData.forEach((r,i)=>{tb.innerHTML+=`<tr><td>${r.nama||''}</td><td>${r.lp||''}</td><td>${r.tempat||''}</td><td>${r.tgllahir||''}</td><td>${r.wali||''}</td><td>${r.hp||''}</td><td class=no-print><button class="btn yellow" onclick="editSantriFull(${i})">🖊️ Edit</button><button class="btn gray" onclick="hapusLokalSantri(${i})">🗑️ Lokal</button><button class="btn red" onclick="hapusPermanenSantri(${i})">🔴 Permanen</button></td></tr>`;});localStorage.setItem('santriData',JSON.stringify(santriData));}
-function tambahKas(){let now=new Date();let o={tgl:document.getElementById('tgl').value||now.toISOString().slice(0,10),jam:document.getElementById('jam').value||now.toTimeString().slice(0,5),ket:document.getElementById('ket').value,masuk:Number(document.getElementById('masuk').value||0),keluar:Number(document.getElementById('keluar').value||0)};if(!o.ket){alert('Isi keterangan Pak!');return;}kasData.push(o);tampilKas();autoSimpan();showToast('✅ Kas tersimpan Cloud Pak!');document.getElementById('ket').value='';}
-function tambahSantri(){let o={nama:document.getElementById('s_nama').value,lp:document.getElementById('s_lp').value,tempat:document.getElementById('s_tempat').value,tgllahir:document.getElementById('s_tgllahir').value,wali:document.getElementById('s_wali').value,hp:document.getElementById('s_hp').value};if(!o.nama){alert('Isi nama Pak!');return;}santriData.push(o);tampilSantri();autoSimpan();showToast('✅ Santri + TTL tersimpan Cloud Pak!');document.getElementById('s_nama').value='';document.getElementById('s_tempat').value='';}
+function tampilSantri(){let tb=document.querySelector('#tblSantri tbody');tb.innerHTML='';santriData.forEach((r,i)=>{tb.innerHTML+=`<tr><td>${r.nama||''}</td><td>${r.lp||''}</td><td>${r.tempat||''}</td><td>${r.tgllahir||''}</td><td style="text-align:left">${r.alamat||''}</td><td>${r.wali||''}</td><td>${r.hp||''}</td><td class=no-print><button class="btn yellow" onclick="editSantriFull(${i})">🖊️ Edit</button><button class="btn gray" onclick="hapusLokalSantri(${i})">🗑️ Lokal</button><button class="btn red" onclick="hapusPermanenSantri(${i})">🔴 Permanen</button></td></tr>`;});localStorage.setItem('santriData',JSON.stringify(santriData));}
+function tambahKas(){let now=new Date();let o={tgl:document.getElementById('tgl').value||now.toISOString().slice(0,10),jam:document.getElementById('jam').value||now.toTimeString().slice(0,5),ket:document.getElementById('ket').value,masuk:Number(document.getElementById('masuk').value||0),keluar:Number(document.getElementById('keluar').value||0)};if(!o.ket){alert('Isi keterangan Pak!');return;}kasData.push(o);tampilKas();autoSimpan();showToast('✅ Kas tersimpan Pak!');document.getElementById('ket').value='';}
+function tambahSantri(){let o={nama:document.getElementById('s_nama').value,lp:document.getElementById('s_lp').value,tempat:document.getElementById('s_tempat').value,tgllahir:document.getElementById('s_tgllahir').value,alamat:document.getElementById('s_alamat').value,wali:document.getElementById('s_wali').value,hp:document.getElementById('s_hp').value};if(!o.nama){alert('Isi nama Pak!');return;}santriData.push(o);tampilSantri();autoSimpan();showToast('✅ Santri + Alamat tersimpan Pak!');document.getElementById('s_nama').value='';document.getElementById('s_tempat').value='';document.getElementById('s_alamat').value='';}
 function editKas(i){pendingEditKas=i;let r=kasData[i];document.getElementById('e_tgl').value=r.tgl;document.getElementById('e_jam').value=r.jam;document.getElementById('e_ket').value=r.ket;document.getElementById('e_masuk').value=r.masuk;document.getElementById('e_keluar').value=r.keluar;document.getElementById('e_pin').value='';document.getElementById('modalEditKas').style.display='flex';}
-function simpanEditKas(){if(document.getElementById('e_pin').value!==PIN_HAPUS){alert('PIN Salah!');return;}kasData[pendingEditKas]={tgl:document.getElementById('e_tgl').value,jam:document.getElementById('e_jam').value,ket:document.getElementById('e_ket').value,masuk:Number(document.getElementById('e_masuk').value||0),keluar:Number(document.getElementById('e_keluar').value||0)};tampilKas();autoSimpan();tutupEditKas();showToast('✅ Edit Kas berhasil Pak!');}
+function simpanEditKas(){if(document.getElementById('e_pin').value!==PIN_HAPUS){alert('PIN Salah!');return;}kasData[pendingEditKas]={tgl:document.getElementById('e_tgl').value,jam:document.getElementById('e_jam').value,ket:document.getElementById('e_ket').value,masuk:Number(document.getElementById('e_masuk').value||0),keluar:Number(document.getElementById('e_keluar').value||0)};tampilKas();autoSimpan();tutupEditKas();showToast('✅ Edit Kas berhasil!');}
 function tutupEditKas(){document.getElementById('modalEditKas').style.display='none';}
-function editSantriFull(i){pendingEditSantri=i;let r=santriData[i];document.getElementById('es_nama').value=r.nama||'';document.getElementById('es_lp').value=r.lp||'L';document.getElementById('es_tempat').value=r.tempat||'';document.getElementById('es_tgllahir').value=r.tgllahir||'';document.getElementById('es_wali').value=r.wali||'';document.getElementById('es_hp').value=r.hp||'';document.getElementById('es_pin').value='';document.getElementById('modalEditSantri').style.display='flex';}
-function simpanEditSantri(){if(document.getElementById('es_pin').value!==PIN_HAPUS){alert('PIN Salah! amanah2000');return;}santriData[pendingEditSantri]={nama:document.getElementById('es_nama').value,lp:document.getElementById('es_lp').value,tempat:document.getElementById('es_tempat').value,tgllahir:document.getElementById('es_tgllahir').value,wali:document.getElementById('es_wali').value,hp:document.getElementById('es_hp').value};tampilSantri();autoSimpan();tutupEditSantri();showToast('✅ Edit Santri + TTL berhasil Pak!');}
+function editSantriFull(i){pendingEditSantri=i;let r=santriData[i];document.getElementById('es_nama').value=r.nama||'';document.getElementById('es_lp').value=r.lp||'L';document.getElementById('es_tempat').value=r.tempat||'';document.getElementById('es_tgllahir').value=r.tgllahir||'';document.getElementById('es_alamat').value=r.alamat||'';document.getElementById('es_wali').value=r.wali||'';document.getElementById('es_hp').value=r.hp||'';document.getElementById('es_pin').value='';document.getElementById('modalEditSantri').style.display='flex';}
+function simpanEditSantri(){if(document.getElementById('es_pin').value!==PIN_HAPUS){alert('PIN Salah! amanah2000');return;}santriData[pendingEditSantri]={nama:document.getElementById('es_nama').value,lp:document.getElementById('es_lp').value,tempat:document.getElementById('es_tempat').value,tgllahir:document.getElementById('es_tgllahir').value,alamat:document.getElementById('es_alamat').value,wali:document.getElementById('es_wali').value,hp:document.getElementById('es_hp').value};tampilSantri();autoSimpan();tutupEditSantri();showToast('✅ Edit Santri + Alamat berhasil!');}
 function tutupEditSantri(){document.getElementById('modalEditSantri').style.display='none';}
-function hapusLokalKas(i){if(confirm('Hapus Lokal?')){kasData.splice(i,1);tampilKas();showToast('🗑️ Hapus Lokal');}}
-function hapusLokalSantri(i){if(confirm('Hapus Lokal Santri?')){santriData.splice(i,1);tampilSantri();showToast('🗑️ Hapus Lokal');}}
+function hapusLokalKas(i){if(confirm('Hapus Lokal?')){kasData.splice(i,1);tampilKas();}}
+function hapusLokalSantri(i){if(confirm('Hapus Lokal?')){santriData.splice(i,1);tampilSantri();}}
 function hapusPermanenKas(i){pendingHapus={tipe:'kas',index:i};document.getElementById('modalText').innerHTML=`Hapus: <b>${kasData[i].ket}</b>`;document.getElementById('modalPin').style.display='flex';}
-function hapusPermanenSantri(i){pendingHapus={tipe:'santri',index:i};document.getElementById('modalText').innerHTML=`Hapus: <b>${santriData[i].nama}</b><br>TTL: ${santriData[i].tempat||''} ${santriData[i].tgllahir||''}`;document.getElementById('modalPin').style.display='flex';}
+function hapusPermanenSantri(i){pendingHapus={tipe:'santri',index:i};document.getElementById('modalText').innerHTML=`Hapus: <b>${santriData[i].nama}</b><br>${santriData[i].alamat||''}`;document.getElementById('modalPin').style.display='flex';}
 function tutupModal(){document.getElementById('modalPin').style.display='none';}
-function konfirmasiHapusPermanen(){if(document.getElementById('inputPin').value!==PIN_HAPUS){alert('PIN Salah!');return;}if(pendingHapus.tipe==='kas'){kasData.splice(pendingHapus.index,1);tampilKas();}else{santriData.splice(pendingHapus.index,1);tampilSantri();}autoSimpan();tutupModal();showToast('🔴 Hapus Permanen Cloud Pak!');}
+function konfirmasiHapusPermanen(){if(document.getElementById('inputPin').value!==PIN_HAPUS){alert('PIN Salah!');return;}if(pendingHapus.tipe==='kas'){kasData.splice(pendingHapus.index,1);tampilKas();}else{santriData.splice(pendingHapus.index,1);tampilSantri();}autoSimpan();tutupModal();showToast('🔴 Hapus Permanen!');}
 function getKode(){return document.getElementById('npointId').value.trim().replace('https://api.npoint.io/','')||'582c05ea9dadf831af03';}
-function simpanNPoint(){let k=getKode();localStorage.setItem(KODE_KEY,k);document.getElementById('statusKoneksi').innerText='⏳';fetch('https://api.npoint.io/'+k,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kas:kasData,santri:santriData})}).then(()=>{document.getElementById('statusKoneksi').innerText='🟢 Kas:'+kasData.length+' Santri:'+santriData.length;showToast('💾 Simpan Cloud Berhasil!');});}
+function simpanNPoint(){let k=getKode();localStorage.setItem(KODE_KEY,k);document.getElementById('statusKoneksi').innerText='⏳';fetch('https://api.npoint.io/'+k,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kas:kasData,santri:santriData})}).then(()=>{document.getElementById('statusKoneksi').innerText='🟢 Kas:'+kasData.length+' Santri:'+santriData.length;showToast('💾 Simpan Berhasil!');});}
 function ambilNPoint(){let k=getKode();localStorage.setItem(KODE_KEY,k);document.getElementById('statusKoneksi').innerText='⏳';fetch('https://api.npoint.io/'+k).then(r=>r.json()).then(j=>{kasData=j.kas||[];santriData=j.santri||[];tampilKas();tampilSantri();document.getElementById('statusKoneksi').innerText='🟢 Kas:'+kasData.length+' Santri:'+santriData.length;showToast('☁️ Ambil Berhasil!');});}
 function autoSimpan(){let k=localStorage.getItem(KODE_KEY)||'582c05ea9dadf831af03';fetch('https://api.npoint.io/'+k,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kas:kasData,santri:santriData})});}
 function toggleDark(){document.body.classList.toggle('light');}
 function logout(){if(confirm('Logout?')){localStorage.removeItem('kasData');localStorage.removeItem('santriData');location.reload();}}
 function cetakKas(){showTab('kas');document.getElementById('tglTTD').innerText=new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});document.getElementById('jamTTD').innerText=new Date().toLocaleTimeString('id-ID');document.getElementById('periodeCetak').innerText='Periode: '+new Date().toLocaleDateString('id-ID',{month:'long',year:'numeric'});window.print();}
-function cetakSantri(){showTab('santri');document.getElementById('tglTTD').innerText=new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});document.getElementById('jamTTD').innerText=new Date().toLocaleTimeString('id-ID');document.getElementById('periodeCetak').innerText='Laporan Santri + Tempat Tgl Lahir | '+new Date().toLocaleDateString('id-ID');window.print();}
+function cetakSantri(){showTab('santri');document.getElementById('tglTTD').innerText=new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});document.getElementById('jamTTD').innerText=new Date().toLocaleTimeString('id-ID');document.getElementById('periodeCetak').innerText='Laporan Santri + TTL + Alamat | '+new Date().toLocaleDateString('id-ID');window.print();}
 (function(){let k=localStorage.getItem(KODE_KEY)||'582c05ea9dadf831af03';document.getElementById('npointId').value=k;document.getElementById('kodeTop').innerText=k;let now=new Date();document.getElementById('tgl').value=now.toISOString().slice(0,10);document.getElementById('jam').value=now.toTimeString().slice(0,5);tampilKas();tampilSantri();ambilNPoint();})();
 </script></body></html>
