@@ -1,24 +1,35 @@
 <!DOCTYPE html>
 <html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TPQ v8.4 FINAL</title>
+<title>TPQ v8.5 CETAK</title>
 <style>
 :root{--bg:#0f172a;--card:#1e293b;--text:#e2e8f0;--border:#334155}
-.light{--bg:#f1f5f9;--card:#ffffff;--text:#0f172a;--border:#cbd5e1}
+.light{--bg:#f1f5f9;--card:#fff;--text:#0f172a;--border:#cbd5e1}
 body{font-family:system-ui;margin:0;background:var(--bg);color:var(--text)}
 header{padding:10px;background:var(--card);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;border-bottom:1px solid var(--border)}
 .card{background:var(--card);margin:12px;padding:12px;border-radius:12px;border:1px solid var(--border)}
 input,select,button{padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);margin:4px}
-button{cursor:pointer;font-weight:bold}
-.btn{padding:8px 14px}
-.green{background:#16a34a;color:#fff}.orange{background:#ea580c;color:#fff}.blue{background:#2563eb;color:#fff}.red{background:#dc2626;color:#fff}
-table{width:100%;border-collapse:collapse;margin-top:8px}
-th,td{border:1px solid var(--border);padding:6px;font-size:13px}
+.btn{padding:8px 14px}.green{background:#16a34a;color:#fff}.orange{background:#ea580c;color:#fff}.blue{background:#2563eb;color:#fff}.red{background:#dc2626;color:#fff}
+table{width:100%;border-collapse:collapse;margin-top:8px}th,td{border:1px solid var(--border);padding:6px;font-size:13px}
 .badge{padding:4px 8px;border-radius:8px;background:var(--bg);border:1px solid var(--border);font-size:12px}
-@media print{.no-print{display:none}}
+/* KOP SURAT - hanya muncul saat print */
+.kop{display:none}
+.kop-surat{display:flex;align-items:center;gap:12px;border-bottom:3px double #000;padding-bottom:8px;margin-bottom:12px}
+.kop-logo{width:60px;height:60px;background:#16a34a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;color:#fff}
+.kop-text h2{margin:0;font-size:18px} .kop-text p{margin:2px 0;font-size:12px}
+.ttd{display:none;margin-top:40px;justify-content:space-between}
+.ttd div{text-align:center;width:200px}
+@media print{
+  body{background:#fff;color:#000} header,.no-print{display:none!important}
+  .card{background:#fff;border:none;margin:0}
+  .kop,.ttd{display:block}
+  .ttd{display:flex}
+  table{color:#000} th,td{border:1px solid #000;color:#000}
+  th{background:#eee!important}
+}
 </style></head>
 <body>
 <header>
-<div><b>TPQ v8.4 FINAL</b><br><small id="kodeTop">582c05ea9dadf831af03</small></div>
+<div><b>TPQ v8.5 CETAK</b><br><small id="kodeTop">582c05ea9dadf831af03</small></div>
 <div class="no-print" style="display:flex;gap:6px;align-items:center">
 <span id="statusKoneksi" class="badge">Memuat...</span>
 <button class="btn" onclick="toggleDark()">🌙 Dark/Light</button>
@@ -26,28 +37,50 @@ th,td{border:1px solid var(--border);padding:6px;font-size:13px}
 </div>
 </header>
 
-<div class="card no-print">
-<b>🔑 Kode nPoint SATU KODE</b><br>
-<input id="npointId" style="width:58%" value="582c05ea9dadf831af03">
+<div class="card">
+<!-- KOP SURAT - MUNCUL SAAT CETAK -->
+<div class="kop" id="kopSurat">
+<div class="kop-surat">
+<div class="kop-logo">🕌</div>
+<div class="kop-text">
+<h2>TPQ BAITURRAHMAN</h2>
+<p>Jl. Tirto Joyo No. 21, Dau, Malang - Jawa Timur 65151</p>
+<p>Email: tpqbaiturrahman@gmail.com | HP: 0812-xxxx-xxxx</p>
+</div>
+</div>
+<h3 style="text-align:center;margin:6px 0" id="judulCetak">LAPORAN KAS TPQ</h3>
+<p style="text-align:center;font-size:12px" id="periodeCetak">Periode: September 2026</p>
+</div>
+
+<div class="no-print">
+<b>🔑 Kode SATU KODE</b><br>
+<input id="npointId" style="width:50%" value="582c05ea9dadf831af03">
 <button class="btn green" onclick="simpanNPoint()">💾 Simpan</button>
 <button class="btn orange" onclick="ambilNPoint()">☁️ Ambil</button>
 </div>
 
-<div class="card">
-<div class="no-print">
+<div class="no-print" style="margin-top:10px">
 <button class="btn green" onclick="showTab('kas')">💰 Kas</button>
 <button class="btn blue" onclick="showTab('santri')">🧒 Santri</button>
 <span class="badge" id="ringkas"></span>
 </div>
-<div id="tab-kas"><h3>Kas TPQ</h3><div class="no-print"><input id="tgl" type="date"><input id="ket" placeholder="Keterangan"><input id="masuk" type="number" placeholder="Masuk"><input id="keluar" type="number" placeholder="Keluar"><button class="btn green" onclick="tambahKas()">+ Input</button><button class="btn blue" onclick="window.print()">🖨️ Cetak</button></div><table id="tblKas"><thead><tr><th>Tgl</th><th>Ket</th><th>Masuk</th><th>Keluar</th><th>Saldo</th><th class="no-print">Aksi</th></tr></thead><tbody></tbody></table></div>
-<div id="tab-santri" style="display:none"><h3>Santri</h3><div class="no-print"><input id="s_nama" placeholder="Nama"><select id="s_lp"><option>L</option><option>P</option></select><input id="s_wali" placeholder="Wali"><input id="s_hp" placeholder="HP"><button class="btn green" onclick="tambahSantri()">+ Input</button><button class="btn blue" onclick="window.print()">🖨️ Cetak</button></div><table id="tblSantri"><thead><tr><th>Nama</th><th>L/P</th><th>Wali</th><th>HP</th><th class="no-print">Aksi</th></tr></thead><tbody></tbody></table></div>
+
+<div id="tab-kas"><div class="no-print" style="margin-top:10px"><input id="tgl" type="date"><input id="ket" placeholder="Keterangan"><input id="masuk" type="number" placeholder="Masuk"><input id="keluar" type="number" placeholder="Keluar"><button class="btn green" onclick="tambahKas()">+ Input</button><button class="btn blue" onclick="cetakKas()">🖨️ Cetak Kas</button></div><table id="tblKas"><thead><tr><th>Tgl</th><th>Ket</th><th>Masuk</th><th>Keluar</th><th>Saldo</th><th class="no-print">Aksi</th></tr></thead><tbody></tbody></table></div>
+
+<div id="tab-santri" style="display:none"><div class="no-print"><input id="s_nama" placeholder="Nama"><select id="s_lp"><option>L</option><option>P</option></select><input id="s_wali" placeholder="Wali"><input id="s_hp" placeholder="HP"><button class="btn green" onclick="tambahSantri()">+ Input</button><button class="btn blue" onclick="cetakSantri()">🖨️ Cetak Santri</button></div><table id="tblSantri"><thead><tr><th>Nama</th><th>L/P</th><th>Wali</th><th>HP</th><th class="no-print">Aksi</th></tr></thead><tbody></tbody></table></div>
+
+<!-- TANDA TANGAN - MUNCUL SAAT CETAK -->
+<div class="ttd" id="ttdArea">
+<div><p>Mengetahui,<br>Ketua TPQ</p><br><br><br><p><b>________________</b></p></div>
+<div><p>Dau, <span id="tglTTD"></span><br>Bendahara</p><br><br><br><p><b>________________</b></p></div>
 </div>
 
+</div>
 <script>
 const KODE_KEY='npoint_satu_kode_v83';
 let kasData=JSON.parse(localStorage.getItem('kasData')||'[]');
 let santriData=JSON.parse(localStorage.getItem('santriData')||'[]');
-function showTab(t){document.getElementById('tab-kas').style.display=t==='kas'?'block':'none';document.getElementById('tab-santri').style.display=t==='santri'?'block':'none';}
+function showTab(t){document.getElementById('tab-kas').style.display=t==='kas'?'block':'none';document.getElementById('tab-santri').style.display=t==='santri'?'block':'none';document.getElementById('judulCetak').innerText=t==='kas'?'LAPORAN KAS TPQ':'LAPORAN DATA SANTRI TPQ';}
 function fmt(n){return 'Rp '+Number(n||0).toLocaleString('id-ID')}
 function tampilKas(){let tbody=document.querySelector('#tblKas tbody');tbody.innerHTML='';let s=0;kasData.forEach((r,i)=>{s+=Number(r.masuk||0)-Number(r.keluar||0);tbody.innerHTML+=`<tr><td>${r.tgl}</td><td>${r.ket}</td><td>${r.masuk?fmt(r.masuk):''}</td><td>${r.keluar?fmt(r.keluar):''}</td><td>${fmt(s)}</td><td class=no-print><button onclick="hapusKas(${i})">Hapus</button></td></tr>`;});document.getElementById('ringkas').innerText=`Kas: ${fmt(s)} | Santri: ${santriData.length}`;localStorage.setItem('kasData',JSON.stringify(kasData));}
 function tampilSantri(){let tbody=document.querySelector('#tblSantri tbody');tbody.innerHTML='';santriData.forEach((r,i)=>{tbody.innerHTML+=`<tr><td>${r.nama}</td><td>${r.lp}</td><td>${r.wali}</td><td>${r.hp}</td><td class=no-print><button onclick="hapusSantri(${i})">Hapus</button></td></tr>`;});localStorage.setItem('santriData',JSON.stringify(santriData));}
@@ -55,11 +88,13 @@ function tambahKas(){let o={tgl:document.getElementById('tgl').value,ket:documen
 function hapusKas(i){if(confirm('Hapus?')){kasData.splice(i,1);tampilKas();autoSimpan();}}
 function tambahSantri(){let o={nama:document.getElementById('s_nama').value,lp:document.getElementById('s_lp').value,wali:document.getElementById('s_wali').value,hp:document.getElementById('s_hp').value};if(!o.nama){alert('Isi nama');return;}santriData.push(o);tampilSantri();autoSimpan();}
 function hapusSantri(i){if(confirm('Hapus?')){santriData.splice(i,1);tampilSantri();autoSimpan();}}
-function getKode(){let v=document.getElementById('npointId').value.trim().replace('https://api.npoint.io/','');return v||'582c05ea9dadf831af03';}
-function simpanNPoint(){let kode=getKode();localStorage.setItem(KODE_KEY,kode);document.getElementById('statusKoneksi').innerText='⏳ Menyimpan...';fetch('https://api.npoint.io/'+kode,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kas:kasData,santri:santriData})}).then(()=>{document.getElementById('statusKoneksi').innerText='🟢 Tersambung! Kas:'+kasData.length+' Santri:'+santriData.length;});}
-function ambilNPoint(){let kode=getKode();localStorage.setItem(KODE_KEY,kode);document.getElementById('statusKoneksi').innerText='⏳ Mengambil...';fetch('https://api.npoint.io/'+kode).then(r=>r.json()).then(j=>{if(Array.isArray(j)){kasData=j;santriData=[];}else{kasData=j.kas||[];santriData=j.santri||[];}tampilKas();tampilSantri();document.getElementById('statusKoneksi').innerText='🟢 Tersambung! Kas:'+kasData.length+' Santri:'+santriData.length;});}
-function autoSimpan(){let kode=localStorage.getItem(KODE_KEY)||'582c05ea9dadf831af03';fetch('https://api.npoint.io/'+kode,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kas:kasData,santri:santriData})}).then(()=>{document.getElementById('statusKoneksi').innerText='🟢 Tersambung! Kas:'+kasData.length+' Santri:'+santriData.length;});}
+function getKode(){return document.getElementById('npointId').value.trim().replace('https://api.npoint.io/','')||'582c05ea9dadf831af03';}
+function simpanNPoint(){let k=getKode();localStorage.setItem(KODE_KEY,k);document.getElementById('statusKoneksi').innerText='⏳ Menyimpan...';fetch('https://api.npoint.io/'+k,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kas:kasData,santri:santriData})}).then(()=>{document.getElementById('statusKoneksi').innerText='🟢 Tersambung! Kas:'+kasData.length+' Santri:'+santriData.length;});}
+function ambilNPoint(){let k=getKode();localStorage.setItem(KODE_KEY,k);document.getElementById('statusKoneksi').innerText='⏳ Mengambil...';fetch('https://api.npoint.io/'+k).then(r=>r.json()).then(j=>{if(Array.isArray(j)){kasData=j;santriData=[];}else{kasData=j.kas||[];santriData=j.santri||[];}tampilKas();tampilSantri();document.getElementById('statusKoneksi').innerText='🟢 Tersambung! Kas:'+kasData.length+' Santri:'+santriData.length;});}
+function autoSimpan(){let k=localStorage.getItem(KODE_KEY)||'582c05ea9dadf831af03';fetch('https://api.npoint.io/'+k,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kas:kasData,santri:santriData})});}
 function toggleDark(){document.body.classList.toggle('light');localStorage.setItem('theme',document.body.classList.contains('light')?'light':'dark');}
-function logout(){if(confirm('Logout Pak? Data di HP hilang tapi di langit aman Pak!')){localStorage.removeItem('kasData');localStorage.removeItem('santriData');location.reload();}}
+function logout(){if(confirm('Logout?')){localStorage.removeItem('kasData');localStorage.removeItem('santriData');location.reload();}}
+function cetakKas(){showTab('kas');document.getElementById('tglTTD').innerText=new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});document.getElementById('periodeCetak').innerText='Periode: '+new Date().toLocaleDateString('id-ID',{month:'long',year:'numeric'});window.print();}
+function cetakSantri(){showTab('santri');document.getElementById('tglTTD').innerText=new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});document.getElementById('periodeCetak').innerText='Periode: '+new Date().toLocaleDateString('id-ID',{month:'long',year:'numeric'});window.print();}
 (function(){let k=localStorage.getItem(KODE_KEY)||'582c05ea9dadf831af03';document.getElementById('npointId').value=k;document.getElementById('kodeTop').innerText=k;if(localStorage.getItem('theme')==='light')document.body.classList.add('light');tampilKas();tampilSantri();ambilNPoint();})();
 </script></body></html>
