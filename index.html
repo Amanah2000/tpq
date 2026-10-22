@@ -2,7 +2,8 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
-    <title>Kas TPQ Garis Kecil</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kas TPQ Bulanan Jan-Des FINAL</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
       body {
@@ -11,7 +12,7 @@
         background: #f5f5f5;
       }
       .container {
-        max-width: 1100px;
+        max-width: 1150px;
         margin: auto;
         background: white;
         padding: 15px;
@@ -29,6 +30,7 @@
         height: 55px;
         border-radius: 50%;
         object-fit: cover;
+        border: 1px solid #ddd;
       }
       .form-top {
         display: flex;
@@ -38,6 +40,7 @@
         padding: 10px;
         border-radius: 8px;
         margin-top: 10px;
+        align-items: center;
       }
       .form-top input,
       .form-top select {
@@ -53,8 +56,9 @@
         padding: 9px !important;
         border: 1.5px solid #f59e0b !important;
         background: #fffbeb;
-        border-radius: 6px !important;
+        border-radius: 6px;
         margin-top: 8px;
+        box-sizing: border-box;
       }
       .btn {
         padding: 7px 12px;
@@ -62,7 +66,7 @@
         border-radius: 5px;
         color: white;
         cursor: pointer;
-        font-size: 13px;
+        font-weight: bold;
       }
       .btn-tambah {
         background: #16a34a;
@@ -70,14 +74,17 @@
       .btn-cetak {
         background: #2563eb;
       }
+      .btn-semua {
+        background: #0f766e;
+      }
       .btn-edit {
         background: #f59e0b;
-        padding: 3px 6px;
+        padding: 3px 7px;
         font-size: 10px;
       }
       .btn-hapus {
         background: #ef4444;
-        padding: 3px 6px;
+        padding: 3px 7px;
         font-size: 10px;
       }
       table {
@@ -102,8 +109,8 @@
         border: 1px solid #e5e7eb;
         border-radius: 6px;
       }
-      .chart-box canvas {
-        max-height: 220px !important;
+      canvas {
+        max-height: 240px !important;
       }
       .ttd {
         display: none;
@@ -126,7 +133,7 @@
     <div class="container">
       <div class="kop">
         <img id="logoTPQ" src="https://via.placeholder.com/55?text=TPQ" />
-        <div><b>TPQ BAITURRAHMAN</b><br /><small>Laporan Kas Harian</small></div>
+        <div><b>TPQ BAITURRAHMAN</b><br /><small>Laporan Kas Bulanan Jan-Des</small></div>
         <input
           type="file"
           id="upLogo"
@@ -135,6 +142,7 @@
           accept="image/*"
         />
       </div>
+
       <div class="form-top">
         <input type="date" id="tanggal" /><input
           type="text"
@@ -144,30 +152,33 @@
           type="number"
           id="keluar"
           placeholder="Keluar"
-        /><select id="filterBulan">
-          <option value="all">Semua Bulan</option>
-          <option value="0">Jan</option>
-          <option value="1">Feb</option>
-          <option value="2">Mar</option>
-          <option value="3">Apr</option>
+        />
+        <select id="filterBulan">
+          <option value="all">Lihat Semua Bulan</option>
+          <option value="0">Januari</option>
+          <option value="1">Februari</option>
+          <option value="2">Maret</option>
+          <option value="3">April</option>
           <option value="4">Mei</option>
-          <option value="5">Jun</option>
-          <option value="6">Jul</option>
-          <option value="7">Agu</option>
-          <option value="8">Sep</option>
-          <option value="9">Okt</option>
-          <option value="10">Nov</option>
-          <option value="11">Des</option></select
-        ><button class="btn btn-tambah" onclick="tambahData()">+ Tambah</button
-        ><button class="btn btn-cetak" onclick="window.print()">Cetak</button>
+          <option value="5">Juni</option>
+          <option value="6">Juli</option>
+          <option value="7">Agustus</option>
+          <option value="8">September</option>
+          <option value="9">Oktober</option>
+          <option value="10">November</option>
+          <option value="11">Desember</option>
+        </select>
+        <button class="btn btn-tambah" onclick="tambahData()">+ Tambah</button>
+        <button class="btn btn-cetak" onclick="window.print()">Cetak</button>
       </div>
+
       <input
         type="text"
         id="inputCari"
         class="input-cari"
         placeholder="🔍 KETIK UNTUK CARI - misal: Amal, Bisyaroh, Marbot..."
       />
-      <div class="chart-box"><canvas id="kasChart" height="90"></canvas></div>
+      <div class="chart-box"><canvas id="kasChart"></canvas></div>
       <table>
         <thead>
           <tr>
@@ -195,13 +206,15 @@
       </div>
     </div>
     <script>
-      let dataKas = JSON.parse(localStorage.getItem("kasFINAL")) || [
+      let dataKas = JSON.parse(localStorage.getItem("kasFINALFIX")) || [
+        { tanggal: "2026-09-10", keterangan: "Kas Khataman", masuk: 13000, keluar: 0 },
+        { tanggal: "2026-09-10", keterangan: "KasTPQ", masuk: 1050000, keluar: 0 },
+        { tanggal: "2026-09-10", keterangan: "B. Masputo", masuk: 60000, keluar: 0 },
+        { tanggal: "2026-09-10", keterangan: "Kas Mus/Marbot", masuk: 70000, keluar: 0 },
+        { tanggal: "2026-09-10", keterangan: "Bisyaroh 6 Guru", masuk: 0, keluar: 1060000 },
+        { tanggal: "2026-09-10", keterangan: "Honor Marbot", masuk: 0, keluar: 70000 },
         { tanggal: "2026-10-15", keterangan: "Amal Santri", masuk: 1080000, keluar: 0 },
         { tanggal: "2026-10-15", keterangan: "Kas Khataman", masuk: 130000, keluar: 0 },
-        { tanggal: "2026-10-15", keterangan: "B. Masputo", masuk: 60000, keluar: 0 },
-        { tanggal: "2026-10-15", keterangan: "Kas Mushola/Marbot", masuk: 70000, keluar: 0 },
-        { tanggal: "2026-10-15", keterangan: "Bisyaroh 6 Guru", masuk: 0, keluar: 1060000 },
-        { tanggal: "2026-10-15", keterangan: "honor Marbot", masuk: 0, keluar: 70000 },
       ];
       let editIndex = -1,
         myChart = null;
@@ -211,28 +224,33 @@
       }
       function renderTabel() {
         const keyword = document.getElementById("inputCari").value.toLowerCase();
-        const bulanFilter = document.getElementById("filterBulan").value;
+        const filterB = document.getElementById("filterBulan").value;
         const tbody = document.getElementById("tbody");
         tbody.innerHTML = "";
         let saldo = 0,
           totalM = 0,
           totalK = 0,
-          labels = [],
-          arrM = [],
-          arrK = [],
-          arrS = [];
-        let no = 1;
+          no = 1;
+        let bulanMasuk = Array(12).fill(0),
+          bulanKeluar = Array(12).fill(0),
+          bulanSaldo = Array(12).fill(0);
+        let saldoJalan = 0;
+        let sorted = [...dataKas].sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
+        sorted.forEach((it) => {
+          let b = new Date(it.tanggal).getMonth();
+          bulanMasuk[b] += parseInt(it.masuk) || 0;
+          bulanKeluar[b] += parseInt(it.keluar) || 0;
+          saldoJalan += (parseInt(it.masuk) || 0) - (parseInt(it.keluar) || 0);
+          bulanSaldo[b] = saldoJalan;
+        });
+        // Tabel dengan filter
         dataKas.forEach((it, i) => {
-          const b = new Date(it.tanggal).getMonth();
-          if (bulanFilter !== "all" && b != parseInt(bulanFilter)) return;
+          let bulanData = new Date(it.tanggal).getMonth();
+          if (filterB !== "all" && bulanData != parseInt(filterB)) return;
           if (keyword && !it.keterangan.toLowerCase().includes(keyword)) return;
           saldo += (parseInt(it.masuk) || 0) - (parseInt(it.keluar) || 0);
           totalM += parseInt(it.masuk) || 0;
           totalK += parseInt(it.keluar) || 0;
-          labels.push(no + ". " + it.keterangan);
-          arrM.push(parseInt(it.masuk) || 0);
-          arrK.push(parseInt(it.keluar) || 0);
-          arrS.push(saldo);
           tbody.innerHTML += `<tr><td>${no}</td><td>${fmt(it.tanggal)}</td><td>${it.keterangan}</td><td style="color:green">Rp ${Number(it.masuk).toLocaleString("id-ID")}</td><td style="color:red">Rp ${Number(it.keluar).toLocaleString("id-ID")}</td><td><b>Rp ${saldo.toLocaleString("id-ID")}</b></td><td class="no-print"><button class="btn btn-edit" onclick="editData(${i})">Edit</button> <button class="btn btn-hapus" onclick="hapusData(${i})">Hapus</button></td></tr>`;
           no++;
         });
@@ -241,51 +259,61 @@
         document.getElementById("ts").innerText = "Rp " + saldo.toLocaleString("id-ID");
         document.getElementById("tglC").innerText = new Date().toLocaleDateString("id-ID");
         if (myChart) myChart.destroy();
+        const labels = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "Mei",
+          "Jun",
+          "Jul",
+          "Agu",
+          "Sep",
+          "Okt",
+          "Nov",
+          "Des",
+        ];
         myChart = new Chart(document.getElementById("kasChart"), {
           type: "line",
           data: {
             labels: labels,
             datasets: [
               {
-                label: "Masuk (Hijau)",
-                data: arrM,
-                borderColor: "#16a34a",
+                label: "Masuk",
+                data: bulanMasuk,
+                borderColor: "green",
                 borderWidth: 1,
                 pointRadius: 2,
-                tension: 0.3,
+                tension: 0.35,
               },
               {
-                label: "Keluar (Merah)",
-                data: arrK,
-                borderColor: "#ef4444",
+                label: "Keluar",
+                data: bulanKeluar,
+                borderColor: "red",
                 borderWidth: 1,
                 pointRadius: 2,
-                tension: 0.3,
+                tension: 0.35,
               },
               {
-                label: "Saldo (Biru)",
-                data: arrS,
-                borderColor: "#2563eb",
-                backgroundColor: "rgba(37,99,235,0.06)",
+                label: "Saldo",
+                data: bulanSaldo,
+                borderColor: "blue",
+                backgroundColor: "rgba(37,99,235,0.12)",
                 borderWidth: 1.2,
                 pointRadius: 2.5,
+                tension: 0.35,
                 fill: true,
-                tension: 0.3,
               },
             ],
           },
           options: {
             responsive: true,
             plugins: {
-              legend: { position: "bottom", labels: { boxWidth: 10, font: { size: 10 } } },
-            },
-            scales: {
-              y: { beginAtZero: true, ticks: { font: { size: 10 } } },
-              x: { ticks: { font: { size: 10 }, maxRotation: 30 } },
+              legend: { position: "bottom", labels: { boxWidth: 12, font: { size: 11 } } },
             },
           },
         });
-        localStorage.setItem("kasFINAL", JSON.stringify(dataKas));
+        localStorage.setItem("kasFINALFIX", JSON.stringify(dataKas));
       }
       function tambahData() {
         const t = document.getElementById("tanggal").value,
@@ -315,7 +343,7 @@
         editIndex = i;
       }
       function hapusData(i) {
-        if (confirm("Hapus?")) {
+        if (confirm("Hapus data ini Pak?")) {
           dataKas.splice(i, 1);
           renderTabel();
         }
