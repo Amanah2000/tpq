@@ -4,6 +4,62 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kas TPQ Bulanan Jan-Des FINAL</title>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+      import {
+        getFirestore,
+        doc,
+        setDoc,
+        onSnapshot,
+      } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+
+      // Config asli punya Bapak - sudah saya isi
+      const firebaseConfig = {
+        apiKey: "AIzaSyCUKMda7v33SDM0gNYaX2U28UPfHrCADVc",
+        authDomain: "santri-f7718.firebaseapp.com",
+        projectId: "santri-f7718",
+        storageBucket: "santri-f7718.firebasestorage.app",
+        messagingSenderId: "1108309445161",
+        appId: "1:1108309445161:web:34a99faacfb8047cfb814",
+        measurementId: "G-K411RFSCHX",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const kasRef = doc(db, "kasTPQ", "FINAL");
+
+      // --- FUNGSI SIMPAN BIAR OTOMATIS SINKRON ---
+      window.simpanKeFirebase = async (dataKas) => {
+        await setDoc(kasRef, { dataKas: dataKas, updateAt: new Date() });
+      };
+
+      // --- OTOMATIS MUNCUL DI SEMUA HP ---
+      onSnapshot(kasRef, (snap) => {
+        if (snap.exists()) {
+          const dataOnline = snap.data().dataKas;
+          if (dataOnline && dataOnline.length > 0) {
+            dataKas = dataOnline; // timpa data lokal dengan data online
+            // PANGGIL FUNGSI RENDER BAPAK YANG LAMA
+            if (typeof renderTabel === "function") renderTabel();
+            if (typeof updateChart === "function") updateChart();
+            if (typeof render === "function") render();
+          }
+        }
+      });
+
+      // --- FUNGSI TAMBAH DATA BAPAK YANG LAMA, TINGGAL TAMBAH 1 BARIS INI ---
+      // Di dalam function tambahData() Bapak yang lama, setelah push data, panggil:
+      let dataKas = JSON.parse(localStorage.getItem("kasFINALFIX") || "[]");
+      window.tambahData = () => {
+        const tgl = document.getElementById("tanggal").value;
+        const ket = document.getElementById("keterangan").value;
+        // ... ambil data lain seperti biasa
+        // dataKas.push({...})
+        // Setelah itu:
+        localStorage.setItem("kasFINALFIX", JSON.stringify(dataKas)); // tetap simpan lokal
+        simpanKeFirebase(dataKas); // tambah ini -> kirim ke semua HP
+      };
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
       body {
@@ -178,15 +234,23 @@
         class="input-cari"
         placeholder="🔍 KETIK UNTUK CARI - misal: Amal, Bisyaroh, Marbot..."
       />
-    
-<div class="chart-box"><canvas id="kasChart"></canvas></div>
 
-<div style="margin-top:20px; padding:12px; border:1px solid #ccc; border-radius:8px;">
-  <div style="font-weight:bold; font-size:14px; margin-bottom:8px;">Catatan</div>
-  <textarea style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;" rows="4"></textarea>
-</div>
+      <div class="chart-box"><canvas id="kasChart"></canvas></div>
+      <div style="font-weight: bold; font-size: 14px; margin-bottom: 8px">Catatan</div>
+      <textarea
+        id="catatanBox"
+        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px"
+        rows="4"
+      ></textarea>
 
-<table>
+      <script>
+        // simpan catatan biar tidak hilang
+        const box = document.getElementById("catatanBox");
+        box.value = localStorage.getItem("catatanTPQ") || "";
+        box.addEventListener("input", () => {
+          localStorage.setItem("catatanTPQ", box.value);
+        });
+      </script>
       <table>
         <thead>
           <tr>
@@ -321,8 +385,11 @@
             },
           },
         });
-        localStorage.setItem("kasFINALFIX", JSON.stringify(dataKas));
+
+        // SIMPAN KE FIREBASE BIAR SINKRON SEMUA HP
+        simpanKeFirebase(dataKas);
       }
+
       function tambahData() {
         const t = document.getElementById("tanggal").value,
           k = document.getElementById("ket").value,
